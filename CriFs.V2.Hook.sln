@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33020.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CriFs.V2.Hook", "CriFs.V2.Hook\CriFs.V2.Hook.csproj", "{35116871-4105-45BC-BB9F-C064E3EADBAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{04F25D24-DC05-4F7F-9040-4BF143A53FB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CriFs.V2.Hook.Tests", "CriFs.V2.Hook.Tests\CriFs.V2.Hook.Tests.csproj", "{002E745C-5277-42A7-A8D7-87D2DF0F1E09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CriFs.V2.Hook.Interfaces", "Interfaces\CriFs.V2.Hook.Interfaces\CriFs.V2.Hook.Interfaces.csproj", "{1765828A-7E79-4500-B277-6073E123AF29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35116871-4105-45BC-BB9F-C064E3EADBAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35116871-4105-45BC-BB9F-C064E3EADBAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35116871-4105-45BC-BB9F-C064E3EADBAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35116871-4105-45BC-BB9F-C064E3EADBAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{002E745C-5277-42A7-A8D7-87D2DF0F1E09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{002E745C-5277-42A7-A8D7-87D2DF0F1E09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{002E745C-5277-42A7-A8D7-87D2DF0F1E09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{002E745C-5277-42A7-A8D7-87D2DF0F1E09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1765828A-7E79-4500-B277-6073E123AF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1765828A-7E79-4500-B277-6073E123AF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1765828A-7E79-4500-B277-6073E123AF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1765828A-7E79-4500-B277-6073E123AF29}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CA0F433-E3A1-46EE-9D5F-FC5527450B87}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1765828A-7E79-4500-B277-6073E123AF29} = {04F25D24-DC05-4F7F-9040-4BF143A53FB4}
+	EndGlobalSection
+EndGlobal

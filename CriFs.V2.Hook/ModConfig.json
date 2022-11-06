@@ -1,0 +1,21 @@
+{
+  "ModId": "crifs.v2.hook",
+  "ModName": "CRI FileSystem V2 Hook",
+  "ModAuthor": "Sewer56",
+  "ModVersion": "1.0.0",
+  "ModDescription": "A mod that allows you to add/replace existing files without repacking CRI Middleware CPKs.",
+  "ModDll": "CriFs.V2.Hook.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "x86/CriFs.V2.Hook.dll",
+  "ModR2RManagedDll64": "x64/CriFs.V2.Hook.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "CriFs.V2.Hook.ReleaseMetadata.json",
+  "PluginData": {},
+  "IsUniversalMod": false,
+  "ModDependencies": [ "reloaded.sharedlib.hooks", "Reloaded.Memory.SigScan.ReloadedII" ],
+  "OptionalDependencies": [],
+  "SupportedAppId": [ "p5r.exe" ],
+  "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
+}
