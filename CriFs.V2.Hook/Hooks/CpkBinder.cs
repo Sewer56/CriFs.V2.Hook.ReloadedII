@@ -19,8 +19,10 @@ public static unsafe class CpkBinder
     private static Logger _logger = null!;
 
     private static IHook<criFsBinder_BindCpk>? _bindCpkHook;
+    
     private static criFsBinder_BindCpk? _bindDirFn;
     private static criFsBinder_GetWorkSizeForBindDirectory? _getSizeForBindDirFn;
+    private static IHook<criFsLoader_LoadRegisteredFile_Internal>? _loadRegisteredFileFn;
     private static criFsBinder_GetStatus? _getStatusFn;
     private static criFsBinder_SetPriority? _setPriorityFn;
     private static criFsBinder_Unbind? _unbindFn;
@@ -44,6 +46,9 @@ public static unsafe class CpkBinder
         
         if (_setPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(_setPriority, out _);
+
+        if (_loadRegisteredFile != 0)
+            _loadRegisteredFileFn = hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal, _loadRegisteredFile).Activate();
     }
 
     private static bool AssertWillFunction()
@@ -57,9 +62,19 @@ public static unsafe class CpkBinder
         if (_setPriority == 0)
             _logger.Warning("SetPriority function is missing. There's no guarantee custom mod files will have priority over originals.");
 
+        if (_loadRegisteredFile == 0)
+            _logger.Warning("LoadRegisteredFile function is missing. File Access Logging is Disabled.");
+        
         return true;
     }
 
+    private static IntPtr LoadRegisteredFileInternal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4, IntPtr a5)
+    {
+        var namePtr = (IntPtr*)IntPtr.Add(a1, 16);
+        _logger.Info(Marshal.PtrToStringAnsi(*namePtr));
+        return _loadRegisteredFileFn.OriginalFunction(a1, a2, a3, a4, a5);
+    }
+    
     private static CriError BindCpkImpl(IntPtr bndrhn, IntPtr srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid)
     {
         if (!_firstCpkLoaded)
@@ -158,6 +173,17 @@ public static unsafe class CpkBinder
         }
         
         BindAll(_binderHandle);
+    }
+
+    /// <summary>
+    /// Enables/disables printing of file access.
+    /// </summary>
+    public static void SetPrintFileAccess(bool printFileAccess)
+    {
+        if (printFileAccess)
+            _loadRegisteredFileFn?.Enable();
+        else
+            _loadRegisteredFileFn?.Disable();
     }
 }
 

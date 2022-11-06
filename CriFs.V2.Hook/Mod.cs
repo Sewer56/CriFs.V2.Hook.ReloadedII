@@ -113,6 +113,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         CpkBinder.Init(_directoryAcquirer.BindDirectory, _logger, _hooks!);
+        CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         _cpkBuilder?.Build(); 
     }
 
@@ -124,6 +125,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _configuration = configuration;        
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
+        CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
     }
     #endregion
 

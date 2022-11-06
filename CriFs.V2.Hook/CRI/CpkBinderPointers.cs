@@ -7,6 +7,7 @@ internal static class CpkBinderPointers
     internal static long _bindCpk;
     internal static long _bindDir;
     internal static long _getSizeForBindDir;
+    internal static long _loadRegisteredFile;
     internal static long _setPriority;
     internal static long _getStatus;
     internal static long _unbind;
@@ -30,5 +31,8 @@ internal static class CpkBinderPointers
         
         helper.FindPatternOffset("48 83 EC 28 4D 85 C0 75 1B", 
             (offset) => _getSizeForBindDir = baseAddr + offset, "CRI Get Size for Bind Dir");
+        
+        helper.FindPatternOffset("48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81", 
+            (offset) => _loadRegisteredFile = baseAddr + offset, "CRI Load File");
     }
 }

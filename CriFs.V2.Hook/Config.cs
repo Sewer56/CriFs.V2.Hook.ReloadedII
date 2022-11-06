@@ -11,6 +11,11 @@ public class Config : Configurable<Config>
     [DefaultValue(true)]
     public bool DisableCriBindLogging { get; set; } = true;
     
+    [DisplayName("Print File Access")]
+    [Description("Prints loaded file to console using the Info log level.")]
+    [DefaultValue(false)]
+    public bool PrintFileAccess { get; set; } = false;
+    
     [DisplayName("Log Level")]
     [Description("Declares which elements should be logged to the console.\nMessages less important than this level will not be logged.")]
     [DefaultValue(LogSeverity.Information)]
