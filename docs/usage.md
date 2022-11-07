@@ -22,9 +22,7 @@ Adding a 'dependency' to your mod will make it such that P5R Essentials will alw
 
 # Replacing files in CPKs
 
-!!! info
-
-    Files inside CPKs can be replaced by creating a folder called `P5REssentials/CPK` in your mod, and adding folders corresponding to the names of the CPKs inside those folders.
+Files inside CPKs can be replaced by creating a folder called `CRIFsV2Hook/CPK` in your mod, and adding folders corresponding to the names of the CPKs inside those folders.
 
 ## Opening the Mod Folder
 
