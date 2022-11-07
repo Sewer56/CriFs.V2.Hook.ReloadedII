@@ -29,10 +29,6 @@ Currently it is known to work on the following applications.
 - API (dynamically add files, set probing paths, etc.)  
 - Log files accessed by application.  
 
-## Future Work
-
-- Support for replacing CPK file contents via other mods.  
-
 # Building
 
 - Install [Reloaded II](https://github.com/Reloaded-Project/Reloaded-II/releases/latest).  

@@ -19,7 +19,7 @@ public class ReloadedBindBuilderCreator
     private readonly IBindDirectoryAcquirer _bindDirAcquirer;
     private bool _canRebuild = false;
 
-    private List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Second just for testing
+    private List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
     private List<FileSystemWatcher> _watchers = new();
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer)
