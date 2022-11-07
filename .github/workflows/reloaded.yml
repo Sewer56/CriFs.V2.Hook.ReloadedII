@@ -51,15 +51,10 @@ jobs:
         fetch-depth: 0
         submodules: 'recursive'
         
-    - name: Setup .NET Core SDK (5.0)
-      uses: actions/setup-dotnet@v1.8.2
+    - name: Setup .NET Core SDK (7.0)
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 5.0.x
-        
-    - name: Setup .NET Core SDK (6.0)
-      uses: actions/setup-dotnet@v1.8.2
-      with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
         
     - name: Setup Node.js
       uses: actions/setup-node@v2
@@ -80,7 +75,7 @@ jobs:
         }
         
     - name: Build
-      run: ./Publish.ps1 -ChangelogPath "$env:PUBLISH_CHANGELOG_PATH"
+      run: ./PublishAll.ps1 -ChangelogPath "$env:PUBLISH_CHANGELOG_PATH" -BuildR2R true
       
     - name: Upload GitHub Release Artifact
       uses: actions/upload-artifact@v2.2.4
