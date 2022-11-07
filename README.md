@@ -1,6 +1,5 @@
 <div align="center">
 	<h1>CRI FileSystem V2 Hook</h1>
-	<img src="./docs/images/icon.png" Width="200" /><br/>
     <p>Mod to enable file replacement in more recent CRI games.</p>
 </div>
 
