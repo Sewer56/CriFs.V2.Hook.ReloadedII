@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using CriFs.V2.Hook.Interfaces;
 using FileEmulationFramework.Lib;
 using FileEmulationFramework.Lib.IO;
 using Native = CriFs.V2.Hook.Bind.Utilities.Native;
@@ -45,17 +46,26 @@ public class BindBuilder
     /// </summary>
     /// <param name="item">The item to be included in the output.</param>
     public void AddItem(BuilderItem item) => Items.Add(item);
-    
+
     /// <summary>
     /// Builds the bind folders :P.
     /// </summary>
+    /// <param name="bindCallbacks">Callbacks used for binding the data.</param>
     /// <returns>The folder inside which bound data is contained.</returns>
-    public string Build()
+    public string Build(List<Action<ICriFsRedirectorApi.BindContext>> bindCallbacks)
     {
         // This code finds duplicate files should we ever need to do merging in the future.
         var files = GetFiles(out var duplicates);
         
         // Normalize keys so all mods go in same base directory
+        var context = new ICriFsRedirectorApi.BindContext()
+        {
+            BindDirectory = OutputFolder,
+            RelativePathToFileMap = files
+        };
+        
+        foreach (var bindCallback in bindCallbacks)
+            bindCallback(context);
 
         // TODO: Add the merging infrastructure. For now, we will accept last added file as the winner.
         // For the merging infra, we will commit the merging (check against cache first), put result in cache folder.

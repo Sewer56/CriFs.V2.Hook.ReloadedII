@@ -2,6 +2,7 @@ using CriFs.V2.Hook;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Interfaces;
 using CriFs.V2.Hook.Hooks;
+using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Utilities;
 using FileEmulationFramework.Lib.IO;
 using FileEmulationFramework.Lib.Utilities;
@@ -21,6 +22,8 @@ public class ReloadedBindBuilderCreator
 
     private List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
     private List<FileSystemWatcher> _watchers = new();
+    private List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
+    private List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer)
     {
@@ -69,7 +72,7 @@ public class ReloadedBindBuilderCreator
         foreach (var probingPath in _probingPaths)
             Add(builder, (IModConfig)mod.Generic, probingPath);
 
-        builder.Build();
+        builder.Build(_bindCallbacks);
         _canRebuild = true;
     }
     
@@ -142,4 +145,8 @@ public class ReloadedBindBuilderCreator
         cpkFolder = Path.Combine(folderToTest, probingPath);
         return Directory.Exists(cpkFolder);
     }
+
+    public void AddUnbindCallback(Action<ICriFsRedirectorApi.UnbindContext> callback) => _unbindCallbacks.Add(callback);
+
+    public void AddBindCallback(Action<ICriFsRedirectorApi.BindContext> callback) => _bindCallbacks.Add(callback);
 }

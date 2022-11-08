@@ -12,4 +12,10 @@ public class Api : ICriFsRedirectorApi
     
     /// <inheritdoc/>
     public void AddProbingPath(string relativePath) => _reloadedBuilder.AddProbingPath(relativePath);
+
+    /// <inheritdoc/>
+    public void AddUnbindCallback(Action<ICriFsRedirectorApi.UnbindContext> callback) => _reloadedBuilder.AddUnbindCallback(callback);
+
+    /// <inheritdoc/>
+    public void AddBindCallback(Action<ICriFsRedirectorApi.BindContext> callback) => _reloadedBuilder.AddBindCallback(callback);
 }
