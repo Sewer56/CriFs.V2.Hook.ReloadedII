@@ -175,6 +175,10 @@ public class Mod : ModBase // <= Do not Remove.
             if (!cachedFile.FilesByFileName.TryGetValue(fileNameSpan.ToString(), out fileIndex)) 
                 continue;
             
+            // If route only has file name, we can take this as answer.
+            if (Path.GetDirectoryName(route.FullPath) == null)
+                return true;
+            
             // If matches by file name we have to search all routes because it's possible duplicate
             // file names can exist under different subfolders
             for (var x = 0; x < cachedFile.Files.Length; x++)
