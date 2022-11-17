@@ -8,6 +8,7 @@ using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Template;
 using CriFs.V2.Hook.Utilities;
+using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.Utilities;
 using p5rpc.modloader;
 using p5rpc.modloader.Patches.Common;
@@ -58,6 +59,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     private ReloadedBindBuilderCreator? _cpkBuilder;
     private BindDirectoryAcquirer _directoryAcquirer;
     private SigScanHelper _scanHelper;
+    private CpkContentCache _cpkContentCache;
     
     public Mod(ModContext context)
     {
@@ -95,14 +97,19 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         
         // CPK Builder & Redirector
         var modConfigDirectory = _modLoader.GetModConfigDirectory(_modConfig.ModId);
-        _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, new CurrentProcessProvider(currentProcess.Id), new ProcessListProvider());
-        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer);
+        var currentProcessProvider = new CurrentProcessProvider(currentProcess.Id);
+        var processListProvider = new ProcessListProvider();
+        
+        _cpkContentCache = new CpkContentCache();
+        _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
+        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, _cpkContentCache);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
         
         // Add API
-        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(_owner, new Api(_cpkBuilder));
+        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(_owner, 
+            new Api(_cpkBuilder, _cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider));
     }
 
     // In case user loads mod in real time.
@@ -135,5 +142,5 @@ public class Mod : ModBase, IExports // <= Do not Remove.
 #pragma warning restore CS8618
     #endregion
 
-    public Type[] GetTypes() => new[] { typeof(ICriFsRedirectorApi) };
+    public Type[] GetTypes() => new[] { typeof(ICriFsRedirectorApi), typeof(ICriFsLib) };
 }

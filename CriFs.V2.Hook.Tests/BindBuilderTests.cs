@@ -1,5 +1,6 @@
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Utilities;
+using CriFs.V2.Hook.Interfaces;
 using static CriFs.V2.Hook.Tests.Utilities;
 
 namespace CriFs.V2.Hook.Tests;
@@ -48,7 +49,7 @@ public class BindBuilderTests
         builder.AddItem(new BuilderItem(Assets.ButtonPromptsMod2Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod2Cpk)));
 
         // Act
-        var outputDir = builder.Build();
+        var outputDir = builder.Build(new List<Action<ICriFsRedirectorApi.BindContext>>());
         
         // Assert
         Assert.Equal(2, GetFilesInDirectory(outputDir).Count);

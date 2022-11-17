@@ -1,0 +1,3 @@
+[submodule "Submodules/FileEmulationFramework"]
+	path = Submodules/FileEmulationFramework
+	url = https://github.com/Sewer56/FileEmulationFramework.git

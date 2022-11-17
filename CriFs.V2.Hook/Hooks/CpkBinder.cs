@@ -71,8 +71,8 @@ public static unsafe class CpkBinder
     private static IntPtr LoadRegisteredFileInternal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4, IntPtr a5)
     {
         var namePtr = (IntPtr*)IntPtr.Add(a1, 16);
-        _logger.Info(Marshal.PtrToStringAnsi(*namePtr));
-        return _loadRegisteredFileFn.OriginalFunction(a1, a2, a3, a4, a5);
+        _logger.Info(Marshal.PtrToStringAnsi(*namePtr)!);
+        return _loadRegisteredFileFn!.OriginalFunction(a1, a2, a3, a4, a5);
     }
     
     private static CriError BindCpkImpl(IntPtr bndrhn, IntPtr srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid)

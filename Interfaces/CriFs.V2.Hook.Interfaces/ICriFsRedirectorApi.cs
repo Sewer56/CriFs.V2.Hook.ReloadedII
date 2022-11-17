@@ -1,4 +1,9 @@
-﻿namespace CriFs.V2.Hook.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using CriFs.V2.Hook.Interfaces.Structs;
+using CriFsV2Lib.Definitions;
+using CriFsV2Lib.Definitions.Structs;
+
+namespace CriFs.V2.Hook.Interfaces;
 
 /// <summary>
 /// API for controlling the behaviour of the redirector.
@@ -21,6 +26,34 @@ public interface ICriFsRedirectorApi
     /// </summary>
     /// <param name="callback">Method which contains the binding information.</param>
     public void AddBindCallback(Action<BindContext> callback);
+
+    /// <summary>
+    /// Generates a directory that can be used for binding custom in <see cref="AddBindCallback"/> callback.  
+    /// Guarantees directory will be unique for this process (thus allowing multiple instance of application).  
+    /// Guarantees directories related to dead processes/previous game runs will be cleaned up.  
+    /// </summary>
+    /// <param name="baseDirectory">The directory where your mod stores its binds, preferably `Bind` in mod config dir.</param>
+    public string GenerateBindingDirectory(string baseDirectory);
+    
+    /// <summary>
+    /// Returns list of all CPK files in game directory.
+    /// This list is cached, used to speed up rebuilds.
+    /// </summary>
+    public string[] GetCpkFilesInGameDir();
+    
+    /// <summary>
+    /// Gets the file contents of a given CPK file.
+    /// Data can be read from this CPK file by using <see cref="ICriFsLib.CreateCpkReader"/> with FileStream.
+    /// 
+    /// This is an optimisation/speedup to prevent repeat parsing when multiple mods need to extract files.
+    /// This cache is cleared after each rebuild.
+    /// </summary>
+    public CpkCacheEntry GetCpkFilesCached(string filePath);
+
+    /// <summary>
+    /// Gets an instance of the library used to read CPK files.
+    /// </summary>
+    public ICriFsLib GetCriFsLib();
 
     /// <summary>
     /// The context used for binding operations.

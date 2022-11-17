@@ -4,6 +4,7 @@ using CriFs.V2.Hook.Bind.Interfaces;
 using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Utilities;
+using CriFsV2Lib.Definitions.Utilities;
 using FileEmulationFramework.Lib.IO;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Mod.Interfaces;
@@ -18,6 +19,7 @@ public class ReloadedBindBuilderCreator
     private readonly IModLoader _loader;
     private readonly Logger _logger;
     private readonly IBindDirectoryAcquirer _bindDirAcquirer;
+    private readonly CpkContentCache _cpkContentCache;
     private bool _canRebuild = false;
 
     private List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
@@ -25,11 +27,13 @@ public class ReloadedBindBuilderCreator
     private List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
     private List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
 
-    public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer)
+    public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
+        CpkContentCache cpkContentCache)
     {
         _loader = loader;
         _logger = logger;
         _bindDirAcquirer = bindDirAcquirer;
+        _cpkContentCache = cpkContentCache;
     }
 
     /// <summary>
@@ -63,6 +67,8 @@ public class ReloadedBindBuilderCreator
     /// </summary>
     public void Build()
     {
+        _cpkContentCache.Clear();
+        
         // Get binding directory & cleanup.
         var mods       = _loader.GetActiveMods();
         var builder    = new BindBuilder(_bindDirAcquirer.BindDirectory, "R2");
@@ -73,6 +79,7 @@ public class ReloadedBindBuilderCreator
             Add(builder, (IModConfig)mod.Generic, probingPath);
 
         builder.Build(_bindCallbacks);
+        ArrayRental.Reset(); // cleanup mem
         _canRebuild = true;
     }
     
@@ -116,8 +123,16 @@ public class ReloadedBindBuilderCreator
         _logger.Info("Hot Reload Triggered, Rebuilding");
         
         // Unbind, build and rebind.
-        CpkBinder.UnbindAll();
+        var unbindContext = new ICriFsRedirectorApi.UnbindContext()
+        {
+            BindDirectory = _bindDirAcquirer.BindDirectory
+        };
 
+        CpkBinder.UnbindAll();
+        
+        foreach (var unbindCallback in _unbindCallbacks)
+            unbindCallback(unbindContext);
+        
         // Try delete directory.
         try
         {
