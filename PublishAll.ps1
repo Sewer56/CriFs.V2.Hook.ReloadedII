@@ -11,6 +11,7 @@ Split-Path $MyInvocation.MyCommand.Path | Push-Location
 ./Publish.ps1 -ProjectPath "Extensions/CriFs.V2.Hook.Awb/CriFs.V2.Hook.Awb.csproj" `
               -PackageName "CriFs.V2.Hook.Awb" `
 			  -ReadmePath "README-AWB.md" `
+			  -PublishOutputDir "Publish/ToUpload/AWB" `
 			  @args
 
 Pop-Location
