@@ -3,7 +3,6 @@
 !!! info
 
     CriFsHook has an extension mod that allows you to replace music inside AWB Containers. 
-    Provides an additional extension 'awb'.  
 
 # Prerequisites
 
