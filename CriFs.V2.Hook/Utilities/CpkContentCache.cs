@@ -42,7 +42,7 @@ public class CpkContentCache
             };
 
             cachedFile.FullPath = file.Directory != null
-                ? Path.Combine(file.Directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), file.FileName)
+                ? $"{file.Directory.Replace('/', '\\')}\\{file.FileName}" 
                 : file.FileName;
 
             array[x] = cachedFile;
