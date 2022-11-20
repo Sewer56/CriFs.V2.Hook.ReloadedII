@@ -54,7 +54,8 @@ public class CpkContentCache
         {
             Files = array,
             FilesByPath = relativePathDictionary,
-            FilesByFileName = fileNameDictionary
+            FilesByFileName = fileNameDictionary,
+            LastModified = File.GetLastWriteTime(stream.SafeFileHandle)
         };
         
         _pathToEntry[normalizedPath] = result;

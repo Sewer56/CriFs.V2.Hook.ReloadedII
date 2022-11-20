@@ -11,6 +11,11 @@ public struct CpkCacheEntry
     public CachedCpkFile[] Files { get; init; }
     
     /// <summary>
+    /// Last time CPK was modified, can be used to invalidate custom user cache.
+    /// </summary>
+    public DateTime LastModified { get; init; }
+    
+    /// <summary>
     /// Contains a map of all relative paths in CPK to corresponding index in <see cref="Files"/> array.
     /// Directory separators normalized to <see cref="Path.DirectorySeparatorChar"/>.
     /// </summary>
