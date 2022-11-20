@@ -26,6 +26,7 @@ public class ReloadedBindBuilderCreator
     private List<FileSystemWatcher> _watchers = new();
     private List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
     private List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
+    private List<string> _modIdsToBuild = new();
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
         CpkContentCache cpkContentCache)
@@ -43,23 +44,41 @@ public class ReloadedBindBuilderCreator
     public void AddProbingPath(string relativePath) => _probingPaths.Add(relativePath);
 
     /// <summary>
-    /// Checks if mod has any qualifying folders and triggers a rebuild if necessary.
+    /// Tries to remove a mod from the internal list of mods to build.
     /// </summary>
-    /// <param name="modConfig">The mod configuration.</param>
-    public void RebuildIfNeeded(IModConfig modConfig)
+    /// <param name="modConfig">The mod config to remove.</param>
+    /// <returns>True if a mod has been successfully removed and a rebuild needs to run.</returns>
+    public bool TryRemoveMod(IModConfig modConfig) => _modIdsToBuild.Remove(modConfig.ModId);
+
+    /// <summary>
+    /// Adds a mod to the internal list of mods to build.
+    /// </summary>
+    /// <param name="modConfig">The mod config to add.</param>
+    /// <returns>True if a mod has been successfully added and a rebuild needs to run.</returns>
+    public bool TryAddMod(IModConfig modConfig)
+    {
+        var path = _loader.GetDirectoryForModId(modConfig.ModId);
+        foreach (var probingPath in _probingPaths)
+        {
+            if (TryGetCpkFolder(path, probingPath, out _)) 
+                continue;
+            
+            _modIdsToBuild.Add(modConfig.ModId);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Triggers a rebuild. Call this if <see cref="TryAddMod"/> or <see cref="TryRemoveMod"/> return true.
+    /// </summary>
+    public void Rebuild()
     {
         if (!_canRebuild)
             return;
         
-        foreach (var probingPath in _probingPaths)
-        {
-            var path = _loader.GetDirectoryForModId(modConfig.ModId);
-            if (!TryGetCpkFolder(path, probingPath, out _)) 
-                continue;
-            
-            Rebuild();
-            return;
-        }
+        Rebuild_Internal();
     }
 
     /// <summary>
@@ -70,27 +89,27 @@ public class ReloadedBindBuilderCreator
         _cpkContentCache.Clear();
         
         // Get binding directory & cleanup.
-        var mods       = _loader.GetActiveMods();
         var builder    = new BindBuilder(_bindDirAcquirer.BindDirectory, "R2");
         
         // Get list of input mods.
-        foreach (var mod in mods)
+        foreach (var modId in _modIdsToBuild)
         foreach (var probingPath in _probingPaths)
-            Add(builder, (IModConfig)mod.Generic, probingPath);
+            Add(builder, modId, probingPath);
 
         builder.Build(_bindCallbacks);
         ArrayRental.Reset(); // cleanup mem
         _canRebuild = true;
     }
-    
+
     /// <summary>
     /// (Conditionally) adds CPK folders for binding to the builder.
     /// </summary>
-    /// <param name="modConfig">Mod configuration.</param>
-    /// <param name="probingPath">The probing path to use</param>
-    private void Add(BindBuilder builder, IModConfig modConfig, string probingPath)
+    /// <param name="builder">The builder.</param>
+    /// <param name="modId">The id of the individual mod.</param>
+    /// <param name="probingPath">The probing path to use.</param>
+    private void Add(BindBuilder builder, string modId, string probingPath)
     {
-        var path = _loader.GetDirectoryForModId(modConfig.ModId);
+        var path = _loader.GetDirectoryForModId(modId);
         if (!TryGetCpkFolder(path, probingPath, out var cpkFolder)) 
             return;
         
@@ -112,13 +131,13 @@ public class ReloadedBindBuilderCreator
         watcher.EnableRaisingEvents = false;
         watcher.Dispose();
         _watchers.Clear();
-        Rebuild();
+        Rebuild_Internal();
     }
 
     /// <summary>
     /// Unbinds all, deletes data, rebinds all.
     /// </summary>
-    private void Rebuild()
+    private void Rebuild_Internal()
     {
         _logger.Info("Hot Reload Triggered, Rebuilding");
         

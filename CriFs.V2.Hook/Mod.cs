@@ -113,8 +113,17 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     }
 
     // In case user loads mod in real time.
-    private void OnModUnloaded(IModV1 arg1, IModConfigV1 arg2) => _cpkBuilder!.RebuildIfNeeded((IModConfig)arg2);
-    private void OnModLoaded(IModV1 arg1, IModConfigV1 arg2) => _cpkBuilder!.RebuildIfNeeded((IModConfig)arg2);
+    private void OnModUnloaded(IModV1 arg1, IModConfigV1 arg2)
+    {
+        if (_cpkBuilder.TryRemoveMod((IModConfig)arg2))
+            _cpkBuilder!.Rebuild();
+    }
+
+    private void OnModLoaded(IModV1 arg1, IModConfigV1 arg2)
+    {
+        if (_cpkBuilder.TryAddMod((IModConfig)arg2))
+            _cpkBuilder!.Rebuild();
+    }
 
     private void OnLoaderInitialized()
     {
