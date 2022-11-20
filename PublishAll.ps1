@@ -5,6 +5,7 @@ Split-Path $MyInvocation.MyCommand.Path | Push-Location
 
 ./Publish.ps1 -ProjectPath "CriFs.V2.Hook/CriFs.V2.Hook.csproj" `
               -PackageName "CriFs.V2.Hook" `
+			  -BuildR2R true `
 			  -ReadmePath "README.md" `
 			  @args
 
