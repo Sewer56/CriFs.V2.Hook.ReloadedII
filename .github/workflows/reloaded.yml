@@ -109,6 +109,7 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: |
           ${{ env.PUBLISH_NUGET_PATH }}/*
+          ${{ env.PUBLISH_NUGET_AWB_PATH }}/*
         
     - name: Upload Changelog Artifact
       uses: actions/upload-artifact@v2.2.4
@@ -141,7 +142,7 @@ jobs:
             return
         }
         
-        $items = Get-ChildItem -Path "$env:PUBLISH_NUGET_PATH/*.nupkg"
+        $items = Get-ChildItem -Path "$env:PUBLISH_PATH/*.nupkg" -Recurse
         Foreach ($item in $items)
         {
             Write-Host "Pushing $item"
