@@ -52,13 +52,25 @@
           "ReleaseMetadataName": "Reloaded.Universal.FileEmulationFramework.ReleaseMetadata.json"
         }
       }
+    },
+    "NuGet": {
+      "AllowUpdateFromAnyRepository": false,
+      "DefaultRepositoryUrls": [
+        "http://packages.sewer56.moe:5000/index.json"
+      ]
+    },
+    "GitHubRelease": {
+      "UserName": "CriFs.V2.Hook.ReloadedII",
+      "RepositoryName": "Sewer56",
+      "UseReleaseTag": true,
+      "AssetFileName": "Mod.zip"
     }
   },
   "IsUniversalMod": false,
   "ModDependencies": [
     "reloaded.sharedlib.hooks",
-    "crifs.v2.hook",
-    "reloaded.universal.fileemulationframework.awb"
+    "reloaded.universal.fileemulationframework.awb",
+    "crifs.v2.hook"
   ],
   "OptionalDependencies": [],
   "SupportedAppId": [
