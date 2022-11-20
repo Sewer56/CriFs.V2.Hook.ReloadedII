@@ -1,4 +1,4 @@
-﻿using CriFs.V2.Hook.Interfaces.Structs;
+using CriFs.V2.Hook.Interfaces.Structs;
 using CriFsV2Lib;
 
 namespace CriFs.V2.Hook.Utilities;
@@ -30,8 +30,8 @@ public class CpkContentCache
         var files   = reader.GetFiles();
         
         var array = GC.AllocateUninitializedArray<CachedCpkFile>(files.Length);
-        var relativePathDictionary = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        var fileNameDictionary = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var relativePathDictionary = new Dictionary<string, int>(files.Length, StringComparer.OrdinalIgnoreCase);
+        var fileNameDictionary = new Dictionary<string, int>(files.Length, StringComparer.OrdinalIgnoreCase);
         
         for (int x = 0; x < files.Length; x++)
         {
