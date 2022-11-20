@@ -1,0 +1,30 @@
+site_name: CRI FileSystem V2 Hook
+site_url: https://sewer56.dev/CriFs.V2.Hook.ReloadedII
+
+repo_name: Sewer56/CriFs.V2.Hook.ReloadedII
+repo_url: https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII
+
+markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences 
+  - pymdownx.tasklist
+  - def_list
+  - meta
+  - md_in_html
+  - attr_list
+  - footnotes
+
+theme:
+  name: material
+  palette:
+    primary: red
+    accent: red
+    scheme: slate
+    
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Replacing Music (AWB): usage-awb.md

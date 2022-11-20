@@ -25,6 +25,10 @@ on:
 env: 
   PUBLISH_COMMON_PATH: ./Publish/ToUpload/
 
+  PUBLISH_GAMEBANANA_AWB_PATH: ./Publish/ToUpload/AWB/GameBanana
+  PUBLISH_GITHUB_AWB_PATH: ./Publish/ToUpload/AWB/Generic
+  PUBLISH_NUGET_AWB_PATH: ./Publish/ToUpload/AWB/NuGet
+
   PUBLISH_GAMEBANANA_PATH: ./Publish/ToUpload/GameBanana
   PUBLISH_GITHUB_PATH: ./Publish/ToUpload/Generic
   PUBLISH_NUGET_PATH: ./Publish/ToUpload/NuGet
@@ -85,6 +89,7 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: |
           ${{ env.PUBLISH_GITHUB_PATH }}/*
+          ${{ env.PUBLISH_GITHUB_AWB_PATH }}/*
           
     - name: Upload GameBanana Release Artifact
       uses: actions/upload-artifact@v2.2.4
@@ -94,6 +99,7 @@ jobs:
         # A file, directory or wildcard pattern that describes what to upload
         path: |
           ${{ env.PUBLISH_GAMEBANANA_PATH }}/*
+          ${{ env.PUBLISH_GAMEBANANA_AWB_PATH }}/*
         
     - name: Upload NuGet Release Artifact
       uses: actions/upload-artifact@v2.2.4
@@ -122,6 +128,7 @@ jobs:
         # Newline-delimited list of path globs for asset files to upload
         files: |
           ${{ env.PUBLISH_GITHUB_PATH }}/*
+          ${{ env.PUBLISH_GITHUB_AWB_PATH }}/*
         
     - name: Push to NuGet (on Tag)
       env: 

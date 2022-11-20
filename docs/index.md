@@ -2,10 +2,6 @@
 
 CRI FileSystem V2 Hook is a mod based on [Reloaded II](https://reloaded-project.github.io/Reloaded-II/) that allows you to add/replace files in games that use CRI Middleware and the CPK container.  
 
-# Usage
-
-[Learn more about this project on the wiki.](https://sewer56.dev/CriFs.V2.Hook.ReloadedII)
-
 # Support
 
 This universal mod targets x64 versions of games using CRI MiddleWare's V2 File System built with MSVC compiler.  
@@ -23,7 +19,7 @@ Currently it is known to work on the following applications.
 - Hot Reload (Add/Replace files without app restart).  
 - API (dynamically add files, set probing paths, etc.)  
 - Log files accessed by application.  
-- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](https://sewer56.dev/CriFs.V2.Hook.ReloadedII/usage-awb).  
+- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](./usage-awb.md).
 
 # Building
 

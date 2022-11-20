@@ -1,7 +1,5 @@
 # Prerequisites
 
-Note: This mod is based on [Persona 5 Royal Essentials](https://github.com/Sewer56/p5rpc.modloader), some screenshots might need updating :P.
-
 ## Create a Reloaded Mod
 
 Follow the guidance in the [Reloaded wiki](https://reloaded-project.github.io/Reloaded-II/CreatingMods/) to create a new Reloaded mod.  
