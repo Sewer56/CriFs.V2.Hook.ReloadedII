@@ -56,32 +56,48 @@ public partial class Mod
             }
             
             // Register AWB
-            var emulatedFilePath = Path.Combine(bind.BindDirectory, R2, awbFile.FullPath);
-            Directory.CreateDirectory(Path.GetDirectoryName(emulatedFilePath)!);
-            _logger.Info("[CriFsV2.Awb] Creating Emulated File {0}", emulatedFilePath);
-            _awbEmulator.TryCreateFromFileSlice(cpkPath, awbFile.File.FileOffset, route.FullPath, emulatedFilePath);
-            _boundFiles.Add(emulatedFilePath);
+            var awbBindPath = Path.Combine(R2, awbFile.FullPath);
+            if (bind.RelativePathToFileMap.ContainsKey(awbBindPath))
+            {
+                _logger.Info("[CriFsV2.Awb] Binder input already contains AWB {0}, we'll use existing one.", awbFile.FullPath);
+            }
+            else
+            {
+                var emulatedFilePath = Path.Combine(bind.BindDirectory, awbBindPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(emulatedFilePath)!);
+                _logger.Info("[CriFsV2.Awb] Creating Emulated File {0}", emulatedFilePath);
+                _awbEmulator.TryCreateFromFileSlice(cpkPath, awbFile.File.FileOffset, route.FullPath, emulatedFilePath);
+                _boundFiles.Add(emulatedFilePath);
+            }
             
             // Extract ACB.
-            using var cpkStream = new FileStream(cpkPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-            using var reader = criFsLib.CreateCpkReader(cpkStream, false);
-            using var extractedAcb = reader.ExtractFile(cachedFile.Files[acbFileIndex].File);
-            
-            // Write ACB
-            var acbPath = Path.Combine(_bindingDirectory, relativeAcbPath);
-            _logger.Info("[CriFsV2.Awb] Writing {0}", acbPath);
-            Directory.CreateDirectory(Path.GetDirectoryName(acbPath)!);            
-            using var outputFileStream = new FileStream(acbPath, new FileStreamOptions()
+            var acbBindPath = Path.Combine(R2, relativeAcbPath);
+            if (bind.RelativePathToFileMap.ContainsKey(acbBindPath))
             {
-                Access = FileAccess.ReadWrite,
-                Mode = FileMode.Create,
-                BufferSize = 0,
-                Share = FileShare.ReadWrite,
-                PreallocationSize = extractedAcb.Span.Length
-            });
+                _logger.Info("[CriFsV2.Awb] Binder input already contains ACB {0}, we'll use existing one.", relativeAcbPath);
+            }
+            else
+            {
+                using var cpkStream = new FileStream(cpkPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                using var reader = criFsLib.CreateCpkReader(cpkStream, false);
+                using var extractedAcb = reader.ExtractFile(cachedFile.Files[acbFileIndex].File);
             
-            tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count));
-            bind.RelativePathToFileMap[Path.Combine(R2, relativeAcbPath)] = new List<string>() { acbPath };
+                // Write ACB
+                var acbPath = Path.Combine(_bindingDirectory, relativeAcbPath);
+                _logger.Info("[CriFsV2.Awb] Writing {0}", acbPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(acbPath)!);            
+                using var outputFileStream = new FileStream(acbPath, new FileStreamOptions()
+                {
+                    Access = FileAccess.ReadWrite,
+                    Mode = FileMode.Create,
+                    BufferSize = 0,
+                    Share = FileShare.ReadWrite,
+                    PreallocationSize = extractedAcb.Span.Length
+                });
+            
+                tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count));
+                bind.RelativePathToFileMap[acbBindPath] = new List<string>() { acbPath };
+            }
         }
 
         Task.WhenAll(tasks).Wait();
