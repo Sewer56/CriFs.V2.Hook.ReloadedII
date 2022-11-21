@@ -40,25 +40,25 @@ public partial class Mod
 
             if (!TryFindAwbInAnyCpk(route, cpks, out var cpkPath, out var cachedFile, out int awbFileIndex))
             {
-                _logger.Error("AWB file for {0} not found in any CPK!!", route.FullPath);
+                _logger.Error("[CriFsV2.Awb] AWB file for {0} not found in any CPK!!", route.FullPath);
                 continue;
             }
             
             // Get matched file.
             var awbFile = cachedFile.Files[awbFileIndex];
-            _logger.Info("Found AWB file {0} in CPK {1}", route.FullPath, cpkPath);
+            _logger.Info("[CriFsV2.Awb] Found AWB file {0} in CPK {1}", route.FullPath, cpkPath);
 
             var relativeAcbPath = Path.ChangeExtension(awbFile.FullPath, AcbExtension);
             if (!cachedFile.FilesByPath.TryGetValue(relativeAcbPath, out var acbFileIndex))
             {
-                _logger.Warning("We didn't find an ACB for {0}!!", route.FullPath);
+                _logger.Warning("[CriFsV2.Awb] We didn't find an ACB for {0}!!", route.FullPath);
                 continue;
             }
             
             // Register AWB
             var emulatedFilePath = Path.Combine(bind.BindDirectory, R2, awbFile.FullPath);
             Directory.CreateDirectory(Path.GetDirectoryName(emulatedFilePath)!);
-            _logger.Info("Creating Emulated File {0}", emulatedFilePath);
+            _logger.Info("[CriFsV2.Awb] Creating Emulated File {0}", emulatedFilePath);
             _awbEmulator.TryCreateFromFileSlice(cpkPath, awbFile.File.FileOffset, route.FullPath, emulatedFilePath);
             _boundFiles.Add(emulatedFilePath);
             
@@ -69,7 +69,7 @@ public partial class Mod
             
             // Write ACB
             var acbPath = Path.Combine(_bindingDirectory, relativeAcbPath);
-            _logger.Info("Writing {0}", acbPath);
+            _logger.Info("[CriFsV2.Awb] Writing {0}", acbPath);
             Directory.CreateDirectory(Path.GetDirectoryName(acbPath)!);            
             using var outputFileStream = new FileStream(acbPath, new FileStreamOptions()
             {
@@ -85,7 +85,7 @@ public partial class Mod
         }
 
         Task.WhenAll(tasks).Wait();
-        _logger.Debug($"Setup AWB Redirector Support for CRIFsHook in {watch.ElapsedMilliseconds}ms");
+        _logger.Debug($"[CriFsV2.Awb] Setup AWB Redirector Support for CRIFsHook in {watch.ElapsedMilliseconds}ms");
     }
 
     private bool TryFindAwbInAnyCpk(Route route, string[] cpkFiles, out string cpkPath, out CpkCacheEntry cachedFile, out int fileIndex)

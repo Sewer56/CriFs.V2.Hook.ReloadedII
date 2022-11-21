@@ -24,13 +24,13 @@ public class SigScanHelper
             if (res.Found)
             {
                 if (!string.IsNullOrEmpty(name))
-                    _logger?.Info("{0} found", name);
+                    _logger?.Info("[CriFs.V2.Hook] {0} found", name);
 
                 action((uint)res.Offset);
             }
             else if (!string.IsNullOrEmpty(name))
             {
-                _logger?.Error("{0} not found. If you're using latest up to date Steam version, raise a GitHub issue.", name);
+                _logger?.Error("[CriFs.V2.Hook] {0} not found. If you're using latest up to date Steam version, raise a GitHub issue.", name);
             }
         });
     }

@@ -113,7 +113,7 @@ public class ReloadedBindBuilderCreator
         if (!TryGetCpkFolder(path, probingPath, out var cpkFolder)) 
             return;
         
-        _logger.Info("Adding CPK Folder: {0}", cpkFolder);
+        _logger.Info("[BindBuilderCreator] Adding CPK Folder: {0}", cpkFolder);
         _watchers.Add(FileSystemWatcherFactory.Create(cpkFolder, TriggerHotReload));
         
         // Get all CPK folders
