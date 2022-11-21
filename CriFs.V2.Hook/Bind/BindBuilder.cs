@@ -116,7 +116,7 @@ public class BindBuilder
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Dictionary<string, List<string>> GetFiles(out Dictionary<string, List<string>> duplicates)
     {
-        var _relativeToFullPaths = new Dictionary<string, List<string>>();
+        var relativeToFullPaths = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in CollectionsMarshal.AsSpan(Items))
         {
             foreach (var file in item.Files)
@@ -126,10 +126,10 @@ public class BindBuilder
                 
                 // Inject custom bind folder name.
                 relativePath = string.IsNullOrEmpty(BindFolderName) ? relativePath : ReplaceFirstFolderInPath(relativePath, BindFolderName);
-                if (!_relativeToFullPaths.TryGetValue(relativePath, out var existingPaths))
+                if (!relativeToFullPaths.TryGetValue(relativePath, out var existingPaths))
                 {
                     existingPaths = new List<string>();
-                    _relativeToFullPaths[relativePath] = existingPaths;
+                    relativeToFullPaths[relativePath] = existingPaths;
                 }
                     
                 existingPaths.Add(fullPath);
@@ -137,14 +137,14 @@ public class BindBuilder
         }
         
         // Filter out the necessary items.
-        duplicates = new Dictionary<string, List<string>>(_relativeToFullPaths);
-        foreach (var item in _relativeToFullPaths)
+        duplicates = new Dictionary<string, List<string>>(relativeToFullPaths);
+        foreach (var item in relativeToFullPaths)
         {
             if (item.Value.Count <= 1)
                 duplicates.Remove(item.Key);
         }
 
-        return _relativeToFullPaths;
+        return relativeToFullPaths;
     }
     
     private string ReplaceFirstFolderInPath(string originalRelativePath, string newFolderName)
