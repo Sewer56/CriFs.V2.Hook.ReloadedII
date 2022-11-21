@@ -96,7 +96,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         DontLogCriDirectoryBinds.Activate(hookContext);
         
         // CPK Builder & Redirector
-        var modConfigDirectory = _modLoader.GetModConfigDirectory(_modConfig.ModId);
+        var modConfigDirectory = _modLoader.GetDirectoryForModId(_modConfig.ModId);
         var currentProcessProvider = new CurrentProcessProvider(currentProcess.Id);
         var processListProvider = new ProcessListProvider();
         
