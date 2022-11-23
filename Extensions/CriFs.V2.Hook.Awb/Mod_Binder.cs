@@ -80,13 +80,13 @@ public partial class Mod
             {
                 using var cpkStream = new FileStream(cpkPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 using var reader = criFsLib.CreateCpkReader(cpkStream, false);
-                using var extractedAcb = reader.ExtractFile(cachedFile.Files[acbFileIndex].File);
+                var extractedAcb = reader.ExtractFile(cachedFile.Files[acbFileIndex].File);
             
                 // Write ACB
                 var acbPath = Path.Combine(_bindingDirectory, relativeAcbPath);
                 _logger.Info("[CriFsV2.Awb] Writing {0}", acbPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(acbPath)!);            
-                using var outputFileStream = new FileStream(acbPath, new FileStreamOptions()
+                var outputFileStream = new FileStream(acbPath, new FileStreamOptions()
                 {
                     Access = FileAccess.ReadWrite,
                     Mode = FileMode.Create,
@@ -95,7 +95,12 @@ public partial class Mod
                     PreallocationSize = extractedAcb.Span.Length
                 });
             
-                tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count));
+                tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count).ContinueWith(task =>
+                {
+                    extractedAcb.Dispose();
+                    outputFileStream.Dispose();
+                }));
+                
                 bind.RelativePathToFileMap[acbBindPath] = new List<string>() { acbPath };
             }
         }

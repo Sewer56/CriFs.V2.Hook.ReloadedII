@@ -2,7 +2,7 @@
   "ModId": "CriFs.V2.Hook.Awb",
   "ModName": "AWB Emulator Support for CRI FileSystem V2 Hook",
   "ModAuthor": "Sewer56",
-  "ModVersion": "1.0.2",
+  "ModVersion": "1.0.3",
   "ModDescription": "Adds support for FileEmulationFramework\u0027s AWB Emulator by automatically extracting ACBs as needed.",
   "ModDll": "CriFs.V2.Hook.Awb.dll",
   "ModIcon": "Preview.png",
@@ -62,7 +62,7 @@
     "GitHubRelease": {
       "UserName": "CriFs.V2.Hook.ReloadedII",
       "RepositoryName": "Sewer56",
-      "UseReleaseTag": true,
+      "UseReleaseTag": false,
       "AssetFileName": "Mod.zip"
     }
   },
