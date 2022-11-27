@@ -16,6 +16,11 @@ public class Config : Configurable<Config>
     [DefaultValue(false)]
     public bool PrintFileAccess { get; set; } = false;
     
+    [DisplayName("Hot Reload")]
+    [Description("Allows for loaded files to be updated/replaced at runtime.")]
+    [DefaultValue(false)]
+    public bool HotReload { get; set; } = false;
+    
     [DisplayName("Log Level")]
     [Description("Declares which elements should be logged to the console.\nMessages less important than this level will not be logged.")]
     [DefaultValue(LogSeverity.Information)]

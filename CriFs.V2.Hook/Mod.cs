@@ -103,6 +103,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _cpkContentCache = new CpkContentCache();
         _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
         _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, _cpkContentCache);
+        _cpkBuilder.SetHotReload(_configuration.HotReload);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
@@ -142,6 +143,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
+        _cpkBuilder.SetHotReload(_configuration.HotReload);
     }
     #endregion
 

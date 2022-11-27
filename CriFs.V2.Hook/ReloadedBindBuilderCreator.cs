@@ -27,6 +27,7 @@ public class ReloadedBindBuilderCreator
     private List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
     private List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
     private List<string> _modIdsToBuild = new();
+    private bool _hotReload;
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
         CpkContentCache cpkContentCache)
@@ -35,6 +36,21 @@ public class ReloadedBindBuilderCreator
         _logger = logger;
         _bindDirAcquirer = bindDirAcquirer;
         _cpkContentCache = cpkContentCache;
+    }
+
+    /// <summary>
+    /// Sets whether Hot Reload functionality should be used.
+    /// </summary>
+    /// <param name="enable">True to enable hot reload.</param>
+    public void SetHotReload(bool enable)
+    {
+        bool triggerReload = !_hotReload && enable;
+        _hotReload = enable;
+        if (triggerReload)   
+            TriggerHotReload(null, null);
+
+        if (!_hotReload)
+            ClearHotReload();
     }
 
     /// <summary>
@@ -114,7 +130,8 @@ public class ReloadedBindBuilderCreator
             return;
         
         _logger.Info("[BindBuilderCreator] Adding CPK Folder: {0}", cpkFolder);
-        _watchers.Add(FileSystemWatcherFactory.Create(cpkFolder, TriggerHotReload));
+        if (_hotReload)
+            _watchers.Add(FileSystemWatcherFactory.Create(cpkFolder, TriggerHotReload));
         
         // Get all CPK folders
         WindowsDirectorySearcher.TryGetDirectoryContents(cpkFolder, out _, out var directories);
@@ -127,11 +144,22 @@ public class ReloadedBindBuilderCreator
 
     private void TriggerHotReload(object sender, FileSystemEventArgs e)
     {
-        var watcher = (FileSystemWatcher)sender;
-        watcher.EnableRaisingEvents = false;
-        watcher.Dispose();
-        _watchers.Clear();
+        if (!_canRebuild)
+            return;
+
+        ClearHotReload();
         Rebuild_Internal();
+    }
+
+    private void ClearHotReload()
+    {
+        foreach (var watcher in _watchers)
+        {
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
+
+        _watchers.Clear();
     }
 
     /// <summary>
