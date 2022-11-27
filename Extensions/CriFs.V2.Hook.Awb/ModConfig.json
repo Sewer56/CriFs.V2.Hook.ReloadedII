@@ -2,7 +2,7 @@
   "ModId": "CriFs.V2.Hook.Awb",
   "ModName": "AWB Emulator Support for CRI FileSystem V2 Hook",
   "ModAuthor": "Sewer56",
-  "ModVersion": "1.0.3",
+  "ModVersion": "1.0.4",
   "ModDescription": "Adds support for FileEmulationFramework\u0027s AWB Emulator by automatically extracting ACBs as needed.",
   "ModDll": "CriFs.V2.Hook.Awb.dll",
   "ModIcon": "Preview.png",
@@ -10,6 +10,9 @@
   "ModR2RManagedDll64": "x64/CriFs.V2.Hook.Awb.dll",
   "ModNativeDll32": "",
   "ModNativeDll64": "",
+  "Tags": [],
+  "CanUnload": null,
+  "HasExports": null,
   "IsLibrary": true,
   "ReleaseMetadataFileName": "CriFs.V2.Hook.Awb.ReleaseMetadata.json",
   "PluginData": {
@@ -17,8 +20,8 @@
       "IdToConfigMap": {
         "reloaded.sharedlib.hooks": {
           "Config": {
-            "UserName": "Reloaded.SharedLib.Hooks.ReloadedII",
-            "RepositoryName": "Sewer56",
+            "UserName": "Sewer56",
+            "RepositoryName": "Reloaded.SharedLib.Hooks.ReloadedII",
             "UseReleaseTag": true,
             "AssetFileName": "reloaded.sharedlib.hooks.zip"
           },
@@ -32,6 +35,15 @@
             "AssetFileName": "Mod.zip"
           },
           "ReleaseMetadataName": "AWB.Stream.Emulator.ReleaseMetadata.json"
+        },
+        "crifs.v2.hook": {
+          "Config": {
+            "UserName": "Sewer56",
+            "RepositoryName": "CriFs.V2.Hook.ReloadedII",
+            "UseReleaseTag": false,
+            "AssetFileName": "Mod.zip"
+          },
+          "ReleaseMetadataName": "CriFs.V2.Hook.ReleaseMetadata.json"
         },
         "Reloaded.Memory.SigScan.ReloadedII": {
           "Config": {
@@ -77,5 +89,5 @@
     "p4g.exe",
     "p5r.exe"
   ],
-  "ProjectUrl": ""
+  "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }
