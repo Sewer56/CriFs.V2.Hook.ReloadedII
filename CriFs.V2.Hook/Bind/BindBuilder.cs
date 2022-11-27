@@ -15,9 +15,6 @@ namespace CriFs.V2.Hook.Bind;
 /// </summary>
 public class BindBuilder
 {
-    // TODO: Caching.
-    // TODO: Multi-thread.
-    
     /// <summary>
     /// The folder where all the data to be bound will be stored.
     /// </summary>
@@ -67,10 +64,6 @@ public class BindBuilder
         foreach (var bindCallback in bindCallbacks)
             bindCallback(context);
 
-        // TODO: Add the merging infrastructure. For now, we will accept last added file as the winner.
-        // For the merging infra, we will commit the merging (check against cache first), put result in cache folder.
-        // And replace the key,value combination with just the cached merged file.
-        
         // Note: We are not worried about threading in this hashSet. 
         // Lack of synchronization just means it might accidentally create directory when it shouldn't, but given the
         // (small) number of directories this will be unlikely. Performance wise this is better than using concurrent one.
