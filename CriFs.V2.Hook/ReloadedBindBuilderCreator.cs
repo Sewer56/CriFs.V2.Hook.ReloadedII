@@ -138,7 +138,7 @@ public class ReloadedBindBuilderCreator
         foreach (var directory in directories)
         {
             WindowsDirectorySearcher.GetDirectoryContentsRecursive(directory.FullPath, out var files, out _);
-            builder.AddItem(new BuilderItem(directory.FullPath, files));
+            builder.AddItem(new BuilderItem(modId, directory.FullPath, files));
         }
     }
 

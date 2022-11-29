@@ -13,8 +13,8 @@ public class BindBuilderTests
         // Arrange
         using var tempFolder = new TemporaryFolderAllocation(Assets.TempFolder);
         var builder = new BindBuilder(tempFolder.FolderPath);
-        builder.AddItem(new BuilderItem(Assets.ButtonPromptsMod1Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod1Cpk)));
-        builder.AddItem(new BuilderItem(Assets.ButtonPromptsMod2Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod2Cpk)));
+        builder.AddItem(new BuilderItem("", Assets.ButtonPromptsMod1Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod1Cpk)));
+        builder.AddItem(new BuilderItem("", Assets.ButtonPromptsMod2Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod2Cpk)));
 
         // Act
         var outputDir = builder.Build(new List<Action<ICriFsRedirectorApi.BindContext>>());

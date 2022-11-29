@@ -106,7 +106,8 @@ public partial class Mod
                     new()
                     {
                        FullPath = acbPath,
-                       LastWriteTime = DateTime.UtcNow
+                       LastWriteTime = DateTime.UtcNow,
+                       ModId = "CriFs.V2.Hook.Awb"
                     }
                 };
             }

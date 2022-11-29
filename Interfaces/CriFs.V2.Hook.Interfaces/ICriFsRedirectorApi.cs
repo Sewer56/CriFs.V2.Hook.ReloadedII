@@ -94,6 +94,11 @@ public interface ICriFsRedirectorApi
         /// Last time file was written to.
         /// </summary>
         public DateTime LastWriteTime;
+
+        /// <summary>
+        /// ID of the mod where the file originates from.
+        /// </summary>
+        public string ModId;
     }
 }
 

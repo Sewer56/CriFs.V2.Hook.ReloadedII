@@ -127,7 +127,8 @@ public class BindBuilder
                 existingPaths.Add(new ICriFsRedirectorApi.BindFileInfo()
                 {
                     FullPath = fullPath,
-                    LastWriteTime = file.LastWriteTime
+                    LastWriteTime = file.LastWriteTime,
+                    ModId = item.modId
                 });
             }
         }
@@ -148,6 +149,7 @@ public class BindBuilder
 /// <summary>
 /// Represents an individual item that can be submitted to the builder.
 /// </summary>
+/// <param name="modId">ID of the mod where the file comes from.</param>
 /// <param name="folderPath">Path to the base folder containing the contents.</param>
 /// <param name="Files">The contents of said base folder.</param>
-public record struct BuilderItem(string folderPath, List<FileInformation> Files);
+public record struct BuilderItem(string modId, string folderPath, List<FileInformation> Files);
