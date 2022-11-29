@@ -1,7 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using CriFs.V2.Hook.Interfaces.Structs;
+﻿using CriFs.V2.Hook.Interfaces.Structs;
 using CriFsV2Lib.Definitions;
-using CriFsV2Lib.Definitions.Structs;
 
 namespace CriFs.V2.Hook.Interfaces;
 
@@ -79,7 +77,23 @@ public interface ICriFsRedirectorApi
         /// <summary>
         /// Contains list of all files that will be bound.
         /// </summary>
-        public Dictionary<string, List<string>> RelativePathToFileMap { get; set; }
+        public Dictionary<string, List<BindFileInfo>> RelativePathToFileMap { get; set; }
+    }
+
+    /// <summary>
+    /// Information about an individual file used in binding context.
+    /// </summary>
+    public struct BindFileInfo
+    {
+        /// <summary>
+        /// Full path to the file.
+        /// </summary>
+        public string FullPath;
+
+        /// <summary>
+        /// Last time file was written to.
+        /// </summary>
+        public DateTime LastWriteTime;
     }
 }
 

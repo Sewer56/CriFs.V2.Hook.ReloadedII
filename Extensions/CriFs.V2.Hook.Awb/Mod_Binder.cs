@@ -101,7 +101,14 @@ public partial class Mod
                     outputFileStream.Dispose();
                 }));
                 
-                bind.RelativePathToFileMap[acbBindPath] = new List<string>() { acbPath };
+                bind.RelativePathToFileMap[acbBindPath] = new List<ICriFsRedirectorApi.BindFileInfo>()
+                {
+                    new()
+                    {
+                       FullPath = acbPath,
+                       LastWriteTime = DateTime.UtcNow
+                    }
+                };
             }
         }
 

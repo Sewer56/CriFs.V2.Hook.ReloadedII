@@ -86,7 +86,7 @@ public class BindBuilder
         return OutputFolder;
     }
 
-    private void HardlinkFile(KeyValuePair<string, List<string>> file, HashSet<string> createdFolders)
+    private void HardlinkFile(KeyValuePair<string, List<ICriFsRedirectorApi.BindFileInfo>> file, HashSet<string> createdFolders)
     {
         var hardlinkPath = Path.Combine(OutputFolder, file.Key);
         var newFile = file.Value.Last();
@@ -98,7 +98,7 @@ public class BindBuilder
             createdFolders.Add(directory);
         }
 
-        Native.CreateHardLink(hardlinkPath, newFile, IntPtr.Zero);
+        Native.CreateHardLink(hardlinkPath, newFile.FullPath, IntPtr.Zero);
     }
 
     /// <summary>
@@ -107,9 +107,9 @@ public class BindBuilder
     /// <param name="duplicates">List of all duplicates stored between mods.</param>
     /// <returns>A dictionary of relative path [in custom bind folder] to full paths of duplicate files that would potentially need merging.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Dictionary<string, List<string>> GetFiles(out Dictionary<string, List<string>> duplicates)
+    public Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> GetFiles(out Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> duplicates)
     {
-        var relativeToFullPaths = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        var relativeToFullPaths = new Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in CollectionsMarshal.AsSpan(Items))
         {
             foreach (var file in item.Files)
@@ -121,16 +121,20 @@ public class BindBuilder
                 relativePath = string.IsNullOrEmpty(BindFolderName) ? relativePath : ReplaceFirstFolderInPath(relativePath, BindFolderName);
                 if (!relativeToFullPaths.TryGetValue(relativePath, out var existingPaths))
                 {
-                    existingPaths = new List<string>();
+                    existingPaths = new List<ICriFsRedirectorApi.BindFileInfo>();
                     relativeToFullPaths[relativePath] = existingPaths;
                 }
                     
-                existingPaths.Add(fullPath);
+                existingPaths.Add(new ICriFsRedirectorApi.BindFileInfo()
+                {
+                    FullPath = fullPath,
+                    LastWriteTime = file.LastWriteTime
+                });
             }
         }
         
         // Filter out the necessary items.
-        duplicates = new Dictionary<string, List<string>>(relativeToFullPaths);
+        duplicates = new Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>(relativeToFullPaths);
         foreach (var item in relativeToFullPaths)
         {
             if (item.Value.Count <= 1)
