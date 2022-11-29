@@ -52,7 +52,7 @@ public class BindBuilder
     public string Build(List<Action<ICriFsRedirectorApi.BindContext>> bindCallbacks)
     {
         // This code finds duplicate files should we ever need to do merging in the future.
-        var files = GetFiles(out var duplicates);
+        var files = GetFiles();
         
         // Normalize keys so all mods go in same base directory
         var context = new ICriFsRedirectorApi.BindContext()
@@ -104,10 +104,9 @@ public class BindBuilder
     /// <summary>
     /// Finds all files within the given builder items.
     /// </summary>
-    /// <param name="duplicates">List of all duplicates stored between mods.</param>
     /// <returns>A dictionary of relative path [in custom bind folder] to full paths of duplicate files that would potentially need merging.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> GetFiles(out Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> duplicates)
+    public Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> GetFiles()
     {
         var relativeToFullPaths = new Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in CollectionsMarshal.AsSpan(Items))
@@ -133,14 +132,6 @@ public class BindBuilder
             }
         }
         
-        // Filter out the necessary items.
-        duplicates = new Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>(relativeToFullPaths);
-        foreach (var item in relativeToFullPaths)
-        {
-            if (item.Value.Count <= 1)
-                duplicates.Remove(item.Key);
-        }
-
         return relativeToFullPaths;
     }
     
