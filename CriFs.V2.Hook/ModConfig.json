@@ -2,7 +2,7 @@
   "ModId": "crifs.v2.hook",
   "ModName": "CRI FileSystem V2 Hook",
   "ModAuthor": "Sewer56",
-  "ModVersion": "2.1.1",
+  "ModVersion": "2.1.2",
   "ModDescription": "A mod that allows you to add/replace existing files without repacking CRI Middleware CPKs.",
   "ModDll": "CriFs.V2.Hook.dll",
   "ModIcon": "Preview.png",
@@ -19,7 +19,7 @@
     "NuGet": {
       "AllowUpdateFromAnyRepository": false,
       "DefaultRepositoryUrls": [
-        "http://packages.sewer56.moe:5000/index.json"
+        "http://packages.sewer56.moe:5000/v3/index.json"
       ]
     },
     "GitHubRelease": {
@@ -32,8 +32,8 @@
       "IdToConfigMap": {
         "Reloaded.Memory.SigScan.ReloadedII": {
           "Config": {
-            "UserName": "Reloaded.Memory.SigScan",
-            "RepositoryName": "Reloaded-Project",
+            "UserName": "Reloaded-Project",
+            "RepositoryName": "Reloaded.Memory.SigScan",
             "UseReleaseTag": false,
             "AssetFileName": "Mod.zip"
           },
