@@ -1,4 +1,3 @@
-using CriFs.V2.Hook;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Interfaces;
 using CriFs.V2.Hook.Hooks;
@@ -9,7 +8,7 @@ using FileEmulationFramework.Lib.IO;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Mod.Interfaces;
 
-namespace p5rpc.modloader;
+namespace CriFs.V2.Hook;
 
 /// <summary>
 /// Class that bridges the code between Reloaded mods and the CPK bind builder & hooks.
@@ -20,13 +19,13 @@ public class ReloadedBindBuilderCreator
     private readonly Logger _logger;
     private readonly IBindDirectoryAcquirer _bindDirAcquirer;
     private readonly CpkContentCache _cpkContentCache;
-    private bool _canRebuild = false;
+    private bool _canRebuild;
 
-    private List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
-    private List<FileSystemWatcher> _watchers = new();
-    private List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
-    private List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
-    private List<string> _modIdsToBuild = new();
+    private readonly List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
+    private readonly List<FileSystemWatcher> _watchers = new();
+    private readonly List<Action<ICriFsRedirectorApi.UnbindContext>> _unbindCallbacks = new();
+    private readonly List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
+    private readonly List<string> _modIdsToBuild = new();
     private bool _hotReload;
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
@@ -47,7 +46,7 @@ public class ReloadedBindBuilderCreator
         bool triggerReload = !_hotReload && enable;
         _hotReload = enable;
         if (triggerReload)   
-            TriggerHotReload(null, null);
+            TriggerHotReload(null!, null!);
 
         if (!_hotReload)
             ClearHotReload();

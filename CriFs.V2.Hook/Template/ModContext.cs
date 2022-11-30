@@ -1,5 +1,4 @@
-﻿using CriFs.V2.Hook.Configuration;
-using Reloaded.Mod.Interfaces;
+﻿using Reloaded.Mod.Interfaces;
 using IReloadedHooks = Reloaded.Hooks.ReloadedII.Interfaces.IReloadedHooks;
 
 namespace CriFs.V2.Hook.Template;

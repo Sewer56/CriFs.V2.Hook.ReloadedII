@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Utilities;
-using CriFs.V2.Hook.Configuration;
 using CriFs.V2.Hook.CRI;
 using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
@@ -10,8 +9,6 @@ using CriFs.V2.Hook.Template;
 using CriFs.V2.Hook.Utilities;
 using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.Utilities;
-using p5rpc.modloader;
-using p5rpc.modloader.Patches.Common;
 using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Memory.SigScan.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
@@ -43,11 +40,6 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     private readonly Logger _logger;
 
     /// <summary>
-    /// Entry point into the mod, instance that created this class.
-    /// </summary>
-    private readonly IMod _owner;
-
-    /// <summary>
     /// Provides access to this mod's configuration.
     /// </summary>
     private Config _configuration;
@@ -59,14 +51,12 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     
     private ReloadedBindBuilderCreator? _cpkBuilder;
     private BindDirectoryAcquirer _directoryAcquirer;
-    private SigScanHelper _scanHelper;
-    private CpkContentCache _cpkContentCache;
-    
+
     public Mod(ModContext context)
     {
         _modLoader = context.ModLoader;
         _hooks = context.Hooks;
-        _owner = context.Owner;
+        var owner = context.Owner;
         _configuration = context.Configuration;
         _modConfig = context.ModConfig;
         _logger = new Logger(context.Logger, _configuration.LogLevel);
@@ -78,7 +68,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         // and some other neat features, override the methods in ModBase.
 
         _modLoader.GetController<IStartupScanner>().TryGetTarget(out var startupScanner);
-        _scanHelper = new SigScanHelper(_logger, startupScanner);
+        var scanHelper = new SigScanHelper(_logger, startupScanner);
         var currentProcess = Process.GetCurrentProcess();
         var mainModule = currentProcess.MainModule;
         var baseAddr = mainModule!.BaseAddress;
@@ -89,11 +79,11 @@ public class Mod : ModBase, IExports // <= Do not Remove.
             Config = _configuration,
             Logger = _logger,
             Hooks = _hooks!,
-            ScanHelper = _scanHelper
+            ScanHelper = scanHelper
         };
         
         // Patches
-        CpkBinderPointers.Init(_scanHelper, baseAddr);
+        CpkBinderPointers.Init(scanHelper, baseAddr);
         DontLogCriDirectoryBinds.Activate(hookContext);
         
         // CPK Builder & Redirector
@@ -101,17 +91,17 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         var currentProcessProvider = new CurrentProcessProvider(currentProcess.Id);
         var processListProvider = new ProcessListProvider();
         
-        _cpkContentCache = new CpkContentCache();
+        var cpkContentCache = new CpkContentCache();
         _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
-        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, _cpkContentCache);
+        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache);
         _cpkBuilder.SetHotReload(_configuration.HotReload);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
         
         // Add API
-        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(_owner, 
-            new Api(_cpkBuilder, _cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider));
+        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, 
+            new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider));
     }
 
     // In case user loads mod in real time.
@@ -167,7 +157,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
-        _cpkBuilder.SetHotReload(_configuration.HotReload);
+        _cpkBuilder?.SetHotReload(_configuration.HotReload);
     }
     #endregion
 

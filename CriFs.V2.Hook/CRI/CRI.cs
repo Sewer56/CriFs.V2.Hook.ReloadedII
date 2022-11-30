@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 using Reloaded.Hooks.Definitions.X64;
+// ReSharper disable InconsistentNaming
+// ReSharper disable EnumUnderlyingTypeIsInt
 
 namespace CriFs.V2.Hook.CRI;
 

@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+// ReSharper disable StaticMemberInGenericType
+// ReSharper disable All
 
 namespace CriFs.V2.Hook.Template.Configuration;
 

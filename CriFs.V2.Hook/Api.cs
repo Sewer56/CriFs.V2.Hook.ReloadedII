@@ -1,14 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Interfaces;
-using CriFs.V2.Hook.Bind.Utilities;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Interfaces.Structs;
 using CriFs.V2.Hook.Utilities;
 using CriFsV2Lib;
 using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.IO;
-using p5rpc.modloader;
 
 namespace CriFs.V2.Hook;
 
@@ -20,7 +18,7 @@ public class Api : ICriFsRedirectorApi
     private readonly ICurrentProcessProvider _currentProcessProvider;
     private readonly IProcessListProvider _processListProvider;
     private string _mainModulePath;
-    private string[] _cpkFiles = null!;
+    private string[]? _cpkFiles;
 
     public Api(ReloadedBindBuilderCreator reloadedBuilder, CpkContentCache cpkContentCache, string mainModulePath, ICurrentProcessProvider currentProcessProvider, IProcessListProvider processListProvider)
     {
@@ -61,7 +59,7 @@ public class Api : ICriFsRedirectorApi
         // Note: In some cases, applications might store binaries in subfolders.
         // We will go down folders until we find a CPK file.
         var currentFolder = _mainModulePath;
-        List<string>? results = new List<string>();
+        var results = new List<string>();
         var fileInfo = new List<FileInformation>();
         var directoryInfo = new List<DirectoryInformation>();
         

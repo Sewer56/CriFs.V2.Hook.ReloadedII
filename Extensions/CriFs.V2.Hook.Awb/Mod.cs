@@ -1,11 +1,7 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
 using AWB.Stream.Emulator.Interfaces;
 using CriFs.V2.Hook.Awb.Template;
 using CriFs.V2.Hook.Interfaces;
-using CriFs.V2.Hook.Interfaces.Structs;
-using FileEmulationFramework.Lib;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Mod.Interfaces;
 
@@ -18,19 +14,9 @@ namespace CriFs.V2.Hook.Awb;
 public partial class Mod : ModBase // <= Do not Remove.
 {
     /// <summary>
-    /// Provides access to the mod loader API.
-    /// </summary>
-    private readonly IModLoader _modLoader;
-
-    /// <summary>
     /// Provides access to the Reloaded logger.
     /// </summary>
     private readonly Logger _logger;
-
-    /// <summary>
-    /// Entry point into the mod, instance that created this class.
-    /// </summary>
-    private readonly IMod _owner;
 
     /// <summary>
     /// Provides access to this mod's configuration.
@@ -48,8 +34,7 @@ public partial class Mod : ModBase // <= Do not Remove.
 
     public Mod(ModContext context)
     {
-        _modLoader = context.ModLoader;
-        _owner = context.Owner;
+        var modLoader = context.ModLoader;
         _configuration = context.Configuration;
         _modConfig = context.ModConfig;
         _logger = new Logger(context.Logger, _configuration.LogLevel);
@@ -59,12 +44,12 @@ public partial class Mod : ModBase // <= Do not Remove.
 
         // If you want to implement e.g. unload support in your mod,
         // and some other neat features, override the methods in ModBase.
-        _modLoader.GetController<IAwbEmulator>().TryGetTarget(out _awbEmulator!);
-        _modLoader.GetController<ICriFsRedirectorApi>().TryGetTarget(out _criFsApi!);
+        modLoader.GetController<IAwbEmulator>().TryGetTarget(out _awbEmulator!);
+        modLoader.GetController<ICriFsRedirectorApi>().TryGetTarget(out _criFsApi!);
         _criFsApi.AddUnbindCallback(OnCpkUnbind);
         _criFsApi.AddBindCallback(OnCpkBind);
         
-        var modConfigDirectory = _modLoader.GetModConfigDirectory(_modConfig.ModId);
+        var modConfigDirectory = modLoader.GetModConfigDirectory(_modConfig.ModId);
         _bindingDirectory = _criFsApi.GenerateBindingDirectory(modConfigDirectory);
     }
     

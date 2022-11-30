@@ -20,7 +20,7 @@ public class BindDirectoryGeneratorTests
 
         // Assert
         Assert.True(Directory.Exists(path));
-        Assert.True(path.EndsWith(ProcessId.ToString()));
+        Assert.EndsWith(ProcessId.ToString(), path);
     }
     
     [Fact]

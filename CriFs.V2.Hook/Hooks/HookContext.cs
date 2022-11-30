@@ -1,9 +1,8 @@
-using CriFs.V2.Hook.Configuration;
 using CriFs.V2.Hook.Utilities;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.Definitions;
 
-namespace p5rpc.modloader.Patches.Common;
+namespace CriFs.V2.Hook.Hooks;
 
 /// <summary>
 /// Data passed down to all patches in this mod.

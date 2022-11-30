@@ -1,8 +1,8 @@
-﻿using CriFs.V2.Hook.Template.Configuration;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using CriFs.V2.Hook.Template.Configuration;
 using FileEmulationFramework.Lib.Utilities;
 
-namespace CriFs.V2.Hook.Configuration;
+namespace CriFs.V2.Hook;
 
 public class Config : Configurable<Config>
 {

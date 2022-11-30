@@ -38,10 +38,10 @@ public class BindingOutputDirectoryGenerator
         var directories = GetAllDirectories();
         foreach (var directory in CollectionsMarshal.AsSpan(directories))
         {
-            if (procIds.Contains(directory.id))
+            if (procIds.Contains(directory.Id))
                 continue;
 
-            try { Directory.Delete(directory.fullPath, true); }
+            try { Directory.Delete(directory.FullPath, true); }
             catch (Exception) { /* ignored */ }
         }
     }
@@ -67,6 +67,6 @@ public class BindingOutputDirectoryGenerator
 /// <summary>
 /// Represents an entry in the list of bind output directories.
 /// </summary>
-/// <param name="id">ID of the directory.</param>
-/// <param name="fullPath">Full path to the directory.</param>
-public record struct GeneratorDirectoryEntry(int id, string fullPath);
+/// <param name="Id">ID of the directory.</param>
+/// <param name="FullPath">Full path to the directory.</param>
+public record struct GeneratorDirectoryEntry(int Id, string FullPath);

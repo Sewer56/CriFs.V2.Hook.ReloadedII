@@ -1,6 +1,4 @@
-﻿using CriFs.V2.Hook.Configuration;
-
-namespace CriFs.V2.Hook.Template;
+﻿namespace CriFs.V2.Hook.Template;
 
 /// <summary>
 /// Base class for implementing mod functionality.

@@ -28,10 +28,11 @@ public class BindBuilder
     /// <summary>
     /// If set all data will be bound under this name, else not.
     /// </summary>
-    public string? BindFolderName { get; private set; } = null!;
+    public string? BindFolderName { get; private set; }
 
     /// <summary/>
     /// <param name="outputFolder">The folder where the generated data to be bound will be stored.</param>
+    /// <param name="bindFolderName">If set all data will be bound under this name, else not.</param>
     public BindBuilder(string outputFolder, string? bindFolderName = null)
     {
         OutputFolder = outputFolder;
@@ -71,7 +72,7 @@ public class BindBuilder
         if (files.Count > 1000) // TODO: Benchmark around for a good number.
         {
             var keyValuePairs = files.ToArray();
-            Parallel.ForEach(Partitioner.Create(0, files.Count), (range, state) =>
+            Parallel.ForEach(Partitioner.Create(0, files.Count), (range, _) =>
             {
                 for (int x = range.Item1; x < range.Item2; x++)
                     HardlinkFile(keyValuePairs[x], createdFolders);
@@ -114,7 +115,7 @@ public class BindBuilder
             foreach (var file in item.Files)
             {
                 var fullPath = Path.Combine(file.DirectoryPath, file.FileName);
-                var relativePath = Route.GetRoute(Path.GetDirectoryName(item.folderPath)!, fullPath);
+                var relativePath = Route.GetRoute(Path.GetDirectoryName(item.FolderPath)!, fullPath);
                 
                 // Inject custom bind folder name.
                 relativePath = string.IsNullOrEmpty(BindFolderName) ? relativePath : ReplaceFirstFolderInPath(relativePath, BindFolderName);
@@ -128,7 +129,7 @@ public class BindBuilder
                 {
                     FullPath = fullPath,
                     LastWriteTime = file.LastWriteTime,
-                    ModId = item.modId
+                    ModId = item.ModId
                 });
             }
         }
@@ -149,7 +150,7 @@ public class BindBuilder
 /// <summary>
 /// Represents an individual item that can be submitted to the builder.
 /// </summary>
-/// <param name="modId">ID of the mod where the file comes from.</param>
-/// <param name="folderPath">Path to the base folder containing the contents.</param>
+/// <param name="ModId">ID of the mod where the file comes from.</param>
+/// <param name="FolderPath">Path to the base folder containing the contents.</param>
 /// <param name="Files">The contents of said base folder.</param>
-public record struct BuilderItem(string modId, string folderPath, List<FileInformation> Files);
+public record struct BuilderItem(string ModId, string FolderPath, List<FileInformation> Files);

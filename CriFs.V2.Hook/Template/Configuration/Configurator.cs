@@ -1,5 +1,5 @@
-﻿using CriFs.V2.Hook.Configuration;
-using Reloaded.Mod.Interfaces;
+﻿using Reloaded.Mod.Interfaces;
+// ReSharper disable All
 
 namespace CriFs.V2.Hook.Template.Configuration;
 

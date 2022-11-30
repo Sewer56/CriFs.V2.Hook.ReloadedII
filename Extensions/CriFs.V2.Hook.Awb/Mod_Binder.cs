@@ -95,7 +95,7 @@ public partial class Mod
                     PreallocationSize = extractedAcb.Span.Length
                 });
             
-                tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count).ContinueWith(task =>
+                tasks.Add(outputFileStream.WriteAsync(extractedAcb.RawArray, 0, extractedAcb.Count).ContinueWith(_ =>
                 {
                     extractedAcb.Dispose();
                     outputFileStream.Dispose();

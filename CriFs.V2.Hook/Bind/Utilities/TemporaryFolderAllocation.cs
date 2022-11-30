@@ -24,7 +24,7 @@ public class TemporaryFolderAllocation : IDisposable
     public void Dispose()
     {
         try { Directory.Delete(FolderPath, true); }
-        catch (Exception) { }
+        catch (Exception) { /* Ignored */ }
         GC.SuppressFinalize(this);
     }
 

@@ -3,7 +3,6 @@
  * to make it easier to upgrade to newer versions of the template.
 */
 
-using CriFs.V2.Hook.Configuration;
 using CriFs.V2.Hook.Template.Configuration;
 using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
