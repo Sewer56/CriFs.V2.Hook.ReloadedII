@@ -16,6 +16,7 @@ using Reloaded.Hooks.ReloadedII.Interfaces;
 using Reloaded.Memory.SigScan.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Reloaded.Mod.Interfaces.Internal;
+using Native = CriFs.V2.Hook.Utilities.Native;
 
 [module: SkipLocalsInit]
 namespace CriFs.V2.Hook;
@@ -129,9 +130,32 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     private void OnLoaderInitialized()
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
+        AssertAwbIncompatibility();
         CpkBinder.Init(_directoryAcquirer.BindDirectory, _logger, _hooks!);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         _cpkBuilder?.Build(); 
+    }
+
+    private void AssertAwbIncompatibility()
+    {
+        // We messed up and didn't properly set up updates in extension mod,
+        // so we assert its sufficiently recent.
+        var mods = _modLoader.GetActiveMods();
+        var minVersion = new Version(1, 0, 5);
+        foreach (var mod in mods)
+        {
+            var modConfig = mod.Generic;
+            if (modConfig.ModId != "CriFs.V2.Hook.Awb")
+                continue;
+
+            if (new Version(modConfig.ModVersion) < minVersion)
+                Native.MessageBox(0, "Version of AWB Emulator Extension is out of Date.\n" +
+                                     "If you're seeing this message you most likely have an older version that has misconfigured update support and thus cannot receive updates.\n\n" +
+                                     "Select 'AWB Emulator Support for CRI FileSystem V2 Hook' in Launcher, click Open Folder and delete all files.\n" +
+                                     "Newer version will redownload on next game launch, thanks!", "We did an oopsie!", 0);
+                
+            return;
+        }
     }
 
     #region Standard Overrides
