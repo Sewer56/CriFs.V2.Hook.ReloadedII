@@ -91,7 +91,7 @@ public static unsafe class CpkBinder
         _logger.Info("Setting Up Binds!!");
         WindowsDirectorySearcher.TryGetDirectoryContents(_outputDirectory, out _, out var directories);
         foreach (var directory in directories)
-            BindFolder(bndrhn, directory.FullPath, 0x10000000);
+            BindFolder(bndrhn, directory.FullPath, int.MaxValue);
     }
 
     private static void BindFolder(nint bndrhn, string path, int priority)
