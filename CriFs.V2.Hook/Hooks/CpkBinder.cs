@@ -25,8 +25,7 @@ public static unsafe class CpkBinder
     private static criFsBinder_GetStatus? _getStatusFn;
     private static criFsBinder_SetPriority? _setPriorityFn;
     private static criFsBinder_Unbind? _unbindFn;
-    private static bool _firstCpkLoaded;
-    private static IntPtr _binderHandle;
+    private static HashSet<IntPtr> _binderHandles;
     private static List<CpkBinding> _bindings = null!;
 
     public static void Init(string outputDirectory, Logger logger, IReloadedHooks hooks)
@@ -34,6 +33,7 @@ public static unsafe class CpkBinder
         _logger = logger;
         _outputDirectory = outputDirectory;
         _bindings = new List<CpkBinding>();
+        _binderHandles = new HashSet<nint>(16);
         if (!AssertWillFunction())
             return;
             
@@ -76,19 +76,15 @@ public static unsafe class CpkBinder
     
     private static CriError BindCpkImpl(IntPtr bndrhn, IntPtr srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid)
     {
-        if (!_firstCpkLoaded)
-        {
-            _binderHandle = bndrhn;
+        if (_binderHandles.Add(bndrhn))
             BindAll(bndrhn);
-        }
-
-        _firstCpkLoaded = true;
+        
         return _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
     }
 
     private static void BindAll(IntPtr bndrhn)
     {
-        _logger.Info("Setting Up Binds!!");
+        _logger.Info("Setting Up Binds for Handle {0}", bndrhn);
         WindowsDirectorySearcher.TryGetDirectoryContents(_outputDirectory, out _, out var directories);
         foreach (var directory in directories)
             BindFolder(bndrhn, directory.FullPath, int.MaxValue);
@@ -165,13 +161,14 @@ public static unsafe class CpkBinder
     /// </summary>
     public static void BindAll()
     {
-        if (!_firstCpkLoaded)
+        if (_binderHandles.Count <= 0)
         {
-            _logger.Warning("Bind all not possible because first CPK is not loaded yet.");
+            _logger.Warning("Bind all is no-op because no CPK/binder has been created yet.");
             return;
         }
-        
-        BindAll(_binderHandle);
+
+        foreach (var binderHandle in _binderHandles)
+            BindAll(binderHandle);
     }
 
     /// <summary>
