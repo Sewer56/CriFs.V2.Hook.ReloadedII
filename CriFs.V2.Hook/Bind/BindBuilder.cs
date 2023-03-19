@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Interfaces;
@@ -65,10 +66,9 @@ public class BindBuilder
         foreach (var bindCallback in bindCallbacks)
             bindCallback(context);
 
-        // Note: We are not worried about threading in this hashSet. 
-        // Lack of synchronization just means it might accidentally create directory when it shouldn't, but given the
-        // (small) number of directories this will be unlikely. Performance wise this is better than using concurrent one.
-        var createdFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        // Note: ConcurrentDictionary does waste a bit of memory, but I don't want to bring in outside library just for
+        //       a single ConcurrentHashSet type for temporary allocation. Collection is also small, so it stays.
+        var createdFolders = new ConcurrentDictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
         if (files.Count > 1000) // TODO: Benchmark around for a good number.
         {
             var keyValuePairs = files.ToArray();
@@ -87,16 +87,16 @@ public class BindBuilder
         return OutputFolder;
     }
 
-    private void HardlinkFile(KeyValuePair<string, List<ICriFsRedirectorApi.BindFileInfo>> file, HashSet<string> createdFolders)
+    private void HardlinkFile(KeyValuePair<string, List<ICriFsRedirectorApi.BindFileInfo>> file, ConcurrentDictionary<string, bool> createdFolders)
     {
         var hardlinkPath = Path.Combine(OutputFolder, file.Key);
         var newFile = file.Value.Last();
         var directory = Path.GetDirectoryName(hardlinkPath)!;
 
-        if (!createdFolders.Contains(directory))
+        if (!createdFolders.ContainsKey(directory))
         {
             Directory.CreateDirectory(directory);
-            createdFolders.Add(directory);
+            createdFolders[directory] = true;
         }
 
         Native.CreateHardLink(hardlinkPath, newFile.FullPath, IntPtr.Zero);
