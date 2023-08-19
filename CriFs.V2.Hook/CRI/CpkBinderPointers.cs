@@ -42,6 +42,7 @@ internal static class CpkBinderPointers
             helper.FindPatternOffset("48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50", 
                 (offset) => GetSizeForBindFiles = baseAddr + offset, "CRI Get Size for Bind Files");
         
+            // Optional, used for printing loaded files.
             helper.FindPatternOffset("48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81", 
                 (offset) => LoadRegisteredFile = baseAddr + offset, "CRI Load File");
         }

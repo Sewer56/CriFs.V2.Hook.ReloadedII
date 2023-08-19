@@ -1,5 +1,10 @@
 using System.Runtime.InteropServices;
-using Reloaded.Hooks.Definitions.X64;
+using Reloaded.Hooks.Definitions.X86;
+using Function64 = Reloaded.Hooks.Definitions.X64.FunctionAttribute;
+using Function32 = Reloaded.Hooks.Definitions.X86.FunctionAttribute;
+using CallConv64 = Reloaded.Hooks.Definitions.X64.CallingConventions;
+using CallConv32 = Reloaded.Hooks.Definitions.X86.CallingConventions;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable EnumUnderlyingTypeIsInt
 
@@ -18,7 +23,8 @@ public static unsafe class CRI
     /// <remarks>
     ///     This function must be called before calling any of the other CRI functions.
     /// </remarks>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFs_InitializeLibrary(CriFsConfig* config, void* buffer, int size);
     
     /// <summary>
@@ -27,7 +33,8 @@ public static unsafe class CRI
     /// <param name="config">[in] Configuration pointer.</param>
     /// <param name="numBytes">[out] Pointer to where final work area size will be stored.</param>
     /// <returns>Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFs_CalculateWorkSizeForLibrary(CriFsConfig* config, int* numBytes);
     
     /// <summary>
@@ -36,7 +43,8 @@ public static unsafe class CRI
     /// <param name="bndrid">[in] Bind ID.</param>
     /// <param name="status">[out] Binder status. </param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_GetStatus(uint bndrid, CriFsBinderStatus* status);
 
     /// <summary>
@@ -49,7 +57,8 @@ public static unsafe class CRI
     /// <param name="worksize">Size of the work area (bytes).</param>
     /// <param name="bndrid">[out] Bind ID.</param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_BindCpk(IntPtr bndrhn, IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid);
 
@@ -63,7 +72,8 @@ public static unsafe class CRI
     /// <param name="worksize">Size of the work area (bytes).</param>
     /// <param name="bndrid">[out] Bind ID.</param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_BindFiles(IntPtr bndrhn, IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid);
 
@@ -76,7 +86,8 @@ public static unsafe class CRI
     /// <param name="bndrid">Bind ID.</param>
     /// <param name="priority">Priority value.</param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_SetPriority(uint bndrid, int priority);
 
     /// <summary>
@@ -84,7 +95,8 @@ public static unsafe class CRI
     /// </summary>
     /// <param name="bndrid">Bind ID.</param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_Unbind(uint bndrid);
     
     /// <summary>
@@ -94,11 +106,13 @@ public static unsafe class CRI
     /// <param name="path">List of files to bind. '\n' as delimiter.</param>
     /// <param name="workSize">Necessary work size.</param>
     /// <returns>CriError Error code.</returns>
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_GetWorkSizeForBindFiles(IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, int* workSize);
 
-    [Function(CallingConventions.Microsoft)]
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
     public delegate IntPtr criFsLoader_LoadRegisteredFile_Internal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4,
         IntPtr a5);
 
