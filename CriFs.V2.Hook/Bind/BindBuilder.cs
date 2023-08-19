@@ -1,11 +1,9 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Interfaces;
 using FileEmulationFramework.Lib;
 using FileEmulationFramework.Lib.IO;
-using Native = CriFs.V2.Hook.Bind.Utilities.Native;
 
 namespace CriFs.V2.Hook.Bind;
 
@@ -50,11 +48,12 @@ public class BindBuilder
     /// Builds the bind folders :P.
     /// </summary>
     /// <param name="bindCallbacks">Callbacks used for binding the data.</param>
+    /// <param name="files">List of all the files in the bind folder.</param>
     /// <returns>The folder inside which bound data is contained.</returns>
-    public string Build(List<Action<ICriFsRedirectorApi.BindContext>> bindCallbacks)
+    public string Build(List<Action<ICriFsRedirectorApi.BindContext>> bindCallbacks, out Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> files)
     {
         // This code finds duplicate files should we ever need to do merging in the future.
-        var files = GetFiles();
+        files = GetFiles();
         
         // Normalize keys so all mods go in same base directory
         var context = new ICriFsRedirectorApi.BindContext()
@@ -99,7 +98,7 @@ public class BindBuilder
             createdFolders[directory] = true;
         }
 
-        Native.CreateHardLink(hardlinkPath, newFile.FullPath, IntPtr.Zero);
+        File.CreateSymbolicLink(hardlinkPath, newFile.FullPath);
     }
 
     /// <summary>

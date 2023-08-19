@@ -19,6 +19,9 @@ public class ReloadedBindBuilderCreator
     private readonly Logger _logger;
     private readonly IBindDirectoryAcquirer _bindDirAcquirer;
     private readonly CpkContentCache _cpkContentCache;
+    private readonly Action _onRebuildStarted;
+    private readonly Action _onRebuildComplete;
+    private readonly Action<Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>, string> _onBuildComplete;
     private bool _canRebuild;
 
     private readonly List<string> _probingPaths = new(2) { Routes.DefaultProbingPath, "P5REssentials/CPK" }; // <= Legacy Support
@@ -29,12 +32,15 @@ public class ReloadedBindBuilderCreator
     private bool _hotReload;
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
-        CpkContentCache cpkContentCache)
+        CpkContentCache cpkContentCache, Action onRebuildStarted, Action onRebuildComplete, Action<Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>, string> onBuildComplete)
     {
         _loader = loader;
         _logger = logger;
         _bindDirAcquirer = bindDirAcquirer;
         _cpkContentCache = cpkContentCache;
+        _onRebuildStarted = onRebuildStarted;
+        _onRebuildComplete = onRebuildComplete;
+        _onBuildComplete = onBuildComplete;
     }
 
     /// <summary>
@@ -111,7 +117,8 @@ public class ReloadedBindBuilderCreator
         foreach (var probingPath in _probingPaths)
             Add(builder, modId, probingPath);
 
-        builder.Build(_bindCallbacks);
+        builder.Build(_bindCallbacks, out var built);
+        _onBuildComplete(built, "R2");
         ArrayRental.Reset(); // cleanup mem
         _canRebuild = true;
     }
@@ -174,8 +181,7 @@ public class ReloadedBindBuilderCreator
             BindDirectory = _bindDirAcquirer.BindDirectory
         };
 
-        CpkBinder.UnbindAll();
-        
+        _onRebuildStarted();
         foreach (var unbindCallback in _unbindCallbacks)
             unbindCallback(unbindContext);
         
@@ -189,9 +195,9 @@ public class ReloadedBindBuilderCreator
         {
             _logger.Warning($"Failed to delete original binding directory, uh oh. {e.Message}");
         }
-        
+
         Build();
-        CpkBinder.BindAll();
+        _onRebuildComplete();
     }
 
     /// <summary>

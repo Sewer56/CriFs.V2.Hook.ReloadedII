@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Utilities;
 using CriFs.V2.Hook.CRI;
@@ -49,8 +50,9 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     /// </summary>
     private readonly IModConfig _modConfig;
     
-    private ReloadedBindBuilderCreator? _cpkBuilder;
-    private BindDirectoryAcquirer _directoryAcquirer;
+    private readonly ReloadedBindBuilderCreator? _cpkBuilder;
+    private readonly BindDirectoryAcquirer _directoryAcquirer;
+    private readonly Api _api;
 
     public Mod(ModContext context)
     {
@@ -93,16 +95,78 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         
         var cpkContentCache = new CpkContentCache();
         _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
-        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache);
+        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache, RebuildStarted, RebuildFinished, OnBuildComplete);
         _cpkBuilder.SetHotReload(_configuration.HotReload);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
         
         // Add API
-        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, 
-            new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider));
+        _api = new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider);
+        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, _api);
     }
+
+    // Callbacks for CPK Binder
+    private void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
+    {
+        // Flatten
+        var toBind = new List<string>(items.Count);
+        var boundDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var bindFolderNameCombine = $"\\{bindFolderName}\\";
+        
+        foreach (var item in items)
+        {
+            // Get Relative Path
+            var relativePath = item.Key;
+            
+            // Trim the prefix.
+            var correctRelativePath = relativePath.Substring(bindFolderName.Length + 1);
+            
+            // Create Symlink
+            var firstDir = correctRelativePath.GetFirstDirectory(out bool isFolder);
+            var existing = Path.Combine(Environment.CurrentDirectory, firstDir);
+            if (boundDirectories.Add(existing))
+            {
+                if (isFolder)
+                {
+                    try { Directory.Delete(existing, true); }
+                    catch (Exception) { /**/ }
+                    Directory.CreateSymbolicLink(existing, _directoryAcquirer.BindDirectory + bindFolderNameCombine + firstDir);
+                }
+                else
+                {
+                    try { File.Delete(existing); }
+                    catch (Exception) { /**/ }
+                    File.CreateSymbolicLink(existing, _directoryAcquirer.BindDirectory + bindFolderNameCombine + firstDir);
+                }
+            }
+            
+            // Extract correct casing.
+            bool foundOriginalName = false;
+            foreach (var cpkPath in _api.GetCpkFilesInGameDir())
+            {
+                var cpkFiles = _api.GetCpkFilesCached(cpkPath);
+                if (cpkFiles.FilesByPath.TryGetValue(correctRelativePath, out var index))
+                {
+                    correctRelativePath = cpkFiles.Files[index].FullPath;
+                    foundOriginalName = true;
+                    break;
+                }
+            }
+            
+            if (!foundOriginalName)
+                _logger.Warning("{0} is not present in any of the original CPKs. Please ensure file case of requested file (in whatever is loading the file, e.g. script) matches case on disk.", correctRelativePath);
+            
+            // Set the new file
+            toBind.Add(correctRelativePath);
+        }
+        
+        // Get correct casing.
+        CpkBinder.Update(toBind);
+    }
+
+    private static void RebuildFinished() => CpkBinder.BindAll();
+    private static void RebuildStarted() => CpkBinder.UnbindAll();
 
     // In case user loads mod in real time.
     private void OnModUnloaded(IModV1 arg1, IModConfigV1 arg2)
