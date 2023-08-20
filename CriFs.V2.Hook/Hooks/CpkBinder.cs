@@ -35,11 +35,11 @@ public static unsafe class CpkBinder
     private static List<string> _content = new();
     private static int _contentLength = 0;
     
-    private static readonly HashSet<IntPtr> BinderHandles = new(16);
+    private static readonly HashSet<IntPtr> BinderHandles = new(16); // 16 is default for max handle count.
     private static readonly List<CpkBinding> Bindings = new();
-    private static HashSet<IntPtr> _modifiedWorkAreaSizes = new();
     private static int _additionalFiles = 0;
     private static void* _libraryMemory;
+    private static MemoryAllocatorWithLinkedListBackup _allocator;
 
     public static void Init(string outputDirectory, Logger logger, IReloadedHooks hooks)
     {
@@ -66,23 +66,26 @@ public static unsafe class CpkBinder
 
     private static CriError FinalizeLibraryImpl()
     {
+        // No need to clear _allocator, because it's only used for CRI related stuff
+        // so any data in it will become invalid after it's done here.
         Memory.Instance.Free((nuint)_libraryMemory);
         return _finalizeLibraryHook!.OriginalFunction();
     }
 
     private static CriError InitializeLibraryImpl(CriFsConfig* config, void* buffer, int size)
     {
-        // The given config pointer might already have been edited by CalculateWorkAreaSizeForLibraryImpl
-        // We need to verify whether config needs updating again.
-        if (_modifiedWorkAreaSizes.Contains((IntPtr)config))
-            return _initializeLibraryHook!.OriginalFunction(config, buffer, size);
-        
         // Note: This wastes a bit of memory, because the original memory passed by the game now doesn't have much
         //       use. 
         UpdateCriConfig(config);
-        _modifiedWorkAreaSizes.Add((IntPtr)config);
-        _getWorkSizeForLibraryFn!(config, &size);
         
+        // The data from CRI buffers may be sourced from malloc and is not guaranteed to be zero'd
+        // Therefore we clear.
+        var alloc = new SimpleNativeLinkedListAllocator(buffer, size);
+        alloc.Clear();
+        _allocator = new MemoryAllocatorWithLinkedListBackup(alloc);
+        
+        // Replace the buffer with our own one.
+        _getWorkSizeForLibraryFn!(config, &size);
         _libraryMemory = (void*)Memory.Instance.Allocate(size);
         return _initializeLibraryHook!.OriginalFunction(config, _libraryMemory, size);
     }
@@ -182,14 +185,14 @@ public static unsafe class CpkBinder
             return;
         }
 
-        var workMem = Memory.Instance.Allocate(size);
-        err = _bindFilesFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem, size, &bndrid);
+        var workMem = _allocator.Allocate(size);
+        err = _bindFilesFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem.Address, size, &bndrid);
         
         if (err < 0)
         {
             // either find a way to handle bindCpk errors properly or ignore
             _logger.Error("Binding Files Failed with Error {0}", err);
-            Memory.Instance.Free(workMem);
+            workMem.Dispose();
             return;
         }
 
@@ -206,7 +209,7 @@ public static unsafe class CpkBinder
                 case CRIFSBINDER_STATUS_ERROR:
                     _logger.Info("Bind Failed! {0}", dirInfo.FullPath);
                     _unbindFn!(bndrid);
-                    Memory.Instance.Free(workMem);
+                    workMem.Dispose();
                     return;
                 default:
                     Thread.Sleep(10);
@@ -281,14 +284,14 @@ public static unsafe class CpkBinder
 
 internal readonly struct CpkBinding : IDisposable
 {
-    private readonly nuint _workAreaPtr;
+    private readonly IMemoryAllocation _alloc;
     internal readonly uint BindId;
 
-    public CpkBinding(nuint workAreaPtr, uint bindId) : this()
+    public CpkBinding(IMemoryAllocation alloc, uint bindId) : this()
     {
-        _workAreaPtr = workAreaPtr;
+        _alloc = alloc;
         BindId = bindId;
     }
 
-    public void Dispose() => Memory.Instance.Free(_workAreaPtr);
+    public void Dispose() => _alloc.Dispose();
 }
