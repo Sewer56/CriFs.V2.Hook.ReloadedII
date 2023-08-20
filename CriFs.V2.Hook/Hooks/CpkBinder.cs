@@ -9,6 +9,7 @@ using Reloaded.Memory.Sources;
 using static CriFs.V2.Hook.CRI.CpkBinderPointers;
 using static CriFs.V2.Hook.CRI.CRI;
 using static CriFs.V2.Hook.CRI.CRI.CriFsBinderStatus;
+using Native = CriFs.V2.Hook.Utilities.Native;
 
 namespace CriFs.V2.Hook.Hooks;
 
@@ -21,9 +22,10 @@ public static unsafe class CpkBinder
     private static Logger _logger = null!;
 
     private static IHook<criFs_InitializeLibrary>? _initializeLibraryHook;
-    private static IHook<criFs_CalculateWorkSizeForLibrary>? _calculateWorkSizeHook;
+    private static IHook<criFs_FinalizeLibrary>? _finalizeLibraryHook;
     private static IHook<criFsBinder_BindCpk>? _bindCpkHook;
     
+    private static criFs_CalculateWorkSizeForLibrary? _getWorkSizeForLibraryFn;
     private static criFsBinder_BindFiles? _bindFilesFn;
     private static criFsBinder_GetWorkSizeForBindFiles? _getSizeForBindFilesFn;
     private static IHook<criFsLoader_LoadRegisteredFile_Internal>? _loadRegisteredFileFn;
@@ -36,6 +38,8 @@ public static unsafe class CpkBinder
     private static readonly HashSet<IntPtr> BinderHandles = new(16);
     private static readonly List<CpkBinding> Bindings = new();
     private static HashSet<IntPtr> _modifiedWorkAreaSizes = new();
+    private static int _additionalFiles = 0;
+    private static void* _libraryMemory;
 
     public static void Init(string outputDirectory, Logger logger, IReloadedHooks hooks)
     {
@@ -45,12 +49,13 @@ public static unsafe class CpkBinder
             return;
         
         _initializeLibraryHook = hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, InitializeLibrary).Activate();
-        _calculateWorkSizeHook = hooks.CreateHook<criFs_CalculateWorkSizeForLibrary>(CalculateWorkAreaSizeForLibraryImpl, CalculateWorkSizeForLibrary).Activate();
+        _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, FinalizeLibrary).Activate();
         _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, BindCpk).Activate();
         _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(BindFiles, out _);
         _getSizeForBindFilesFn = hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(GetSizeForBindFiles, out _);
         _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(GetStatus, out _);
         _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(Unbind, out _);
+        _getWorkSizeForLibraryFn = hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(CalculateWorkSizeForLibrary, out _);
         
         if (SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(SetPriority, out _);
@@ -59,12 +64,10 @@ public static unsafe class CpkBinder
             _loadRegisteredFileFn = hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal, LoadRegisteredFile).Activate();
     }
 
-    private static CriError CalculateWorkAreaSizeForLibraryImpl(CriFsConfig* config, int* numbytes)
+    private static CriError FinalizeLibraryImpl()
     {
-        // Some games might skip this function, so we also need to handle this in InitializeLibraryImpl
-        UpdateCriConfig(config);
-        _modifiedWorkAreaSizes.Add((IntPtr)config);
-        return _calculateWorkSizeHook!.OriginalFunction(config, numbytes);
+        Memory.Instance.Free((nuint)_libraryMemory);
+        return _finalizeLibraryHook!.OriginalFunction();
     }
 
     private static CriError InitializeLibraryImpl(CriFsConfig* config, void* buffer, int size)
@@ -73,34 +76,42 @@ public static unsafe class CpkBinder
         // We need to verify whether config needs updating again.
         if (_modifiedWorkAreaSizes.Contains((IntPtr)config))
             return _initializeLibraryHook!.OriginalFunction(config, buffer, size);
-
+        
+        // Note: This wastes a bit of memory, because the original memory passed by the game now doesn't have much
+        //       use. 
         UpdateCriConfig(config);
         _modifiedWorkAreaSizes.Add((IntPtr)config);
-        return _initializeLibraryHook!.OriginalFunction(config, buffer, size);
+        _getWorkSizeForLibraryFn!(config, &size);
+        
+        _libraryMemory = (void*)Memory.Instance.Allocate(size);
+        return _initializeLibraryHook!.OriginalFunction(config, _libraryMemory, size);
     }
 
     private static void UpdateCriConfig(CriFsConfig* config)
     {
         // We are making a wild guess here:
         // - Max 8 binder handles a game would use (very generous, usually this is just 1)
-        // - Max 8 binder prefixes used by extensions of CriFs.V2.Hook (BindBuilder.BindFolderName)
-        config->MaxBinds += 64; // 8 * 8
+        // - Max 4 binder prefixes used by extensions of CriFs.V2.Hook (BindBuilder.BindFolderName)
+        config->MaxBinds += 32; // 8 * 4
         
         // Here we make a rough estimate for max file count.
         // Reloaded can load mods at runtime, however we cannot predict what the user might load, and there is no
         // error handling mechanism in CRI for exceeding max files, which is a bit problematic.
-        
-        // For 32-bit processes we need to be wary of address space, so an alternative approach is used.
-        config->MaxFiles = Math.Max(IntPtr.Size == 4 ? 16384 : 65536, (config->MaxFiles + _content.Count) * 2);
+        // In our case, we will insert a MessageBox to handle this edge case.
+        _additionalFiles = _content.Count * 2;
+        config->MaxFiles += _additionalFiles;
     }
 
     private static bool AssertWillFunction()
     {
-        if (BindCpk == 0 || BindFiles == 0 || GetSizeForBindFiles == 0 || GetStatus == 0 || Unbind == 0 || InitializeLibrary == 0)
+        if (BindCpk == 0 || BindFiles == 0 || GetSizeForBindFiles == 0 || GetStatus == 0 || Unbind == 0 || InitializeLibrary == 0 || CalculateWorkSizeForLibrary == 0)
         {
             _logger.Fatal("One of the required functions is missing. CRI FS version in this game is incompatible.");
             return false;
         }
+        
+        if (FinalizeLibrary == 0)
+            _logger.Warning("FinalizeLibrary function is missing. Ignore this unless game can shutdown and restart CRI APIs for some reason (not previously seen in wild; but maybe possible in e.g. game collections).");
 
         if (SetPriority == 0)
             _logger.Warning("SetPriority function is missing. There's no guarantee custom mod files will have priority over originals.");
@@ -145,7 +156,16 @@ public static unsafe class CpkBinder
         _logger.Debug("Binding Directory {0} with priority {1}", dirInfo.FullPath, priority);
         int size = 0;
         
-        // Setup Cutie Patootie File Bindies
+        if (_content.Count > _additionalFiles)
+        {
+            Native.MessageBox(0, "Unable to load custom files because file limit will be exceeded (game would freeze).\n" +
+                                 "This should only ever occur if you've tried to load extra mods while game is running.\n" +
+                                 "If it occurred in any other context, please report this as a bug!", "Oh Noes!", 0);
+            
+            _logger.Error("Unable to Bind {0} due to open file limit reached!");
+            return;
+        }
+        
         var fileList = new StringBuilder(_contentLength);
         foreach (var file in _content)
         {
@@ -154,7 +174,6 @@ public static unsafe class CpkBinder
         }
 
         fileList.TrimFinalNewline();
-        
         var fileListStr = fileList.ToString();
         err = _getSizeForBindFilesFn!(bndrhn, fileListStr, &size);
         if (err < 0)

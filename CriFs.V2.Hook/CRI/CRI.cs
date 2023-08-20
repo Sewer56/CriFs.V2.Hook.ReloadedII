@@ -28,6 +28,17 @@ public static unsafe class CRI
     public delegate CriError criFs_InitializeLibrary(CriFsConfig* config, void* buffer, int size);
     
     /// <summary>
+    /// Finalizes (i.e. Disposes) the CRI File System.
+    /// </summary>
+    /// <returns>CriError Error code.</returns>
+    /// <remarks>
+    ///     You cannot call any CRI functions other than <see cref="criFs_InitializeLibrary"/> after calling this.
+    /// </remarks>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
+    public delegate CriError criFs_FinalizeLibrary();
+    
+    /// <summary>
     /// Work area size needed for the CRI library.
     /// </summary>
     /// <param name="config">[in] Configuration pointer.</param>

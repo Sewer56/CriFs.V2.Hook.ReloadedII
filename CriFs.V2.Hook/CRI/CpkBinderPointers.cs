@@ -5,6 +5,7 @@ namespace CriFs.V2.Hook.CRI;
 internal static class CpkBinderPointers
 {
     internal static long InitializeLibrary;
+    internal static long FinalizeLibrary;
     internal static long CalculateWorkSizeForLibrary;
     internal static long BindCpk;
     internal static long BindFiles;
@@ -20,6 +21,9 @@ internal static class CpkBinderPointers
         {
             helper.FindPatternOffset("4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B 18 41 56 48 83 EC 60 48 8D 05 2C 89 46 01 41 8B E8 48 89 05 2A F8 49 02", 
                 (offset) => InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library");
+            
+            helper.FindPatternOffset("48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16", 
+                (offset) => FinalizeLibrary = baseAddr + offset, "CRI Initialize FS Library");
             
             helper.FindPatternOffset("48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0", 
                 (offset) => CalculateWorkSizeForLibrary = baseAddr + offset, "CRI Calculate Work Size for Library");
