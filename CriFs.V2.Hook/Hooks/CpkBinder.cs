@@ -49,13 +49,15 @@ public static unsafe class CpkBinder
             return;
         
         _initializeLibraryHook = hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, InitializeLibrary).Activate();
-        _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, FinalizeLibrary).Activate();
         _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, BindCpk).Activate();
         _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(BindFiles, out _);
         _getSizeForBindFilesFn = hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(GetSizeForBindFiles, out _);
         _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(GetStatus, out _);
         _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(Unbind, out _);
         _getWorkSizeForLibraryFn = hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(CalculateWorkSizeForLibrary, out _);
+        
+        if (FinalizeLibrary != 0)
+            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, FinalizeLibrary).Activate();
         
         if (SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(SetPriority, out _);

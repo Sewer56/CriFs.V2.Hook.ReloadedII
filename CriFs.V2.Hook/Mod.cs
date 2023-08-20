@@ -123,14 +123,30 @@ public class Mod : ModBase, IExports // <= Do not Remove.
             var correctRelativePath = relativePath.Substring(bindFolderName.Length + 1);
             
             // Create Symlink
-            var firstDir = correctRelativePath.GetFirstDirectory(out bool isFolder);
+            var firstDir = correctRelativePath.GetFirstDirectory(0, out bool isFolder);
             var existing = Path.Combine(Environment.CurrentDirectory, firstDir);
             if (boundDirectories.Add(existing))
             {
                 if (isFolder)
                 {
-                    try { Directory.Delete(existing, true); }
-                    catch (Exception) { /**/ }
+                    // Get first non-symlink directory for deletion
+                    bool hasAny = true;
+                    while (Directory.Exists(existing) && !PathHelper.IsSymbolicLink(existing))
+                    {
+                        firstDir = correctRelativePath.GetFirstDirectory(firstDir.Length + 1, out bool hasBackslash);
+                        existing = Path.Combine(Environment.CurrentDirectory, firstDir);
+                        if (!hasBackslash)
+                        {
+                            hasAny = false;
+                        }
+                    }
+
+                    if (hasAny)
+                    {
+                        try { Directory.Delete(existing, true); }
+                        catch (Exception) { /**/ }
+                    }
+
                     Directory.CreateSymbolicLink(existing, _directoryAcquirer.BindDirectory + bindFolderNameCombine + firstDir);
                 }
                 else

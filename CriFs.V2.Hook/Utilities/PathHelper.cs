@@ -7,10 +7,10 @@ namespace CriFs.V2.Hook.Utilities;
 /// </summary>
 internal static class PathHelper
 {
-    public static string GetFirstDirectory(this string path, out bool hasBackslash)
+    public static string GetFirstDirectory(this string path, int startIndex, out bool hasBackslash)
     {
-        int firstBackSlash = path.IndexOf('\\');
-        int firstForwardSlash = path.IndexOf('/');
+        int firstBackSlash = path.IndexOf('\\', startIndex);
+        int firstForwardSlash = path.IndexOf('/', startIndex);
 
         // If neither slash is found, return the whole path
         hasBackslash = true;
@@ -32,5 +32,11 @@ internal static class PathHelper
     {
         while (sb.Length > 0 && sb[^1] == '\n')
             sb.Length--;
+    }
+    
+    public static bool IsSymbolicLink(string path)
+    {
+        FileInfo file = new FileInfo(path);
+        return file.LinkTarget != null;
     }
 }

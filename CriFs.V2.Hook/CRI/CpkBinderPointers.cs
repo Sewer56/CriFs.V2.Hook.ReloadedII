@@ -19,6 +19,7 @@ internal static class CpkBinderPointers
     {
         if (nint.Size == 8)
         {
+            // For ~2020 version
             helper.FindPatternOffset("4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B 18 41 56 48 83 EC 60 48 8D 05 2C 89 46 01 41 8B E8 48 89 05 2A F8 49 02", 
                 (offset) => InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library");
             
@@ -52,7 +53,27 @@ internal static class CpkBinderPointers
         }
         else if (nint.Size == 4)
         {
-            throw new Exception("32-bit titles are not currently supported.");
+            // For 2014 version
+            helper.FindPatternOffset("55 8B EC 83 EC 38 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 0C",
+                (offset) => InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library x86");
+            
+            helper.FindPatternOffset("55 8B EC 83 EC 68 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53 8B",
+                (offset) => CalculateWorkSizeForLibrary = baseAddr + offset, "CRI Calculate Work Size for Library x86");
+
+            helper.FindPatternOffset("55 8B EC 6A 01 FF 75 1C",
+                (offset) => BindCpk = baseAddr + offset, "CRI Bind CPK x86");
+
+            helper.FindPatternOffset("55 8B EC FF 75 1C 8B 55",
+                (offset) => BindFiles = baseAddr + offset, "CRI Bind Files x86");
+
+            helper.FindPatternOffset("55 8B EC 56 8B 75 08 57 85 F6 74 35",
+                (offset) => GetStatus = baseAddr + offset, "CRI Get Status x86");
+
+            helper.FindPatternOffset("55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
+                (offset) => Unbind = baseAddr + offset, "CRI Unbind x86");
+
+            helper.FindPatternOffset("55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
+                (offset) => GetSizeForBindFiles = baseAddr + offset, "CRI Get Size for Bind Files x86");
         }
     }
 }

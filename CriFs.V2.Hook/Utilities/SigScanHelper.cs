@@ -24,7 +24,7 @@ public class SigScanHelper
             if (res.Found)
             {
                 if (!string.IsNullOrEmpty(name))
-                    _logger?.Info("[CriFs.V2.Hook] {0} found", name);
+                    _logger?.Info("[CriFs.V2.Hook] {0} found at {1}", name, res.Offset.ToString("X"));
 
                 action((uint)res.Offset);
             }
