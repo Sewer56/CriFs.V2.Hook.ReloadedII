@@ -48,22 +48,22 @@ public static unsafe class CpkBinder
         if (!AssertWillFunction())
             return;
         
-        _initializeLibraryHook = hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, InitializeLibrary).Activate();
-        _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, BindCpk).Activate();
-        _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(BindFiles, out _);
-        _getSizeForBindFilesFn = hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(GetSizeForBindFiles, out _);
-        _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(GetStatus, out _);
-        _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(Unbind, out _);
-        _getWorkSizeForLibraryFn = hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(CalculateWorkSizeForLibrary, out _);
+        _initializeLibraryHook = hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, CriFs_InitializeLibrary).Activate();
+        _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, CriFsBinder_BindCpk).Activate();
+        _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(CriFsBinder_BindFiles, out _);
+        _getSizeForBindFilesFn = hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(CriFsBinder_GetSizeForBindFiles, out _);
+        _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(CriFsBinder_GetStatus, out _);
+        _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(CriFsBinder_Unbind, out _);
+        _getWorkSizeForLibraryFn = hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(CriFs_CalculateWorkSizeForLibrary, out _);
         
-        if (FinalizeLibrary != 0)
-            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, FinalizeLibrary).Activate();
+        if (CriFs_FinalizeLibrary != 0)
+            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, CriFs_FinalizeLibrary).Activate();
         
-        if (SetPriority != 0)
-            _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(SetPriority, out _);
+        if (CriFsBinder_SetPriority != 0)
+            _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(CriFsBinder_SetPriority, out _);
 
-        if (LoadRegisteredFile != 0)
-            _loadRegisteredFileFn = hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal, LoadRegisteredFile).Activate();
+        if (CriFsLoader_LoadRegisteredFile != 0)
+            _loadRegisteredFileFn = hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal, CriFsLoader_LoadRegisteredFile).Activate();
     }
 
     private static CriError FinalizeLibraryImpl()
@@ -109,19 +109,19 @@ public static unsafe class CpkBinder
 
     private static bool AssertWillFunction()
     {
-        if (BindCpk == 0 || BindFiles == 0 || GetSizeForBindFiles == 0 || GetStatus == 0 || Unbind == 0 || InitializeLibrary == 0 || CalculateWorkSizeForLibrary == 0)
+        if (CriFsBinder_BindCpk == 0 || CriFsBinder_BindFiles == 0 || CriFsBinder_GetSizeForBindFiles == 0 || CriFsBinder_GetStatus == 0 || CriFsBinder_Unbind == 0 || CriFs_InitializeLibrary == 0 || CriFs_CalculateWorkSizeForLibrary == 0)
         {
             _logger.Fatal("One of the required functions is missing. CRI FS version in this game is incompatible.");
             return false;
         }
         
-        if (FinalizeLibrary == 0)
+        if (CriFs_FinalizeLibrary == 0)
             _logger.Warning("FinalizeLibrary function is missing. Ignore this unless game can shutdown and restart CRI APIs for some reason (not previously seen in wild; but maybe possible in e.g. game collections).");
 
-        if (SetPriority == 0)
+        if (CriFsBinder_SetPriority == 0)
             _logger.Warning("SetPriority function is missing. There's no guarantee custom mod files will have priority over originals.");
 
-        if (LoadRegisteredFile == 0)
+        if (CriFsLoader_LoadRegisteredFile == 0)
             _logger.Warning("LoadRegisteredFile function is missing. File Access Logging is Disabled.");
         
         return true;
