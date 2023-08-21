@@ -461,10 +461,6 @@ internal static class CpkBinderPointers
         internal long CriFsBinder_GetStatus;
         internal long CriFsBinder_Unbind;
 
-        // (Optional)
-        // This corresponds to internal API crifsloader_load_registered_file, not public
-        internal long CriFsLoader_LoadRegisteredFile;
-
 /*
     Platform I/O functions:
 
@@ -511,8 +507,6 @@ internal static class CpkBinderPointers
             found += Convert.ToInt32(CriFsBinder_SetPriority != 0);
             found += Convert.ToInt32(CriFsBinder_GetStatus != 0);
             found += Convert.ToInt32(CriFsBinder_Unbind != 0);
-
-            found += Convert.ToInt32(CriFsLoader_LoadRegisteredFile != 0);
 
             found += Convert.ToInt32(CriFsIo_Open != 0);
             found += Convert.ToInt32(CriFsIo_Exists != 0);

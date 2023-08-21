@@ -155,9 +155,6 @@ public static unsafe class CpkBinder
             _logger.Warning(
                 "SetPriority function is missing. There's no guarantee custom mod files will have priority over originals.");
 
-        if (Pointers.CriFsLoader_LoadRegisteredFile == 0)
-            _logger.Warning("LoadRegisteredFile function is missing. File Access Logging is Disabled.");
-
         return true;
     }
 
