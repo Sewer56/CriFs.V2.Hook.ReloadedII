@@ -132,12 +132,7 @@ public static unsafe class CRI
     [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_GetWorkSizeForBindFiles(IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, int* workSize);
-
-    [Function64(CallConv64.Microsoft)]
-    [Function32(CallConv32.Cdecl)]
-    public delegate IntPtr criFsLoader_LoadRegisteredFile_Internal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4,
-        IntPtr a5);
-
+    
     // !! Internal Functions !! NON PUBLIC API
     
     /// <summary>

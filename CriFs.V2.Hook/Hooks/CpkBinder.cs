@@ -31,7 +31,6 @@ public static unsafe class CpkBinder
     private static criFs_CalculateWorkSizeForLibrary? _getWorkSizeForLibraryFn;
     private static criFsBinder_BindFiles? _bindFilesFn;
     private static criFsBinder_GetWorkSizeForBindFiles? _getSizeForBindFilesFn;
-    private static IHook<criFsLoader_LoadRegisteredFile_Internal>? _loadRegisteredFileFn;
     private static criFsBinder_GetStatus? _getStatusFn;
     private static criFsBinder_SetPriority? _setPriorityFn;
     private static criFsBinder_Unbind? _unbindFn;
@@ -43,6 +42,8 @@ public static unsafe class CpkBinder
     private static int _additionalFiles;
     private static void* _libraryMemory;
     private static MemoryAllocatorWithLinkedListBackup _allocator;
+    private static bool _printFileAccess;
+    private static bool _printFileRedirects;
 
     /// <remarks>
     /// This should be called after <see cref="CpkBinderPointers"/> is initialized.
@@ -75,11 +76,6 @@ public static unsafe class CpkBinder
 
         if (Pointers.CriFsBinder_SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(Pointers.CriFsBinder_SetPriority, out _);
-
-        if (Pointers.CriFsLoader_LoadRegisteredFile != 0)
-            _loadRegisteredFileFn =
-                hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal,
-                    Pointers.CriFsLoader_LoadRegisteredFile).Activate();
     }
     
     #region Init
@@ -163,17 +159,6 @@ public static unsafe class CpkBinder
             _logger.Warning("LoadRegisteredFile function is missing. File Access Logging is Disabled.");
 
         return true;
-    }
-
-    #endregion
-
-    #region Utility Hooks
-
-    private static IntPtr LoadRegisteredFileInternal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4, IntPtr a5)
-    {
-        var namePtr = (IntPtr*)IntPtr.Add(a1, 16);
-        _logger.Info(Marshal.PtrToStringAnsi(*namePtr)!);
-        return _loadRegisteredFileFn!.OriginalFunction(a1, a2, a3, a4, a5);
     }
 
     #endregion
@@ -304,13 +289,12 @@ public static unsafe class CpkBinder
     /// <summary>
     ///     Enables/disables printing of file access.
     /// </summary>
-    public static void SetPrintFileAccess(bool printFileAccess)
-    {
-        if (printFileAccess)
-            _loadRegisteredFileFn?.Enable();
-        else
-            _loadRegisteredFileFn?.Disable();
-    }
+    public static void SetPrintFileAccess(bool printFileAccess) => _printFileAccess = printFileAccess;
+    
+    /// <summary>
+    ///     Enables/disables printing of file redirects.
+    /// </summary>
+    public static void SetPrintFileRedirect(bool printFileRedirects) => _printFileRedirects = printFileRedirects;
 
     /// <summary>
     ///     Updates the content that will be bound at runtime.
@@ -346,7 +330,9 @@ public static unsafe class CpkBinder
                 return _ioExistsHook!.OriginalFunction(stringPtr, result);
 
             var tempStr = Marshal.StringToCoTaskMemUTF8(value);
-            _logger.Debug("Exist_Utf_Redirect: {0}", value);
+            if (_printFileRedirects)
+                _logger.Info("Exist_Utf_Redirect: {0}", value);
+
             var err = _ioExistsHook!.OriginalFunction((byte*)tempStr, result);
             Marshal.FreeCoTaskMem(tempStr);
             return err;
@@ -359,7 +345,9 @@ public static unsafe class CpkBinder
                 return _ioExistsHook!.OriginalFunction(stringPtr, result);
 
             var tempStr = Marshal.StringToHGlobalAnsi(value);
-            _logger.Debug("Exist_Ansi_Redirect: {0}", value);
+            if (_printFileRedirects)
+                _logger.Info("Exist_Ansi_Redirect: {0}", value);
+
             var err = _ioExistsHook!.OriginalFunction((byte*)tempStr, result);
             Marshal.FreeHGlobal(tempStr);
             return err;
@@ -376,7 +364,9 @@ public static unsafe class CpkBinder
                 return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
 
             var tempStr = Marshal.StringToCoTaskMemUTF8(value);
-            _logger.Debug("Open_Utf_Redirect: {0}", value);
+            if (_printFileRedirects)
+                _logger.Info("Open_Utf_Redirect: {0}", value);
+
             var err = _ioOpenHook!.OriginalFunction((byte*)tempStr, fileCreationType, desiredAccess, result);
             Marshal.FreeCoTaskMem(tempStr);
             return err;
@@ -389,7 +379,9 @@ public static unsafe class CpkBinder
                 return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
 
             var tempStr = Marshal.StringToHGlobalAnsi(value);
-            _logger.Debug("Open_Ansi_Redirect: {0}", value);
+            if (_printFileRedirects)
+                _logger.Info("Open_Ansi_Redirect: {0}", value);
+
             var err = _ioOpenHook!.OriginalFunction((byte*)tempStr, fileCreationType, desiredAccess, result);
             Marshal.FreeHGlobal(tempStr);
             return err;
@@ -400,6 +392,10 @@ public static unsafe class CpkBinder
     {
         var str = Marshal.PtrToStringAnsi(path);
         str!.ReplaceBackWithForwardSlashInPlace();
+        
+        if (_printFileAccess)
+            _logger.Info("Binder_Find: {0}", str);
+        
         if (!_content.TryGetValue(str, out _, out var originalKey))
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
         

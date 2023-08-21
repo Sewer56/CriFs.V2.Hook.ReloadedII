@@ -16,6 +16,11 @@ public class Config : Configurable<Config>
     [DefaultValue(false)]
     public bool PrintFileAccess { get; set; } = false;
     
+    [DisplayName("Print File Redirects")]
+    [Description("Prints redirected files to console using the Info log level.")]
+    [DefaultValue(false)]
+    public bool PrintFileRedirects { get; set; } = false;
+    
     [DisplayName("Hot Reload")]
     [Description("Allows for loaded files to be updated/replaced at runtime.")]
     [DefaultValue(false)]
