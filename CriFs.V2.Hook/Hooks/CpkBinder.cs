@@ -214,9 +214,6 @@ public static unsafe class CpkBinder
                     _unbindFn!(bndrid);
                     workMem.Dispose();
                     return;
-                default:
-                    Thread.Sleep(10);
-                    break;
             }
         }
     }
