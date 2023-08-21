@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Reloaded.Hooks.Definitions.X86;
 using Function64 = Reloaded.Hooks.Definitions.X64.FunctionAttribute;
 using Function32 = Reloaded.Hooks.Definitions.X86.FunctionAttribute;
 using CallConv64 = Reloaded.Hooks.Definitions.X64.CallingConventions;
@@ -88,6 +87,18 @@ public static unsafe class CRI
     public delegate CriError criFsBinder_BindFiles(IntPtr bndrhn, IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid);
 
+    
+    /// <summary>
+    /// Finds a file that's attached to a given binder.
+    /// </summary>
+    /// <param name="bndrhn">[In] Binder handle of the bind destination.</param>
+    /// <param name="path">[In] Path to the file in question.</param>
+    /// <param name="finfo">File info, unknown format.</param>
+    /// <param name="exist">True if file exists, else false.</param>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
+    public delegate nint criFsBinder_Find(nint bndrhn, nint path, void* finfo, bool* exist);
+    
     /// <summary>
     /// This function sets the priority value for the bind ID. 
     /// Using the priority enables you to control the order of searching the bind IDs in a binder handle. 
@@ -127,6 +138,40 @@ public static unsafe class CRI
     public delegate IntPtr criFsLoader_LoadRegisteredFile_Internal(IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4,
         IntPtr a5);
 
+    // !! Internal Functions !! NON PUBLIC API
+    
+    /// <summary>
+    /// Verifies whether a given file exists on the filesystem.
+    /// </summary>
+    /// <param name="result">The result of the operation is stored here.</param>
+    /// <param name="stringPtr">
+    ///     Pointer to a string with the file path.
+    ///     This path is usually relative, and can either be ANSI or UTF-8.
+    ///
+    ///     If it's UTF-8, you must pass it to `MultiByteToWideChar` to convert to wide string.
+    /// </param>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
+    public delegate IntPtr criFsIo_Exists(byte* stringPtr, int* result);
+    
+    // Delete & Rename not implemented, mods should be immutable from regular game code.
+    
+    /// <summary>
+    /// Verifies whether a given file exists on the filesystem.
+    /// </summary>
+    /// <param name="stringPtr">
+    ///     Pointer to a string with the file path.
+    ///     This path is usually relative, and can either be ANSI or UTF-8.
+    ///
+    ///     If it's UTF-8, you must pass it to `MultiByteToWideChar` to convert to wide string.
+    /// </param>
+    /// <param name="fileCreationType">Behaviour of the file opening. Current values are unknown.</param>
+    /// <param name="desiredAccess">Required file access. Current values are unknown.</param>
+    /// <param name="result">Result of the operation.</param>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
+    public delegate IntPtr criFsIo_Open(byte *stringPtr, int fileCreationType, int desiredAccess, long** result);
+    
     /// <summary>
     /// Status of the CRI binder.
     /// </summary>

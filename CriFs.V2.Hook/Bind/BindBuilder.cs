@@ -64,41 +64,10 @@ public class BindBuilder
         
         foreach (var bindCallback in bindCallbacks)
             bindCallback(context);
-
-        // Note: ConcurrentDictionary does waste a bit of memory, but I don't want to bring in outside library just for
-        //       a single ConcurrentHashSet type for temporary allocation. Collection is also small, so it stays.
-        var createdFolders = new ConcurrentDictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-        if (files.Count > 1000) // TODO: Benchmark around for a good number.
-        {
-            var keyValuePairs = files.ToArray();
-            Parallel.ForEach(Partitioner.Create(0, files.Count), (range, _) =>
-            {
-                for (int x = range.Item1; x < range.Item2; x++)
-                    HardlinkFile(keyValuePairs[x], createdFolders);
-            });
-        }
-        else
-        {
-            foreach (var file in files)
-                HardlinkFile(file, createdFolders);
-        }
         
+        // Note: This used to hardlink, but now we do all redirection in code.
+        //       BindDirectory is still kept intact in case of custom merged files and external library/plugin behaviour (etc.)
         return OutputFolder;
-    }
-
-    private void HardlinkFile(KeyValuePair<string, List<ICriFsRedirectorApi.BindFileInfo>> file, ConcurrentDictionary<string, bool> createdFolders)
-    {
-        var hardlinkPath = Path.Combine(OutputFolder, file.Key);
-        var newFile = file.Value.Last();
-        var directory = Path.GetDirectoryName(hardlinkPath)!;
-
-        if (!createdFolders.ContainsKey(directory))
-        {
-            Directory.CreateDirectory(directory);
-            createdFolders[directory] = true;
-        }
-
-        File.CreateSymbolicLink(hardlinkPath, newFile.FullPath);
     }
 
     /// <summary>

@@ -8,6 +8,7 @@ using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Template;
 using CriFs.V2.Hook.Utilities;
+using CriFs.V2.Hook.Utilities.Extensions;
 using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.ReloadedII.Interfaces;
@@ -107,13 +108,11 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     }
 
     // Callbacks for CPK Binder
-    private void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
+    private unsafe void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
     {
         // Flatten
-        var toBind = new List<string>(items.Count);
-        var boundDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var bindFolderNameCombine = $"\\{bindFolderName}\\";
-        
+        var relativePathToFullPathDict = new SpanOfCharDict<string>(items.Count);
+
         foreach (var item in items)
         {
             // Get Relative Path
@@ -122,63 +121,14 @@ public class Mod : ModBase, IExports // <= Do not Remove.
             // Trim the prefix.
             var correctRelativePath = relativePath.Substring(bindFolderName.Length + 1);
             
-            // Create Symlink
-            var firstDir = correctRelativePath.GetFirstDirectory(0, out bool isFolder);
-            var existing = Path.Combine(Environment.CurrentDirectory, firstDir);
-            if (boundDirectories.Add(existing))
-            {
-                if (isFolder)
-                {
-                    // Get first non-symlink directory for deletion
-                    bool hasAny = true;
-                    while (Directory.Exists(existing) && !PathHelper.IsSymbolicLink(existing))
-                    {
-                        firstDir = correctRelativePath.GetFirstDirectory(firstDir.Length + 1, out bool hasBackslash);
-                        existing = Path.Combine(Environment.CurrentDirectory, firstDir);
-                        if (!hasBackslash)
-                        {
-                            hasAny = false;
-                        }
-                    }
-
-                    if (hasAny)
-                    {
-                        try { Directory.Delete(existing, true); }
-                        catch (Exception) { /**/ }
-                    }
-
-                    Directory.CreateSymbolicLink(existing, _directoryAcquirer.BindDirectory + bindFolderNameCombine + firstDir);
-                }
-                else
-                {
-                    try { File.Delete(existing); }
-                    catch (Exception) { /**/ }
-                    File.CreateSymbolicLink(existing, _directoryAcquirer.BindDirectory + bindFolderNameCombine + firstDir);
-                }
-            }
-            
-            // Extract correct casing.
-            bool foundOriginalName = false;
-            foreach (var cpkPath in _api.GetCpkFilesInGameDir())
-            {
-                var cpkFiles = _api.GetCpkFilesCached(cpkPath);
-                if (cpkFiles.FilesByPath.TryGetValue(correctRelativePath, out var index))
-                {
-                    correctRelativePath = cpkFiles.Files[index].FullPath;
-                    foundOriginalName = true;
-                    break;
-                }
-            }
-            
-            if (!foundOriginalName)
-                _logger.Warning("{0} is not present in any of the original CPKs. Please ensure file case of requested file (in whatever is loading the file, e.g. script) matches case on disk.", correctRelativePath);
-            
             // Set the new file
-            toBind.Add(correctRelativePath);
+            // CRI uses forward slashes everywhere internally.
+            correctRelativePath.ReplaceBackWithForwardSlashInPlace();
+            relativePathToFullPathDict.AddOrReplace(correctRelativePath, item.Value.Last().FullPath);
         }
         
         // Get correct casing.
-        CpkBinder.Update(toBind);
+        CpkBinder.UpdateDataToBind(relativePathToFullPathDict);
     }
 
     private static void RebuildFinished() => CpkBinder.BindAll();
@@ -201,7 +151,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         AssertAwbIncompatibility();
-        CpkBinder.Init(_directoryAcquirer.BindDirectory, _logger, _hooks!);
+        CpkBinder.Init(_logger, _hooks!);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         _cpkBuilder?.Build(); 
     }

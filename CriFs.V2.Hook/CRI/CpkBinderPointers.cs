@@ -87,6 +87,7 @@ internal static class CpkBinderPointers
     criFs_UpdateHandleStatus
 */
 
+    // Used for Init
     internal static long CriFs_CalculateWorkSizeForLibrary;
     internal static long CriFs_FinalizeLibrary;
     internal static long CriFs_InitializeLibrary;
@@ -180,13 +181,17 @@ internal static class CpkBinderPointers
     crifsbinder_UnlockMdl
 
 */
+
+    // Used for binding
     internal static long CriFsBinder_BindCpk;
     internal static long CriFsBinder_BindFiles;
+    internal static long CriFsBinder_Find;
     internal static long CriFsBinder_GetSizeForBindFiles;
     internal static long CriFsBinder_SetPriority;
     internal static long CriFsBinder_GetStatus;
     internal static long CriFsBinder_Unbind;
     
+    // (Optional)
     internal static long CriFsLoader_LoadRegisteredFile;
     
 /*
@@ -216,10 +221,20 @@ internal static class CpkBinderPointers
     criFsIoXXX_Resize
     criFsIoXXX_GetNativeFileHandle
 */
+
+    // Used for redirecting files out of game folder and fixing case sensitivity.
+    internal static long CriFsIo_Open;
+    internal static long CriFsIo_Exists;
+    internal static unsafe int* CriFsIo_IsUtf8;
+    
     
 
-    public static void Init(SigScanHelper helper, nint baseAddr)
+    public static unsafe void Init(SigScanHelper helper, nint baseAddr)
     {
+        // TODO: Make a set of signatures for every known version.
+        // Then scan them all and pick set of signatures with most matches.
+        // Officially, this is postponed till Rust port, which will also bring Switch support, but PRs welcome.
+        
         if (nint.Size == 8)
         {
             // For ~2019 version
@@ -252,6 +267,25 @@ internal static class CpkBinderPointers
             
             helper.FindPatternOffset("48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
                 offset => CriFsBinder_Unbind = baseAddr + offset, "CRI Binder Unbind");
+            
+            helper.FindPatternOffset("48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                offset => CriFsBinder_Find = baseAddr + offset, "CRI FS Binder: Find");
+            
+            // Capitalization Fixing
+            helper.FindPatternOffset("48 89 5C 24 18 57 48 81 EC 70 08",
+                offset => CriFsIo_Exists = baseAddr + offset, "CRI FS IO Exists");
+            
+            helper.FindPatternOffset("48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                offset => CriFsIo_Open = baseAddr + offset, "CRI FS IO Open");
+            
+            helper.FindPatternOffset("83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 11 04 00 00 48 89 4C 24 20 4C 8B C7",
+                offset =>
+                {
+                    // Extract from cmp instruction, i.e. cmp [14028DC48], 0
+                    var rip = baseAddr + offset;
+                    var cmpOffset = *(int*)(rip + 2);
+                    CriFsIo_IsUtf8 = (int*)((nint)rip + 7 + cmpOffset); // 7 = instruction length
+                }, "CRI FS IO Is UTF8");
             
             // Optional, used for printing loaded files.
             helper.FindPatternOffset("48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81",

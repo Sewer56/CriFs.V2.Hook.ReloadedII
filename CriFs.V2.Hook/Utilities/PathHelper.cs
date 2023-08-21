@@ -33,10 +33,4 @@ internal static class PathHelper
         while (sb.Length > 0 && sb[^1] == '\n')
             sb.Length--;
     }
-    
-    public static bool IsSymbolicLink(string path)
-    {
-        FileInfo file = new FileInfo(path);
-        return file.LinkTarget != null;
-    }
 }
