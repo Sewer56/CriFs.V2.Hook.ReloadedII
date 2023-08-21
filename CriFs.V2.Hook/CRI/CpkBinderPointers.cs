@@ -1,4 +1,6 @@
 ﻿using CriFs.V2.Hook.Utilities;
+using FileEmulationFramework.Lib.Utilities;
+using static CriFs.V2.Hook.CRI.CRI;
 
 // ReSharper disable InconsistentNaming
 
@@ -6,6 +8,264 @@ namespace CriFs.V2.Hook.CRI;
 
 internal static class CpkBinderPointers
 {
+    // Additional info
+    internal static CriPointers Pointers;
+
+    public static unsafe void Init(SigScanHelper helper, nint baseAddr, Logger logger)
+    {
+        // Note: The pattern scanner is cached, so searching the same pattern multiple times will result
+        //       in the cached value being pulled. This is why duplicating sigs between different CRI versions is fine.
+
+        CriPointerScanInfo[] possibilities = default!;
+
+        if (IntPtr.Size == 8)
+        {
+            // For more details on individual pointers, see CriPointers struct itself
+            possibilities = new CriPointerScanInfo[]
+            {
+                new()
+                {
+                    SourcedFrom = "Persona 5 Royal",
+                    CriVersion = "CRI File System/PCx64 Ver.2.81.6 Build:Dec 28 2021 11:03:45",
+                    CriCompiler = "MSC19.00.24210.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
+                        CriFs_InitializeLibrary = "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B 18 41 56 48 83 EC 60 48 8D 05 2C 89 46 01 41 8B E8 48 89 05 2A F8 49 02",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
+                        CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 70 08",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 11 04 00 00 48 89 4C 24 20 4C 8B C7",
+                        CriFsLoader_LoadRegisteredFile = "48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81"
+                    }
+                },
+                new()
+                {
+                    SourcedFrom = "Persona 3 Portable / Persona 4 The Golden",
+                    CriVersion = "CRI File System/PCx64 Ver.2.82.15 Build:May 12 2022 19:34:26",
+                    CriCompiler = "MSC19.16.27045.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
+                        CriFs_InitializeLibrary = "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
+                        CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 70 08",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 11 04 00 00 48 89 4C 24 20 4C 8B C7",
+                        CriFsLoader_LoadRegisteredFile = "48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81"
+                    }
+                },
+            };
+        }
+        else if (IntPtr.Size == 4)
+        {
+            possibilities = null!;
+            /*
+            // For ~2014 version
+            helper.FindPatternOffset("55 8B EC 83 EC 68 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53 8B",
+                offset => CriFs_CalculateWorkSizeForLibrary = baseAddr + offset,
+                "CRI Binder Calculate Work Size for Library x86");
+
+            helper.FindPatternOffset("55 8B EC 83 EC 38 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 0C",
+                offset => CriFs_InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library x86");
+
+            helper.FindPatternOffset("56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                offset => CriFs_FinalizeLibrary = baseAddr + offset, "CRI Finalize FS Library x86");
+
+            helper.FindPatternOffset("55 8B EC 6A 01 FF 75 1C",
+                offset => CriFsBinder_BindCpk = baseAddr + offset, "CRI Binder Bind CPK x86");
+
+            helper.FindPatternOffset("55 8B EC FF 75 1C 8B 55",
+                offset => CriFsBinder_BindFiles = baseAddr + offset, "CRI Binder Bind Files x86");
+
+            helper.FindPatternOffset("55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
+                offset => CriFsBinder_GetSizeForBindFiles = baseAddr + offset,
+                "CRI Binder Get Size for Bind Files x86");
+
+            helper.FindPatternOffset("55 8B EC 56 8B 75 08 57 85 F6 74 35",
+                offset => CriFsBinder_GetStatus = baseAddr + offset, "CRI Binder Get Status x86");
+
+            helper.FindPatternOffset("55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
+                offset => CriFsBinder_SetPriority = baseAddr + offset, "CRI Binder Set Priority x86");
+
+            helper.FindPatternOffset(
+                "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
+                offset => CriFsBinder_Unbind = baseAddr + offset, "CRI Binder Unbind x86");
+
+            // Optional
+            */
+        }
+
+        foreach (var pos in possibilities)
+        {
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_CalculateWorkSizeForLibrary,
+                offset => pos.Results.CriFs_CalculateWorkSizeForLibrary = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_InitializeLibrary,
+                offset => pos.Results.CriFs_InitializeLibrary = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_FinalizeLibrary,
+                offset => pos.Results.CriFs_FinalizeLibrary = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindCpk,
+                offset => pos.Results.CriFsBinder_BindCpk = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindFiles,
+                offset => pos.Results.CriFsBinder_BindFiles = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Find,
+                offset => pos.Results.CriFsBinder_Find = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetSizeForBindFiles,
+                offset => pos.Results.CriFsBinder_GetSizeForBindFiles = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetStatus,
+                offset => pos.Results.CriFsBinder_GetStatus = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_SetPriority,
+                offset => pos.Results.CriFsBinder_SetPriority = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Unbind,
+                offset => pos.Results.CriFsBinder_Unbind = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Exists,
+                offset => pos.Results.CriFsIo_Exists = baseAddr + offset);
+
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Open,
+                offset => pos.Results.CriFsIo_Open = baseAddr + offset);
+
+            // Optional, used for printing loaded files.
+            helper.FindPatternOffsetSilent(pos.Patterns.CriFsLoader_LoadRegisteredFile,
+                offset => pos.Results.CriFsLoader_LoadRegisteredFile = baseAddr + offset);
+
+            // Rarely used
+            helper.FindPatternOffsetSilent(
+                pos.Patterns.CriFsIo_IsUtf8,
+                offset =>
+                {
+                    // Extract from cmp instruction, i.e. cmp [14028DC48], 0
+                    if (IntPtr.Size == 8)
+                    {
+                        var rip = baseAddr + offset;
+                        var cmpOffset = *(int*)(rip + 2);
+                        pos.Results.CriFsIo_IsUtf8 = (int*)((nint)rip + 7 + cmpOffset); // 7 = instruction length
+                    }
+                });
+        }
+
+        // Sig Scanner returns results in order they were requested [by API contract].
+        // We use this FindPattern to execute code once all other results have been gathered.
+        helper.FindPatternOffsetSilent("00", _ =>
+        {
+            var best = possibilities.OrderByDescending(info => info.Results.GetNumFoundPatterns()).First();
+            Pointers = best.Results;
+            
+            logger.Info("----- CRIFsV2Hook Analysis -----");
+            logger.Info("Closest CRI Version: {0}", best.CriVersion);
+            logger.Info("Compiler: {0}", best.CriCompiler);
+            logger.Info("Sourced From: {0}", best.SourcedFrom);
+
+            void PrintResult(long value, string functionName)
+            {
+                if (value != 0)
+                    logger.Info("Signature Found: {0} at {1}", functionName, value.ToString("X"));
+                else
+                    logger.Warning("Signature Missing: {0}", functionName);
+            }
+
+            PrintResult(best.Results.CriFs_CalculateWorkSizeForLibrary, nameof(criFs_CalculateWorkSizeForLibrary));
+            PrintResult(best.Results.CriFs_FinalizeLibrary, nameof(criFs_FinalizeLibrary));
+            PrintResult(best.Results.CriFs_InitializeLibrary, nameof(criFs_InitializeLibrary));
+
+            PrintResult(best.Results.CriFsBinder_BindCpk, nameof(criFsBinder_BindCpk));
+            PrintResult(best.Results.CriFsBinder_BindFiles, nameof(criFsBinder_BindFiles));
+            PrintResult(best.Results.CriFsBinder_Find, nameof(criFsBinder_Find));
+            PrintResult(best.Results.CriFsBinder_GetSizeForBindFiles, nameof(criFsBinder_GetWorkSizeForBindFiles));
+            PrintResult(best.Results.CriFsBinder_SetPriority, nameof(criFsBinder_SetPriority));
+            PrintResult(best.Results.CriFsBinder_GetStatus, nameof(criFsBinder_GetStatus));
+            PrintResult(best.Results.CriFsBinder_Unbind, nameof(criFsBinder_Unbind));
+
+            PrintResult(best.Results.CriFsLoader_LoadRegisteredFile, nameof(criFsLoader_LoadRegisteredFile_Internal));
+            
+            PrintResult(best.Results.CriFsIo_Open, nameof(criFsIo_Open));
+            PrintResult(best.Results.CriFsIo_Exists, nameof(criFsIo_Exists));
+            PrintResult((long)best.Results.CriFsIo_IsUtf8, "Is UTF8 Flag.");
+            logger.Info("----- CRIFsV2Hook Analysis -----");
+        });
+    }
+
+    /// <summary>
+    ///     Contains the information for one set of inputs for pointer scanning.
+    /// </summary>
+    public class CriPointerScanInfo
+    {
+        /// <summary>
+        ///     CRI version string, for example `CRI File System/PCx64 Ver.2.81.6 Build:Dec 28 2021 11:03:45`
+        /// </summary>
+        public required string CriVersion;
+
+        /// <summary>
+        ///     Compiler used to build CRI code. This is usually right after version string in binaries.
+        ///     e.g. MSC19.00.24210.0,MT
+        /// </summary>
+        public required string CriCompiler;
+
+        /// <summary>
+        ///     The game where these symbols were sourced from.
+        /// </summary>
+        public required string SourcedFrom;
+
+        /// <summary>
+        ///     Pointer scan results.
+        /// </summary>
+        public CriPointers Results;
+
+        /// <summary>
+        ///     Pointer scan patterns.
+        /// </summary>
+        public required CriPointerPatterns Patterns;
+    }
+
+    /// <summary>
+    ///     Contains pointer scan patterns, these correspond to the fields in <see cref="CriPointers" />.
+    /// </summary>
+    public struct CriPointerPatterns
+    {
+        internal required string CriFs_CalculateWorkSizeForLibrary;
+        internal required string CriFs_FinalizeLibrary;
+        internal required string CriFs_InitializeLibrary;
+
+        internal required string CriFsBinder_BindCpk;
+        internal required string CriFsBinder_BindFiles;
+        internal required string CriFsBinder_Find;
+        internal required string CriFsBinder_GetSizeForBindFiles;
+        internal required string CriFsBinder_SetPriority;
+        internal required string CriFsBinder_GetStatus;
+        internal required string CriFsBinder_Unbind;
+
+        internal required string CriFsLoader_LoadRegisteredFile;
+
+        internal required string CriFsIo_Open;
+        internal required string CriFsIo_Exists;
+        internal required string CriFsIo_IsUtf8;
+    }
+
+    public struct CriPointers
+    {
 /*
     Below are Function Order in original `.obj` file(s)
     for each relevant group of pointers.
@@ -87,14 +347,14 @@ internal static class CpkBinderPointers
     criFs_UpdateHandleStatus
 */
 
-    // Used for Init
-    internal static long CriFs_CalculateWorkSizeForLibrary;
-    internal static long CriFs_FinalizeLibrary;
-    internal static long CriFs_InitializeLibrary;
+        // Used for Init
+        internal long CriFs_CalculateWorkSizeForLibrary;
+        internal long CriFs_FinalizeLibrary;
+        internal long CriFs_InitializeLibrary;
 
 /*
     criFsBinder .obj file [2019]
-     
+
     There's also some other binder functions?? But they are
     in different .obj files. Maybe they were part of different .c/.h file
 
@@ -182,25 +442,27 @@ internal static class CpkBinderPointers
 
 */
 
-    // Used for binding
-    internal static long CriFsBinder_BindCpk;
-    internal static long CriFsBinder_BindFiles;
-    internal static long CriFsBinder_Find;
-    internal static long CriFsBinder_GetSizeForBindFiles;
-    internal static long CriFsBinder_SetPriority;
-    internal static long CriFsBinder_GetStatus;
-    internal static long CriFsBinder_Unbind;
-    
-    // (Optional)
-    internal static long CriFsLoader_LoadRegisteredFile;
-    
+        // Used for binding
+        internal long CriFsBinder_BindCpk;
+        internal long CriFsBinder_BindFiles;
+
+        internal long CriFsBinder_Find; // To correct case (match casing in original CPK) when looking for something
+
+        internal long CriFsBinder_GetSizeForBindFiles;
+        internal long CriFsBinder_SetPriority;
+        internal long CriFsBinder_GetStatus;
+        internal long CriFsBinder_Unbind;
+
+        // (Optional)
+        internal long CriFsLoader_LoadRegisteredFile; // printing loaded files
+
 /*
     Platform I/O functions:
-    
+
     Replace <XXX> with platform
-    
-        Win: Windows     
-        
+
+        Win: Windows
+
 
     criFsIoXXX_Exists
     criFsIoXXX_Delete
@@ -221,112 +483,33 @@ internal static class CpkBinderPointers
     criFsIoXXX_Resize
     criFsIoXXX_GetNativeFileHandle
 */
+        // Used for redirecting files out of game folder and fixing case sensitivity.
+        internal long CriFsIo_Open;
+        internal long CriFsIo_Exists;
+        internal unsafe int* CriFsIo_IsUtf8;
 
-    // Used for redirecting files out of game folder and fixing case sensitivity.
-    internal static long CriFsIo_Open;
-    internal static long CriFsIo_Exists;
-    internal static unsafe int* CriFsIo_IsUtf8;
-    
-    
-
-    public static unsafe void Init(SigScanHelper helper, nint baseAddr)
-    {
-        // TODO: Make a set of signatures for every known version.
-        // Then scan them all and pick set of signatures with most matches.
-        // Officially, this is postponed till Rust port, which will also bring Switch support, but PRs welcome.
-        
-        if (nint.Size == 8)
+        public unsafe int GetNumFoundPatterns()
         {
-            // For ~2019 version
-            helper.FindPatternOffset("48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
-                offset => CriFs_CalculateWorkSizeForLibrary = baseAddr + offset,
-                "CRI Binder Calculate Work Size for Library");
-            
-            helper.FindPatternOffset(
-                "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B 18 41 56 48 83 EC 60 48 8D 05 2C 89 46 01 41 8B E8 48 89 05 2A F8 49 02",
-                offset => CriFs_InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library");
+            int found = 0;
+            found += Convert.ToInt32(CriFs_CalculateWorkSizeForLibrary != 0);
+            found += Convert.ToInt32(CriFs_FinalizeLibrary != 0);
+            found += Convert.ToInt32(CriFs_InitializeLibrary != 0);
 
-            helper.FindPatternOffset("48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
-                offset => CriFs_FinalizeLibrary = baseAddr + offset, "CRI Initialize FS Library");
-            
-            helper.FindPatternOffset("48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
-                offset => CriFsBinder_BindCpk = baseAddr + offset, "CRI Binder Bind CPK");
+            found += Convert.ToInt32(CriFsBinder_BindCpk != 0);
+            found += Convert.ToInt32(CriFsBinder_BindFiles != 0);
+            found += Convert.ToInt32(CriFsBinder_Find != 0);
+            found += Convert.ToInt32(CriFsBinder_GetSizeForBindFiles != 0);
+            found += Convert.ToInt32(CriFsBinder_SetPriority != 0);
+            found += Convert.ToInt32(CriFsBinder_GetStatus != 0);
+            found += Convert.ToInt32(CriFsBinder_Unbind != 0);
 
-            helper.FindPatternOffset(
-                "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
-                offset => CriFsBinder_BindFiles = baseAddr + offset, "CRI Binder Bind Files");
+            found += Convert.ToInt32(CriFsLoader_LoadRegisteredFile != 0);
 
-            helper.FindPatternOffset("48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
-                offset => CriFsBinder_GetSizeForBindFiles = baseAddr + offset, "CRI Binder Get Size for Bind Files");
+            found += Convert.ToInt32(CriFsIo_Open != 0);
+            found += Convert.ToInt32(CriFsIo_Exists != 0);
+            found += Convert.ToInt32(CriFsIo_IsUtf8 != (void*)0);
             
-            helper.FindPatternOffset("48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
-                offset => CriFsBinder_GetStatus = baseAddr + offset, "CRI Binder Get Status");
-            
-            helper.FindPatternOffset("48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
-                offset => CriFsBinder_SetPriority = baseAddr + offset, "CRI Binder Set Priority");
-            
-            helper.FindPatternOffset("48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
-                offset => CriFsBinder_Unbind = baseAddr + offset, "CRI Binder Unbind");
-            
-            helper.FindPatternOffset("48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
-                offset => CriFsBinder_Find = baseAddr + offset, "CRI FS Binder: Find");
-            
-            // Capitalization Fixing
-            helper.FindPatternOffset("48 89 5C 24 18 57 48 81 EC 70 08",
-                offset => CriFsIo_Exists = baseAddr + offset, "CRI FS IO Exists");
-            
-            helper.FindPatternOffset("48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
-                offset => CriFsIo_Open = baseAddr + offset, "CRI FS IO Open");
-            
-            helper.FindPatternOffset("83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 11 04 00 00 48 89 4C 24 20 4C 8B C7",
-                offset =>
-                {
-                    // Extract from cmp instruction, i.e. cmp [14028DC48], 0
-                    var rip = baseAddr + offset;
-                    var cmpOffset = *(int*)(rip + 2);
-                    CriFsIo_IsUtf8 = (int*)((nint)rip + 7 + cmpOffset); // 7 = instruction length
-                }, "CRI FS IO Is UTF8");
-            
-            // Optional, used for printing loaded files.
-            helper.FindPatternOffset("48 89 5C 24 10 4C 89 4C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 81",
-                offset => CriFsLoader_LoadRegisteredFile = baseAddr + offset, "CRI FS Loader: Load Registered File");
-        }
-        else if (nint.Size == 4)
-        {
-            // For ~2014 version
-            helper.FindPatternOffset("55 8B EC 83 EC 68 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53 8B",
-                offset => CriFs_CalculateWorkSizeForLibrary = baseAddr + offset,
-                "CRI Binder Calculate Work Size for Library x86");
-
-            helper.FindPatternOffset("55 8B EC 83 EC 38 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 0C",
-                offset => CriFs_InitializeLibrary = baseAddr + offset, "CRI Initialize FS Library x86");
-
-            helper.FindPatternOffset("56 33 F6 39 35 ?? ?? ?? ?? 75 12",
-                offset => CriFs_FinalizeLibrary = baseAddr + offset, "CRI Finalize FS Library x86");
-
-            helper.FindPatternOffset("55 8B EC 6A 01 FF 75 1C",
-                offset => CriFsBinder_BindCpk = baseAddr + offset, "CRI Binder Bind CPK x86");
-
-            helper.FindPatternOffset("55 8B EC FF 75 1C 8B 55",
-                offset => CriFsBinder_BindFiles = baseAddr + offset, "CRI Binder Bind Files x86");
-
-            helper.FindPatternOffset("55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
-                offset => CriFsBinder_GetSizeForBindFiles = baseAddr + offset,
-                "CRI Binder Get Size for Bind Files x86");
-            
-            helper.FindPatternOffset("55 8B EC 56 8B 75 08 57 85 F6 74 35",
-                offset => CriFsBinder_GetStatus = baseAddr + offset, "CRI Binder Get Status x86");
-            
-            helper.FindPatternOffset("55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
-                offset => CriFsBinder_SetPriority = baseAddr + offset, "CRI Binder Set Priority x86");
-            
-            helper.FindPatternOffset(
-                "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
-                offset => CriFsBinder_Unbind = baseAddr + offset, "CRI Binder Unbind x86");
-            
-            // Optional
-            
-            
+            return found;
         }
     }
 }

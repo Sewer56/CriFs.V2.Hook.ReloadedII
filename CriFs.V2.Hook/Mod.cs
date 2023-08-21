@@ -86,7 +86,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         };
         
         // Patches
-        CpkBinderPointers.Init(scanHelper, baseAddr);
+        CpkBinderPointers.Init(scanHelper, baseAddr, _logger);
         DontLogCriDirectoryBinds.Activate(hookContext);
         
         // CPK Builder & Redirector

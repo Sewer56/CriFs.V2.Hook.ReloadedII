@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using CriFs.V2.Hook.CRI;
 using CriFs.V2.Hook.Utilities;
 using CriFs.V2.Hook.Utilities.Extensions;
 using FileEmulationFramework.Lib.Utilities;
@@ -43,6 +44,9 @@ public static unsafe class CpkBinder
     private static void* _libraryMemory;
     private static MemoryAllocatorWithLinkedListBackup _allocator;
 
+    /// <remarks>
+    /// This should be called after <see cref="CpkBinderPointers"/> is initialized.
+    /// </remarks>
     public static void Init(Logger logger, IReloadedHooks hooks)
     {
         _logger = logger;
@@ -50,32 +54,32 @@ public static unsafe class CpkBinder
             return;
 
         _findFileHook =
-            hooks.CreateHook<criFsBinder_Find>(CriFsBinderFindImpl, CriFsBinder_Find).Activate();
+            hooks.CreateHook<criFsBinder_Find>(CriFsBinderFindImpl, Pointers.CriFsBinder_Find).Activate();
         _initializeLibraryHook =
-            hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, CriFs_InitializeLibrary).Activate();
-        _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, CriFsBinder_BindCpk).Activate();
-        _ioExistsHook = hooks.CreateHook<criFsIo_Exists>(ExistsImpl, CriFsIo_Exists).Activate();
-        _ioOpenHook = hooks.CreateHook<criFsIo_Open>(CriFsOpenImpl, CriFsIo_Open).Activate();
+            hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, Pointers.CriFs_InitializeLibrary).Activate();
+        _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, Pointers.CriFsBinder_BindCpk).Activate();
+        _ioExistsHook = hooks.CreateHook<criFsIo_Exists>(ExistsImpl, Pointers.CriFsIo_Exists).Activate();
+        _ioOpenHook = hooks.CreateHook<criFsIo_Open>(CriFsOpenImpl, Pointers.CriFsIo_Open).Activate();
 
-        _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(CriFsBinder_BindFiles, out _);
+        _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(Pointers.CriFsBinder_BindFiles, out _);
         _getSizeForBindFilesFn =
-            hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(CriFsBinder_GetSizeForBindFiles, out _);
-        _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(CriFsBinder_GetStatus, out _);
-        _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(CriFsBinder_Unbind, out _);
+            hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(Pointers.CriFsBinder_GetSizeForBindFiles, out _);
+        _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(Pointers.CriFsBinder_GetStatus, out _);
+        _unbindFn = hooks.CreateWrapper<criFsBinder_Unbind>(Pointers.CriFsBinder_Unbind, out _);
         _getWorkSizeForLibraryFn =
-            hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(CriFs_CalculateWorkSizeForLibrary, out _);
+            hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(Pointers.CriFs_CalculateWorkSizeForLibrary, out _);
 
-        if (CriFs_FinalizeLibrary != 0)
-            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, CriFs_FinalizeLibrary)
+        if (Pointers.CriFs_FinalizeLibrary != 0)
+            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, Pointers.CriFs_FinalizeLibrary)
                 .Activate();
 
-        if (CriFsBinder_SetPriority != 0)
-            _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(CriFsBinder_SetPriority, out _);
+        if (Pointers.CriFsBinder_SetPriority != 0)
+            _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(Pointers.CriFsBinder_SetPriority, out _);
 
-        if (CriFsLoader_LoadRegisteredFile != 0)
+        if (Pointers.CriFsLoader_LoadRegisteredFile != 0)
             _loadRegisteredFileFn =
                 hooks.CreateHook<criFsLoader_LoadRegisteredFile_Internal>(LoadRegisteredFileInternal,
-                    CriFsLoader_LoadRegisteredFile).Activate();
+                    Pointers.CriFsLoader_LoadRegisteredFile).Activate();
     }
     
     #region Init
@@ -127,29 +131,35 @@ public static unsafe class CpkBinder
 
     private static bool AssertWillFunction()
     {
-        if (CriFsBinder_BindCpk == 0 || CriFsBinder_BindFiles == 0 || CriFsBinder_GetSizeForBindFiles == 0 ||
-            CriFsBinder_GetStatus == 0 || CriFsBinder_Unbind == 0 || CriFs_InitializeLibrary == 0 ||
-            CriFs_CalculateWorkSizeForLibrary == 0 || CriFsIo_Open == 0 || CriFsBinder_Find == 0)
+        if (Pointers.CriFsBinder_BindCpk == 0 || 
+            Pointers.CriFsBinder_BindFiles == 0 || 
+            Pointers.CriFsBinder_GetSizeForBindFiles == 0 ||
+            Pointers.CriFsBinder_GetStatus == 0 || 
+            Pointers.CriFsBinder_Unbind == 0 || 
+            Pointers.CriFs_InitializeLibrary == 0 ||
+            Pointers.CriFs_CalculateWorkSizeForLibrary == 0 || 
+            Pointers.CriFsIo_Open == 0 || 
+            Pointers.CriFsBinder_Find == 0)
         {
             _logger.Fatal("One of the required functions is missing (see log). CRI FS version in this game is incompatible.");
             return false;
         }
 
-        if (CriFsIo_Exists == 0)
+        if (Pointers.CriFsIo_Exists == 0)
             _logger.Warning("IO Exists is missing. This should generally have no runtime impact.");
 
-        if (CriFsIo_IsUtf8 == (void*)0)
+        if (Pointers.CriFsIo_IsUtf8 == (void*)0)
             _logger.Warning("IsUtf8 flag is missing. We will assume ANSI mode.");
 
-        if (CriFs_FinalizeLibrary == 0)
+        if (Pointers.CriFs_FinalizeLibrary == 0)
             _logger.Warning(
                 "FinalizeLibrary function is missing. Ignore this unless game can shutdown and restart CRI APIs for some reason (not previously seen in wild; but maybe possible in e.g. game collections).");
 
-        if (CriFsBinder_SetPriority == 0)
+        if (Pointers.CriFsBinder_SetPriority == 0)
             _logger.Warning(
                 "SetPriority function is missing. There's no guarantee custom mod files will have priority over originals.");
 
-        if (CriFsLoader_LoadRegisteredFile == 0)
+        if (Pointers.CriFsLoader_LoadRegisteredFile == 0)
             _logger.Warning("LoadRegisteredFile function is missing. File Access Logging is Disabled.");
 
         return true;
@@ -328,7 +338,7 @@ public static unsafe class CpkBinder
 
     private static nint ExistsImpl(byte* stringPtr, int* result)
     {
-        if (CriFsIo_IsUtf8 != (int*)0 && *CriFsIo_IsUtf8 == 1)
+        if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
             str!.ReplaceBackWithForwardSlashInPlace();
@@ -358,7 +368,7 @@ public static unsafe class CpkBinder
 
     private static nint CriFsOpenImpl(byte* stringPtr, int fileCreationType, int desiredAccess, long** result)
     {
-        if (CriFsIo_IsUtf8 != (int*)0 && *CriFsIo_IsUtf8 == 1)
+        if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
             str!.ReplaceBackWithForwardSlashInPlace();
