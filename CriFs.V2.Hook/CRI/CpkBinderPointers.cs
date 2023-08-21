@@ -17,6 +17,9 @@ internal static class CpkBinderPointers
     They should match these functions.
     Note: Some functions may be skipped/not present,
           this will be because unused code will be eliminated.
+
+    Note: Year is provided in listings; in some earlier/later versions,
+          these groupings might change
 */
 
 /*
@@ -185,6 +188,35 @@ internal static class CpkBinderPointers
     internal static long CriFsBinder_Unbind;
     
     internal static long CriFsLoader_LoadRegisteredFile;
+    
+/*
+    Platform I/O functions:
+    
+    Replace <XXX> with platform
+    
+        Win: Windows     
+        
+
+    criFsIoXXX_Exists
+    criFsIoXXX_Delete
+    criFsIoXXX_Rename
+    criFsIoXXX_Open
+    criFsIoXXX_Close=
+    <Unknown>
+    criFsIoXXX_GetFileSize
+    criFsIoXXX_Read
+    criFsIoXXX_IsReadComplete
+    <Unknown>
+    criFsIoXXX_GetReadSize
+    criFsIoXXX_Write
+    criFsIoXXX_IsWriteComplete
+    <Unknown>
+    criFsIoXXX_GetWriteSize
+    criFsIoXXX_Flush
+    criFsIoXXX_Resize
+    criFsIoXXX_GetNativeFileHandle
+*/
+    
 
     public static void Init(SigScanHelper helper, nint baseAddr)
     {

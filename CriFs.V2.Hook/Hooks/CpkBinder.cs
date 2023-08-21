@@ -188,6 +188,7 @@ public static unsafe class CpkBinder
         }
 
         var workMem = _allocator.Allocate(size);
+        var watch = Stopwatch.StartNew();
         err = _bindFilesFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem.Address, size, &bndrid);
         
         if (err < 0)
@@ -205,7 +206,7 @@ public static unsafe class CpkBinder
             {
                 case CRIFSBINDER_STATUS_COMPLETE:
                     _setPriorityFn?.Invoke(bndrid, priority);
-                    _logger.Info("Bind Complete! {0}, Id: {1}", fileListStr, bndrid);
+                    _logger.Info("Bind Complete! {0}, Id: {1}, Time: {2}ms", fileListStr, bndrid, watch.ElapsedMilliseconds);
                     Bindings.Add(new CpkBinding(workMem, bndrid));
                     return;
                 case CRIFSBINDER_STATUS_ERROR:
