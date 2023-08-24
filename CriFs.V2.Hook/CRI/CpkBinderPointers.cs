@@ -111,7 +111,7 @@ internal static class CpkBinderPointers
                         CriFsBinder_Find = "55 8B EC 53 8B 5D 14 56 57",
                         CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
                         CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
-                        CriFsBinder_SetPriority = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33", // borrowed from Sonic Lost World, just in case
+                        CriFsBinder_SetPriority = "",
                         CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
                         CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
@@ -123,41 +123,77 @@ internal static class CpkBinderPointers
 
         foreach (var pos in possibilities)
         {
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_CalculateWorkSizeForLibrary,
-                offset => pos.Results.CriFs_CalculateWorkSizeForLibrary = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_CalculateWorkSizeForLibrary))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFs_CalculateWorkSizeForLibrary,
+                    offset => pos.Results.CriFs_CalculateWorkSizeForLibrary = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_InitializeLibrary,
-                offset => pos.Results.CriFs_InitializeLibrary = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_InitializeLibrary))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFs_InitializeLibrary,
+                    offset => pos.Results.CriFs_InitializeLibrary = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFs_FinalizeLibrary,
-                offset => pos.Results.CriFs_FinalizeLibrary = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_FinalizeLibrary))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFs_FinalizeLibrary,
+                    offset => pos.Results.CriFs_FinalizeLibrary = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindCpk,
-                offset => pos.Results.CriFsBinder_BindCpk = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindCpk))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindCpk,
+                    offset => pos.Results.CriFsBinder_BindCpk = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindFiles,
-                offset => pos.Results.CriFsBinder_BindFiles = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindFiles))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindFiles,
+                    offset => pos.Results.CriFsBinder_BindFiles = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Find,
-                offset => pos.Results.CriFsBinder_Find = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_Find))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Find,
+                    offset => pos.Results.CriFsBinder_Find = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetSizeForBindFiles,
-                offset => pos.Results.CriFsBinder_GetSizeForBindFiles = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetSizeForBindFiles))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetSizeForBindFiles,
+                    offset => pos.Results.CriFsBinder_GetSizeForBindFiles = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetStatus,
-                offset => pos.Results.CriFsBinder_GetStatus = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetStatus))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetStatus,
+                    offset => pos.Results.CriFsBinder_GetStatus = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_SetPriority,
-                offset => pos.Results.CriFsBinder_SetPriority = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_SetPriority))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_SetPriority,
+                    offset => pos.Results.CriFsBinder_SetPriority = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Unbind,
-                offset => pos.Results.CriFsBinder_Unbind = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_Unbind))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Unbind,
+                    offset => pos.Results.CriFsBinder_Unbind = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Exists,
-                offset => pos.Results.CriFsIo_Exists = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsIo_Exists))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Exists,
+                    offset => pos.Results.CriFsIo_Exists = baseAddr + offset);
+            }
 
-            helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Open,
-                offset => pos.Results.CriFsIo_Open = baseAddr + offset);
+            if (!string.IsNullOrEmpty(pos.Patterns.CriFsIo_Open))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Open,
+                    offset => pos.Results.CriFsIo_Open = baseAddr + offset);
+            }
 
             // Rarely used
             // Not supported in older library versions
