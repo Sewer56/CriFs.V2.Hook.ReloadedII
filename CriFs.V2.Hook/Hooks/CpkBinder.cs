@@ -319,6 +319,9 @@ public static unsafe class CpkBinder
 
     private static nint ExistsImpl(byte* stringPtr, int* result)
     {
+        if (stringPtr == null)
+            return _ioExistsHook!.OriginalFunction(stringPtr, result);
+
         if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
@@ -353,6 +356,9 @@ public static unsafe class CpkBinder
 
     private static nint CriFsOpenImpl(byte* stringPtr, int fileCreationType, int desiredAccess, nint** result)
     {
+        if (stringPtr == null)
+            return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
+
         if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
@@ -387,6 +393,9 @@ public static unsafe class CpkBinder
     
     private static nint CriFsBinderFindImpl(nint bndrhn, nint path, void* finfo, bool* exist)
     {
+        if (path == 0)
+            return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
+
         var str = Marshal.PtrToStringAnsi(path);
         str!.ReplaceBackWithForwardSlashInPlace();
         
