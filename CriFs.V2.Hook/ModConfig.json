@@ -63,7 +63,9 @@
     "p3p.exe",
     "p3p_sln_dt_m.exe",
     "sonic forces.exe",
-    "opu3.exe"
+    "opu3.exe",
+    "slw.exe",
+    "sonicgenerations.exe"
   ],
   "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }

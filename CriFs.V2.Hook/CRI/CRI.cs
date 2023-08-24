@@ -86,7 +86,8 @@ public static unsafe class CRI
     [Function32(CallConv32.Cdecl)]
     public delegate CriError criFsBinder_BindFiles(IntPtr bndrhn, IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid);
-
+    
+    // In SonicGenerations bndrhn seems unused.
     
     /// <summary>
     /// Finds a file that's attached to a given binder.

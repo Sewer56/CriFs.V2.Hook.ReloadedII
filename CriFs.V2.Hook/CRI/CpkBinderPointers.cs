@@ -117,7 +117,51 @@ internal static class CpkBinderPointers
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
                         CriFsIo_IsUtf8 = "", // not supported
                     }
-                }
+                },
+                new()
+                {
+                    SourcedFrom = "Sonic Lost World",
+                    CriVersion = "CRI File System/PCx86 Ver.2.59.21 Build:Feb 19 2013 12:43:50",
+                    CriCompiler = "MSC1600,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "55 8B EC 83 EC 64 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 34 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 08 56 57 8B",
+                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
+                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
+                        CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
+                        CriFsBinder_SetPriority = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
+                        CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13",
+                        CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                    }
+                },
+                new()
+                {
+                    SourcedFrom = "Sonic Generations",
+                    CriVersion = "CRI File System/PCx86 Ver.2.24.04 Build:Apr  1 2011 21:08:31",
+                    CriCompiler = "MSC1500,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "55 8B EC 83 EC 4C 53",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56 33",
+                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFiles = "55 8B EC FF 75 18 8B 55",
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
+                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 10 02",
+                        CriFsBinder_GetStatus = "53 8B 5C 24 08 E8 ?? ?? ?? ?? 85 C0 75",
+                        CriFsBinder_SetPriority = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 33",
+                        CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsIo_Exists = "83 7C 24 04 00 56 74",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                    }
+                },
             };
         }
 
