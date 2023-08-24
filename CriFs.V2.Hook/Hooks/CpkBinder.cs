@@ -6,7 +6,8 @@ using CriFs.V2.Hook.Utilities;
 using CriFs.V2.Hook.Utilities.Extensions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.Definitions;
-using Reloaded.Memory.Sources;
+using Reloaded.Memory;
+using Reloaded.Memory.Structs;
 using static CriFs.V2.Hook.CRI.CpkBinderPointers;
 using static CriFs.V2.Hook.CRI.CRI;
 using static CriFs.V2.Hook.CRI.CRI.CriFsBinderStatus;
@@ -40,7 +41,7 @@ public static unsafe class CpkBinder
     private static readonly HashSet<IntPtr> BinderHandles = new(16); // 16 is default for max handle count.
     private static readonly List<CpkBinding> Bindings = new();
     private static int _additionalFiles;
-    private static void* _libraryMemory;
+    private static MemoryAllocation _libraryMemory;
     private static MemoryAllocatorWithLinkedListBackup _allocator;
     private static bool _printFileAccess;
     private static bool _printFileRedirects;
@@ -85,7 +86,7 @@ public static unsafe class CpkBinder
         // No need to clear _allocator, because it's only used for CRI related stuff
         // so any data in it will become invalid after it's done here.
         var result = _finalizeLibraryHook!.OriginalFunction();
-        Memory.Instance.Free((nuint)_libraryMemory);
+        Memory.Instance.Free(_libraryMemory);
         return result;
     }
 
@@ -103,8 +104,8 @@ public static unsafe class CpkBinder
 
         // Replace the buffer with our own one.
         _getWorkSizeForLibraryFn!(config, &size);
-        _libraryMemory = (void*)Memory.Instance.Allocate(size);
-        return _initializeLibraryHook!.OriginalFunction(config, _libraryMemory, size);
+        _libraryMemory = Memory.Instance.Allocate((nuint)size);
+        return _initializeLibraryHook!.OriginalFunction(config, (void*)_libraryMemory.Address, size);
     }
 
     private static void UpdateCriConfig(CriFsConfig* config)

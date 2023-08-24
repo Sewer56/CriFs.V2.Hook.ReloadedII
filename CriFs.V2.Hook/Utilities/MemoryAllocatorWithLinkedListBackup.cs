@@ -1,4 +1,5 @@
-﻿using Reloaded.Memory.Sources;
+﻿using Reloaded.Memory;
+using Reloaded.Memory.Structs;
 
 namespace CriFs.V2.Hook.Utilities;
 
@@ -16,16 +17,20 @@ internal readonly struct MemoryAllocatorWithLinkedListBackup
         if (data != null)
             return new LinkedListAllocation(data, _allocator);
 
-        return new NativeMemoryAllocation(Memory.Instance.Allocate(size));
+        return new NativeMemoryAllocation(Memory.Instance.Allocate((nuint)size));
     }
 }
 
-internal struct NativeMemoryAllocation : IMemoryAllocation
+internal unsafe struct NativeMemoryAllocation : IMemoryAllocation
 {
-    public unsafe byte* Address { get; }
-    public unsafe NativeMemoryAllocation(nuint address) => Address = (byte*)address;
-    
-    public unsafe void Dispose() => Memory.Instance.Free((nuint)Address);
+    public byte* Address => (byte*)Allocation.Address; 
+    public unsafe MemoryAllocation Allocation { get; }
+    public unsafe NativeMemoryAllocation(MemoryAllocation alloc)
+    {
+        Allocation = alloc;
+    }
+
+    public unsafe void Dispose() => Memory.Instance.Free(Allocation);
 }
 
 internal struct LinkedListAllocation : IMemoryAllocation

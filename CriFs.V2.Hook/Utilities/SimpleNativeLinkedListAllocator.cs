@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using CriFs.V2.Hook.Hooks;
-using Reloaded.Memory.Sources;
 
 namespace CriFs.V2.Hook.Utilities;
 

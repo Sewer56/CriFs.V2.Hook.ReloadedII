@@ -1,4 +1,5 @@
-﻿using Reloaded.Memory.Sources;
+﻿using Reloaded.Memory;
+using Reloaded.Memory.Interfaces;
 
 namespace CriFs.V2.Hook.Hooks;
 
@@ -18,8 +19,8 @@ internal class DontLogCriDirectoryBinds
             var nopJmpOne = (nuint)(baseAddr + offset + 3);
             var nopJmpTwo = nopJmpOne + 10;
             var nopJmp = new byte[] { 0x90, 0x90 };
-            Memory.Instance.SafeWriteRaw(nopJmpOne, nopJmp);
-            Memory.Instance.SafeWriteRaw(nopJmpTwo, nopJmp);
+            Memory.Instance.SafeWrite(nopJmpOne, nopJmp);
+            Memory.Instance.SafeWrite(nopJmpTwo, nopJmp);
         }, "Disable CRI Bind Logging");
     }
 }
