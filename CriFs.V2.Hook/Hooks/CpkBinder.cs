@@ -7,6 +7,8 @@ using CriFs.V2.Hook.Utilities.Extensions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Memory;
+using Reloaded.Memory.Interfaces;
+using Reloaded.Memory.Sigscan.Definitions;
 using Reloaded.Memory.Structs;
 using static CriFs.V2.Hook.CRI.CpkBinderPointers;
 using static CriFs.V2.Hook.CRI.CRI;
@@ -49,7 +51,7 @@ public static unsafe class CpkBinder
     /// <remarks>
     /// This should be called after <see cref="CpkBinderPointers"/> is initialized.
     /// </remarks>
-    public static void Init(Logger logger, IReloadedHooks hooks)
+    public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory)
     {
         _logger = logger;
         if (!AssertWillFunction())
@@ -77,6 +79,20 @@ public static unsafe class CpkBinder
 
         if (Pointers.CriFsBinder_SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(Pointers.CriFsBinder_SetPriority, out _);
+        
+        // Patch bug/oversight in older CRI SDK where BindFiles only binds 1 file
+        var bindFiles = Pointers.CriFsBinder_BindFiles;
+        if (IntPtr.Size == 4 && RuntimeInformation.ProcessArchitecture == Architecture.X86)
+        {
+            var scanner = scannerFactory.CreateScanner((byte*)bindFiles, 100);
+            var ofs = scanner.FindPattern("6A 01 FF");
+            if (!ofs.Found) 
+                return;
+
+            logger.Info("Patching BindFiles' 1 file limit on x86");
+            Span<byte> newBytes = stackalloc byte[] { 0x6A, 0xFF };
+            Memory.Instance.SafeWrite((nuint)(bindFiles + ofs.Offset), newBytes);
+        }
     }
     
     #region Init

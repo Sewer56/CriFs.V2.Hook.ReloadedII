@@ -12,6 +12,7 @@ using CriFs.V2.Hook.Utilities.Extensions;
 using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Memory.Sigscan.Definitions;
 using Reloaded.Memory.SigScan.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Reloaded.Mod.Interfaces.Internal;
@@ -54,6 +55,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     private readonly ReloadedBindBuilderCreator? _cpkBuilder;
     private readonly BindDirectoryAcquirer _directoryAcquirer;
     private readonly Api _api;
+    private IScannerFactory _scannerFactory;
 
     public Mod(ModContext context)
     {
@@ -71,6 +73,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         // and some other neat features, override the methods in ModBase.
 
         _modLoader.GetController<IStartupScanner>().TryGetTarget(out var startupScanner);
+        _modLoader.GetController<IScannerFactory>().TryGetTarget(out _scannerFactory);
         var scanHelper = new SigScanHelper(_logger, startupScanner);
         var currentProcess = Process.GetCurrentProcess();
         var mainModule = currentProcess.MainModule;
@@ -151,7 +154,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         AssertAwbIncompatibility();
-        CpkBinder.Init(_logger, _hooks!);
+        CpkBinder.Init(_logger, _hooks!, _scannerFactory);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.Build(); 
