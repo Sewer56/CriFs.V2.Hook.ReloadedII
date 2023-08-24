@@ -351,7 +351,7 @@ public static unsafe class CpkBinder
         }
     }
 
-    private static nint CriFsOpenImpl(byte* stringPtr, int fileCreationType, int desiredAccess, long** result)
+    private static nint CriFsOpenImpl(byte* stringPtr, int fileCreationType, int desiredAccess, nint** result)
     {
         if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {

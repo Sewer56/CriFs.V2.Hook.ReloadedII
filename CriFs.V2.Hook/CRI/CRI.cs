@@ -165,7 +165,7 @@ public static unsafe class CRI
     /// <param name="result">Result of the operation.</param>
     [Function64(CallConv64.Microsoft)]
     [Function32(CallConv32.Cdecl)]
-    public delegate IntPtr criFsIo_Open(byte *stringPtr, int fileCreationType, int desiredAccess, long** result);
+    public delegate IntPtr criFsIo_Open(byte *stringPtr, int fileCreationType, int desiredAccess, nint** result);
     
     /// <summary>
     /// Status of the CRI binder.
