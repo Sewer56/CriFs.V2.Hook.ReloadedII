@@ -1,29 +1,20 @@
 # About
 
-CRI FileSystem V2 Hook is a mod based on [Reloaded II](https://reloaded-project.github.io/Reloaded-II/) that allows you to add/replace files in games that use CRI Middleware and the CPK container.  
-
-# Usage
-
-[Learn more about this project on the wiki.](https://sewer56.dev/CriFs.V2.Hook.ReloadedII)
+CRI FileSystem V2 Hook is a mod based on [Reloaded II](https://reloaded-project.github.io/Reloaded-II/) that allows you to add/replace files in games that use CRI Middleware and the CPK container.
 
 # Support
 
-This universal mod targets x64 versions of games using CRI MiddleWare's V2 File System built with MSVC compiler.  
-Work is based on `CRI File System/PCx64 Ver.2.81.6 Build:Dec 28 2021 11:03:45`.  
-Other versions close to this version will likely work, but there's no guarantee.  
+This universal mod targets games using various versions of CRI MiddleWare's V2 File System.
 
-Currently it is known to work on the following applications.
-
-- Persona 5 Royal  
-- Persona 4 Golden Remaster Edition (2022, a.k.a. P4G64)  
-- Sonic Frontiers
+For a full list of supported games, see the [wiki support table](https://sewer56.dev/CriFs.V2.Hook.ReloadedII/#support).
 
 ## Additional Features
 
-- Hot Reload (Add/Replace files without app restart).  
-- API (dynamically add files, set probing paths, etc.)  
-- Log files accessed by application.  
-- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](https://sewer56.dev/CriFs.V2.Hook.ReloadedII/usage-awb).  
+- Hot Reload (Add/Replace files without app restart).
+- API (dynamically add files, etc.)
+- Log files accessed by application.
+- Log redirected files.
+- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](./usage-awb.md).
 
 # Building
 
