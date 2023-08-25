@@ -20,11 +20,33 @@ internal static class CpkBinderPointers
 
         if (IntPtr.Size == 8)
         {
+            // 64-bit x64 games
             // For more details on individual pointers, see CriPointers struct itself
             // Note: Please sort this list by build date.
             possibilities = new CriPointerScanInfo[]
             {
-                
+                new()
+                {
+                    SourcedFrom = "Yakuza Kiwami",
+                    CriVersion = "CRI File System/PCx64 Ver.2.71.02 Build:Oct  6 2015 19:45:41",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
+                        CriFs_InitializeLibrary = "48 89 5C 24 18 48 89 7C 24 20 55 41",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41", // BindFile
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75",
+                        CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 60 04",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38"
+                    }
+                },
                 new()
                 {
                     SourcedFrom = "Sonic Forces",
@@ -95,34 +117,12 @@ internal static class CpkBinderPointers
         }
         else if (IntPtr.Size == 4)
         {
+            // 32-bit x86 games
             // For more details on individual pointers, see CriPointers struct itself
             // Note: Please sort this list by build date.
             possibilities = new CriPointerScanInfo[]
             {
-                
-                new()
-                {
-                    SourcedFrom = "Sonic Lost World",
-                    CriVersion = "CRI File System/PCx86 Ver.2.59.21 Build:Feb 19 2013 12:43:50",
-                    CriCompiler = "MSC1600,MT",
-                    Patterns = new CriPointerPatterns
-                    {
-                        CriFs_CalculateWorkSizeForLibrary = "55 8B EC 83 EC 64 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53",
-                        CriFs_InitializeLibrary = "55 8B EC 83 EC 34 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 08 56 57 8B",
-                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
-                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
-                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
-                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
-                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
-                        CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
-                        CriFsBinder_SetPriority = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
-                        CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13",
-                        CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
-                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "", // not supported
-                    }
-                },
-                
+                                
                 new()
                 {
                     SourcedFrom = "Sonic Generations",
@@ -141,6 +141,28 @@ internal static class CpkBinderPointers
                         CriFsBinder_SetPriority = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 33",
                         CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
                         CriFsIo_Exists = "83 7C 24 04 00 56 74",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                    }
+                },
+                new()
+                {
+                    SourcedFrom = "Sonic Lost World",
+                    CriVersion = "CRI File System/PCx86 Ver.2.59.21 Build:Feb 19 2013 12:43:50",
+                    CriCompiler = "MSC1600,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "55 8B EC 83 EC 64 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C 53",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 34 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 08 56 57 8B",
+                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
+                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
+                        CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
+                        CriFsBinder_SetPriority = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
+                        CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13",
+                        CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
                         CriFsIo_IsUtf8 = "", // not supported
                     }

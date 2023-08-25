@@ -10,11 +10,13 @@ For a full list of supported games, see the [wiki support table](https://sewer56
 
 ## Additional Features
 
-- Hot Reload (Add/Replace files without app restart).
-- API (dynamically add files, etc.)
-- Log files accessed by application.
-- Log redirected files.
-- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](./usage-awb.md).
+- Mods can use case-insensitive file paths. (Note: CRI is Case Sensitive)  
+- Supports games using both UTF-8 and ANSI encoding.  
+- Hot Reload (Add/Replace files without app restart).  
+- API (dynamically add files, etc.)  
+- Log files accessed by application.  
+- Log redirected files.  
+- Replace music in AWB files inside CPKs without using additional disk space, [via an extension mod](./usage-awb.md).  
 
 # Building
 
