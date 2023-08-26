@@ -67,7 +67,10 @@
     "slw.exe",
     "sonicgenerations.exe",
     "yakuzakiwami.exe",
-    "bayonetta.exe"
+    "bayonetta.exe",
+    "tekkengame-win64-shipping.exe",
+    "sonic_vis.exe",
+    "sonic.exe"
   ],
   "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }
