@@ -419,6 +419,13 @@ We extract the int32 boolean from here.
 
 You are done. Go test :p.
 
+### DisableFileBindWarning
+
+!!! note "Only implemented for x64 games, if you run into an x86 game with this, contribute to the project."
+
+Some games might report `The contents file not found in the binderhn` to console in later CRI SDKs.  
+This signature points to the conditional `jmp` instruction to disable this printout.  
+
 ## When You're Done
 
 For debugging purposes, feel free to use the toggles inside CriFsV2Hook's mod configuration.

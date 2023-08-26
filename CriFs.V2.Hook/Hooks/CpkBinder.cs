@@ -496,6 +496,32 @@ public static unsafe class CpkBinder
         Marshal.FreeHGlobal(tempStr);
         return err;
     }
+
+    // x86/x64 specific code
+    private static byte[] _previousCallCode = new byte[5];
+    private static byte[] _newCallCode = { 0x90, 0x90, 0x90, 0x90, 0x90 };
+    public static void SetDisableLogging(bool disableLogging)
+    {
+        // Not supported on non-x64
+        // TODO: Separate patch for x86
+        if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
+            return;
+            
+        // Patch disable logging permanently
+        if (Pointers.DisableFileBindWarning == 0)
+            return;
+
+        var disableWarn = (byte*)Pointers.DisableFileBindWarning;
+        if (disableLogging)
+        {
+            Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode.AsSpan());
+            Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode.AsSpan());
+        }
+        else
+        {
+            Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode.AsSpan());
+        }
+    }
 }
 
 internal readonly struct CpkBinding : IDisposable

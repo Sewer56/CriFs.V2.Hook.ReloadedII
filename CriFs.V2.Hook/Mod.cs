@@ -90,8 +90,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         
         // Patches
         CpkBinderPointers.Init(scanHelper, baseAddr, _logger);
-        DontLogCriDirectoryBinds.Activate(hookContext);
-        
+
         // CPK Builder & Redirector
         var modConfigDirectory = _modLoader.GetDirectoryForModId(_modConfig.ModId);
         var currentProcessProvider = new CurrentProcessProvider(currentProcess.Id);
@@ -155,6 +154,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         AssertAwbIncompatibility();
         CpkBinder.Init(_logger, _hooks!, _scannerFactory);
+        CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.Build(); 
@@ -190,6 +190,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _configuration = configuration;        
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
+        CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.SetHotReload(_configuration.HotReload);
