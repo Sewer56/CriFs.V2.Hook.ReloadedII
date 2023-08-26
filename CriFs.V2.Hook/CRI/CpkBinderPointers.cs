@@ -24,7 +24,28 @@ internal static class CpkBinderPointers
             // For more details on individual pointers, see CriPointers struct itself
             // Note: Please sort this list by build date.
             possibilities = new CriPointerScanInfo[]
-            {
+            {                
+                new()
+                {
+                    SourcedFrom = "One Piece Burning Blood",
+                    CriVersion = "CRI File System/PCx64 Ver.2.70.00 Build:Oct  8 2015 13:15:23",
+                    CriCompiler = "MSC16.00.40219.1,MT",
+                    Patterns = new CriPointerPatterns
+                    {   CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 55 41 56 48 8D",
+                        CriFs_InitializeLibrary = "48 89 5C 24 18 48 89 74 24 20 55 41",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC 70",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48",
+                        CriFsBinder_Find = "48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 41 54 48 83 EC 40 45",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75",
+                        CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 60",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38"
+                    }
+                },
                 new()
                 {
                     SourcedFrom = "Yakuza Kiwami",
