@@ -315,7 +315,7 @@ public static unsafe class CpkBinder
             {
                 case CRIFSBINDER_STATUS_COMPLETE:
                     _setPriorityFn?.Invoke(bndrid, priority);
-                    _logger.Info("Bind Complete! {0}, Id: {1}, Time: {2}ms", fileListStr, bndrid,
+                    _logger.Info("Bind Complete! {0} files, Id: {1}, Time: {2}ms", _content.Count, bndrid,
                         watch.ElapsedMilliseconds);
                     Bindings.Add(new CpkBinding(workMem, bndrid));
                     return;
