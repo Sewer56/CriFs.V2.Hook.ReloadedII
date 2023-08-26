@@ -16,6 +16,11 @@ namespace CriFs.V2.Hook.Utilities;
 public class SimpleNativeLinkedListAllocator
 {
     /// <summary>
+    /// Returns true if the allocator points to null.
+    /// </summary>
+    public unsafe bool IsNull => _startOfBuffer == null;
+    
+    /// <summary>
     ///     Start of the buffer in memory.
     /// </summary>
     private readonly unsafe byte* _startOfBuffer;
@@ -34,7 +39,7 @@ public class SimpleNativeLinkedListAllocator
     ///     Address of the end of the buffer.
     /// </summary>
     private unsafe LinkedListItem* EndOfBuffer => (LinkedListItem*)(_startOfBuffer + _bufferSize);
-
+    
     /// <summary />
     /// <param name="memoryPtr">Address of free memory region.</param>
     /// <param name="memorySize">Size of memory region.</param>

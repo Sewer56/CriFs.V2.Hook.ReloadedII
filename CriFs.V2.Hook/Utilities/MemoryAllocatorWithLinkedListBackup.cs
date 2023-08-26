@@ -13,9 +13,12 @@ internal readonly struct MemoryAllocatorWithLinkedListBackup
 
     public unsafe IMemoryAllocation Allocate(int size)
     {
-        var data = _allocator.Allocate(size);
-        if (data != null)
-            return new LinkedListAllocation(data, _allocator);
+        if (!_allocator.IsNull)
+        {
+            var data = _allocator.Allocate(size);
+            if (data != null)
+                return new LinkedListAllocation(data, _allocator);
+        }
 
         return new NativeMemoryAllocation(Memory.Instance.Allocate((nuint)size));
     }
