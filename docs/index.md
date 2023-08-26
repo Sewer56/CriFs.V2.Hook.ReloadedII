@@ -19,6 +19,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking. Missing `SetPriority`. | 
 | Tekken 7                      | Jul 27 2017 11:01:21 | 2.73.00        | MSC17.00.61030.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
 | Sonic Forces                  | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | ⚠️                                                                                       | 
+| Yakuza Kiwami 2               | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
 | Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                                          | 
 | Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
 | Persona 4 The Golden (64-bit) | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
