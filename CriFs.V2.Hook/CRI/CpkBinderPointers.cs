@@ -49,6 +49,28 @@ internal static class CpkBinderPointers
                 },
                 new()
                 {
+                    SourcedFrom = "Tekken 7",
+                    CriVersion = "CRI File System/PCx64 Ver.2.73.00 Build:Jul 27 2017 11:01:21",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 D9 48 81 EC 90 00 00 00 48 8B F2",
+                        CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 8B EC 48 83 EC 50",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 08 48 89 70 18 57 48 81 EC 30",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18 8D 58 FE 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB 3E",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsIo_Exists = "48 89 5C 24 08 57 48 81 EC 50 04",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 09 02 00 00 48 89 4C 24 20 44 8D 48 01 4C 8B C7"
+                    }
+                },
+                new()
+                {
                     SourcedFrom = "Sonic Forces",
                     CriVersion = "CRI File System/PCx64 Ver.2.75.05 Build:Oct  6 2017 14:17:55",
                     CriCompiler = "MSC17.00.61030.0,MT",
@@ -122,7 +144,51 @@ internal static class CpkBinderPointers
             // Note: Please sort this list by build date.
             possibilities = new CriPointerScanInfo[]
             {
-                                
+                new()
+                {
+                    SourcedFrom = "Sonic 4 Episode 1 (Not Supported, Missing APIs)",
+                    CriVersion = "CRI File System/PCx86 Ver.2.24.04 Build:Apr  1 2011 21:08:31",
+                    CriCompiler = "MSC1400,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "83 3D ?? ?? ?? ?? ?? 75 12 68 ?? ?? ?? ?? 6A 00 E8 ?? ?? ?? ?? 59 59 83 C8 FF C3 E8 ?? ?? ?? ?? E8 ?? ?? ?? ?? E8",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56",
+                        CriFs_FinalizeLibrary = "83 3D ?? ?? ?? ?? ?? 75 12 68 ?? ?? ?? ?? 6A 00 E8 ?? ?? ?? ?? 59 59 83 C8 FF C3 E8 ?? ?? ?? ?? E8 ?? ?? ?? ?? E8",
+                        CriFsBinder_BindCpk = "", // bindCpkSub exists but not BindCpk. Because an under the hood method is used.
+                        CriFsBinder_BindFiles = "",
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74 03 83 26 00 83 7D 10 00 74 09 FF 75 10 E8 ?? ?? ?? ?? 59 E8 ?? ?? ?? ?? 85 C0 74 05 83 C8 FF EB 16",
+                        CriFsBinder_GetSizeForBindFiles = "", // missing
+                        CriFsBinder_GetStatus = "", // can't find (not present?)
+                        CriFsBinder_SetPriority = "", // not present
+                        CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsIo_Exists = "83 7C 24 04 00 56",
+                        CriFsIo_Open = "55 8B EC 51 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                    }
+                },
+                new()
+                {
+                    // Same as Sonic Generations
+                    SourcedFrom = "Sonic 4 Episode 2 (Not Supported, Missing APIs, Possible to copy/reimplement code from Generations)",
+                    CriVersion = "CRI File System/PCx86 Ver.2.24.04 Build:Apr  1 2011 21:08:31",
+                    CriCompiler = "MSC1500,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "55 8B EC 83 EC 4C 53",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56",
+                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFiles = "", // needs copy from Generations
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
+                        CriFsBinder_GetSizeForBindFiles = "", // needs copy from Generations
+                        CriFsBinder_GetStatus = "53 8B 5C 24 08 E8 ?? ?? ?? ?? 85 C0 75",
+                        CriFsBinder_SetPriority = "",
+                        CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsIo_Exists = "83 7C 24 04 00 56 74",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                    }
+                },
                 new()
                 {
                     SourcedFrom = "Sonic Generations",

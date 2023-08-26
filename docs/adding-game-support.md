@@ -262,6 +262,22 @@ __int64 __fastcall criFsBinder_Find(int a1, __int64 a2, void **a3, _DWORD *a4)
 }
 ```
 
+In older versions of CRI, it might look more like this:
+
+```c++
+int __cdecl criFsBinder_Find(int a1, __int16 a2, void *a3, _DWORD *a4)
+{
+  if ( a4 )
+    *a4 = 0;
+  if ( a3 )
+    sub_4490D0(a3);
+  if ( sub_448F3B() )
+    return -1;
+  else
+    return sub_44A771(a2, (int)a3, 0, 0);
+}
+```
+
 !!! warning "DO NOT confuse this with FindById"
 
 ```c++

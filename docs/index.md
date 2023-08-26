@@ -17,6 +17,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Game                          | Build Date           | CRI FS Version | Compiler            | Notes                                                                                    | 
 |-------------------------------|----------------------|----------------|---------------------|------------------------------------------------------------------------------------------|
 | Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking. Missing `SetPriority`. | 
+| Tekken 7                      | Jul 27 2017 11:01:21 | 2.73.00        | MSC17.00.61030.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
 | Sonic Forces                  | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | ⚠️                                                                                       | 
 | Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                                          | 
 | Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
@@ -33,6 +34,14 @@ If you need to support an additional game, and it is not listed here; [consider 
 | One Piece: Unlimited World Red | Mar  3 2014 14:59:30 | 2.63.08        | MSC1600,MT | Missing `SetPriority` function. | 
 | Bayonetta                      | Jan 27 2017 19:10:26 | 2.61.09        | MSC1600,MT | Missing `SetPriority` function. | 
 
+### Supported But Unsupported Games
+
+!!! note "Games which are 'supported' but miss code necessary for this mod to work. (Needed code for this mod was unused and removed)"
+
+| Game              | Build Date           | CRI FS Version | Compiler   | Notes                                                                                | 
+|-------------------|----------------------|----------------|------------|--------------------------------------------------------------------------------------|
+| Sonic 4 Episode 1 | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT | Does not Bind CPKs, uses them through internal API so methods missing.               |
+| Sonic 4 Episode 2 | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT | Same library as Sonic Generations; might be possible to transplant the missing code. | 
 
 ### AArch64 (ARM64) Games
 
