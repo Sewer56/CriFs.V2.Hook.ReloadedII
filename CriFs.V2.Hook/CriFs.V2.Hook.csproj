@@ -4,7 +4,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <OutputPath>$(RELOADEDIIMODS)/CriFs.V2.Hook</OutputPath>
@@ -44,7 +44,7 @@
   <ItemGroup>
     <PackageReference Include="CriFsV2Lib" Version="2.1.0" />
     <PackageReference Include="FileEmulationFramework.Lib" Version="1.0.0" />
-    <PackageReference Include="Reloaded.Memory" Version="8.0.1" />
+    <PackageReference Include="Reloaded.Memory" Version="9.1.0" />
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.3.0" ExcludeAssets="runtime" />
     <PackageReference Include="Reloaded.SharedLib.Hooks" Version="1.9.0" />
     <PackageReference Include="Reloaded.Memory.SigScan.ReloadedII.Interfaces" Version="1.2.0" />
@@ -53,5 +53,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Interfaces\CriFs.V2.Hook.Interfaces\CriFs.V2.Hook.Interfaces.csproj" />
   </ItemGroup>
+
 
 </Project>

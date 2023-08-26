@@ -19,6 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWB.Stream.Emulator.Interfaces", "Submodules\FileEmulationFramework\Emulator\Interfaces\AWB.Stream.Emulator.Interfaces\AWB.Stream.Emulator.Interfaces.csproj", "{4AC910D5-B6E3-4129-ACEE-FFD2F0420CA6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{6E77E1D9-856D-4544-963B-E54F2C458CE9}"
+	ProjectSection(SolutionItems) = preProject
+		mkdocs.yml = mkdocs.yml
+		README.md = README.md
+		README-AWB.md = README-AWB.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

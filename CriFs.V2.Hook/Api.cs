@@ -17,7 +17,7 @@ public class Api : ICriFsRedirectorApi
     private readonly CpkContentCache _cpkContentCache;
     private readonly ICurrentProcessProvider _currentProcessProvider;
     private readonly IProcessListProvider _processListProvider;
-    private string _mainModulePath;
+    private readonly string _mainModulePath;
     private string[]? _cpkFiles;
 
     public Api(ReloadedBindBuilderCreator reloadedBuilder, CpkContentCache cpkContentCache, string mainModulePath, ICurrentProcessProvider currentProcessProvider, IProcessListProvider processListProvider)

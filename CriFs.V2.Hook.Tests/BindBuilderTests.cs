@@ -17,7 +17,7 @@ public class BindBuilderTests
         builder.AddItem(new BuilderItem("", Assets.ButtonPromptsMod2Cpk, GetFilesInDirectory(Assets.ButtonPromptsMod2Cpk)));
 
         // Act
-        var outputDir = builder.Build(new List<Action<ICriFsRedirectorApi.BindContext>>());
+        var outputDir = builder.Build(new List<Action<ICriFsRedirectorApi.BindContext>>(), out _);
         
         // Assert
         Assert.Equal(2, GetFilesInDirectory(outputDir).Count);

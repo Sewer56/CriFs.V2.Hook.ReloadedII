@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Utilities;
 using CriFs.V2.Hook.CRI;
@@ -7,9 +8,11 @@ using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Template;
 using CriFs.V2.Hook.Utilities;
+using CriFs.V2.Hook.Utilities.Extensions;
 using CriFsV2Lib.Definitions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.ReloadedII.Interfaces;
+using Reloaded.Memory.Sigscan.Definitions;
 using Reloaded.Memory.SigScan.ReloadedII.Interfaces;
 using Reloaded.Mod.Interfaces;
 using Reloaded.Mod.Interfaces.Internal;
@@ -49,8 +52,10 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     /// </summary>
     private readonly IModConfig _modConfig;
     
-    private ReloadedBindBuilderCreator? _cpkBuilder;
-    private BindDirectoryAcquirer _directoryAcquirer;
+    private readonly ReloadedBindBuilderCreator? _cpkBuilder;
+    private readonly BindDirectoryAcquirer _directoryAcquirer;
+    private readonly Api _api;
+    private IScannerFactory _scannerFactory;
 
     public Mod(ModContext context)
     {
@@ -68,6 +73,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         // and some other neat features, override the methods in ModBase.
 
         _modLoader.GetController<IStartupScanner>().TryGetTarget(out var startupScanner);
+        _modLoader.GetController<IScannerFactory>().TryGetTarget(out _scannerFactory);
         var scanHelper = new SigScanHelper(_logger, startupScanner);
         var currentProcess = Process.GetCurrentProcess();
         var mainModule = currentProcess.MainModule;
@@ -83,7 +89,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         };
         
         // Patches
-        CpkBinderPointers.Init(scanHelper, baseAddr);
+        CpkBinderPointers.Init(scanHelper, baseAddr, _logger);
         DontLogCriDirectoryBinds.Activate(hookContext);
         
         // CPK Builder & Redirector
@@ -93,16 +99,43 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         
         var cpkContentCache = new CpkContentCache();
         _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
-        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache);
+        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache, RebuildStarted, RebuildFinished, OnBuildComplete);
         _cpkBuilder.SetHotReload(_configuration.HotReload);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
         
         // Add API
-        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, 
-            new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider));
+        _api = new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider);
+        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, _api);
     }
+
+    // Callbacks for CPK Binder
+    private unsafe void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
+    {
+        // Flatten
+        var relativePathToFullPathDict = new SpanOfCharDict<string>(items.Count);
+
+        foreach (var item in items)
+        {
+            // Get Relative Path
+            var relativePath = item.Key;
+            
+            // Trim the prefix.
+            var correctRelativePath = relativePath.Substring(bindFolderName.Length + 1);
+            
+            // Set the new file
+            // CRI uses forward slashes everywhere internally.
+            correctRelativePath.ReplaceBackWithForwardSlashInPlace();
+            relativePathToFullPathDict.AddOrReplace(correctRelativePath, item.Value.Last().FullPath);
+        }
+        
+        // Get correct casing.
+        CpkBinder.UpdateDataToBind(relativePathToFullPathDict);
+    }
+
+    private static void RebuildFinished() => CpkBinder.BindAll();
+    private static void RebuildStarted() => CpkBinder.UnbindAll();
 
     // In case user loads mod in real time.
     private void OnModUnloaded(IModV1 arg1, IModConfigV1 arg2)
@@ -121,8 +154,9 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         AssertAwbIncompatibility();
-        CpkBinder.Init(_directoryAcquirer.BindDirectory, _logger, _hooks!);
+        CpkBinder.Init(_logger, _hooks!, _scannerFactory);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
+        CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.Build(); 
     }
 
@@ -157,6 +191,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
+        CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.SetHotReload(_configuration.HotReload);
     }
     #endregion

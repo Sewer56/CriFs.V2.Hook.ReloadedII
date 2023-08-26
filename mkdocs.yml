@@ -26,5 +26,6 @@ theme:
     
 nav:
   - Home: index.md
+  - Adding Game Support: adding-game-support.md
   - Usage: usage.md
   - Replacing Music (AWB): usage-awb.md

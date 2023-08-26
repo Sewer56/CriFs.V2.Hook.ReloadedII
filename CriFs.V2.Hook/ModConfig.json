@@ -61,7 +61,17 @@
     "p4g.exe",
     "p5r.exe",
     "p3p.exe",
-    "p3p_sln_dt_m.exe"
+    "p3p_sln_dt_m.exe",
+    "sonic forces.exe",
+    "opu3.exe",
+    "slw.exe",
+    "sonicgenerations.exe",
+    "yakuzakiwami.exe",
+    "bayonetta.exe",
+    "tekkengame-win64-shipping.exe",
+    "sonic_vis.exe",
+    "sonic.exe",
+    "yakuzakiwami2.exe"
   ],
   "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }
