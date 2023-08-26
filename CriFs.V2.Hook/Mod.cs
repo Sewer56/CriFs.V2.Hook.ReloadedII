@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Utilities;
 using CriFs.V2.Hook.CRI;
@@ -53,9 +52,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     private readonly IModConfig _modConfig;
     
     private readonly ReloadedBindBuilderCreator? _cpkBuilder;
-    private readonly BindDirectoryAcquirer _directoryAcquirer;
-    private readonly Api _api;
-    private IScannerFactory _scannerFactory;
+    private readonly IScannerFactory _scannerFactory;
 
     public Mod(ModContext context)
     {
@@ -73,21 +70,12 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         // and some other neat features, override the methods in ModBase.
 
         _modLoader.GetController<IStartupScanner>().TryGetTarget(out var startupScanner);
-        _modLoader.GetController<IScannerFactory>().TryGetTarget(out _scannerFactory);
+        _modLoader.GetController<IScannerFactory>().TryGetTarget(out _scannerFactory!);
         var scanHelper = new SigScanHelper(_logger, startupScanner);
         var currentProcess = Process.GetCurrentProcess();
         var mainModule = currentProcess.MainModule;
         var baseAddr = mainModule!.BaseAddress;
 
-        var hookContext = new HookContext()
-        {
-            BaseAddress = baseAddr,
-            Config = _configuration,
-            Logger = _logger,
-            Hooks = _hooks!,
-            ScanHelper = scanHelper
-        };
-        
         // Patches
         CpkBinderPointers.Init(scanHelper, baseAddr, _logger);
 
@@ -97,20 +85,20 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         var processListProvider = new ProcessListProvider();
         
         var cpkContentCache = new CpkContentCache();
-        _directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
-        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, _directoryAcquirer, cpkContentCache, RebuildStarted, RebuildFinished, OnBuildComplete);
+        var directoryAcquirer = new BindDirectoryAcquirer(modConfigDirectory, currentProcessProvider, processListProvider);
+        _cpkBuilder = new ReloadedBindBuilderCreator(_modLoader, _logger, directoryAcquirer, cpkContentCache, RebuildStarted, RebuildFinished, OnBuildComplete);
         _cpkBuilder.SetHotReload(_configuration.HotReload);
         _modLoader.OnModLoaderInitialized += OnLoaderInitialized;
         _modLoader.ModLoaded += OnModLoaded;
         _modLoader.ModUnloading += OnModUnloaded;
-        
+
         // Add API
-        _api = new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider);
-        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, _api);
+        var api = new Api(_cpkBuilder, cpkContentCache, mainModule.FileName, currentProcessProvider, processListProvider);
+        _modLoader.AddOrReplaceController<ICriFsRedirectorApi>(owner, api);
     }
 
     // Callbacks for CPK Binder
-    private unsafe void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
+    private void OnBuildComplete(Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>> items, string bindFolderName)
     {
         // Flatten
         var relativePathToFullPathDict = new SpanOfCharDict<string>(items.Count);

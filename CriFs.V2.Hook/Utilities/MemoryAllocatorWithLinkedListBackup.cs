@@ -27,13 +27,13 @@ internal readonly struct MemoryAllocatorWithLinkedListBackup
 internal unsafe struct NativeMemoryAllocation : IMemoryAllocation
 {
     public byte* Address => (byte*)Allocation.Address; 
-    public unsafe MemoryAllocation Allocation { get; }
-    public unsafe NativeMemoryAllocation(MemoryAllocation alloc)
+    public MemoryAllocation Allocation { get; }
+    public NativeMemoryAllocation(MemoryAllocation alloc)
     {
         Allocation = alloc;
     }
 
-    public unsafe void Dispose() => Memory.Instance.Free(Allocation);
+    public void Dispose() => Memory.Instance.Free(Allocation);
 }
 
 internal struct LinkedListAllocation : IMemoryAllocation

@@ -1,6 +1,5 @@
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Interfaces;
-using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Utilities;
 using CriFsV2Lib.Definitions.Utilities;

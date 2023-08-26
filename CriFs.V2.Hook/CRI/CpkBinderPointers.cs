@@ -829,7 +829,7 @@ internal static class CpkBinderPointers
         internal unsafe int* CriFsIo_IsUtf8;
         internal long DisableFileBindWarning;
 
-        public unsafe int GetNumFoundPatterns()
+        public int GetNumFoundPatterns()
         {
             int found = 0;
             found += Convert.ToInt32(CriFs_CalculateWorkSizeForLibrary != 0);

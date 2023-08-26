@@ -9,7 +9,6 @@ using Reloaded.Hooks.Definitions;
 using Reloaded.Memory;
 using Reloaded.Memory.Interfaces;
 using Reloaded.Memory.Sigscan.Definitions;
-using Reloaded.Memory.Sigscan.Definitions.Structs;
 using Reloaded.Memory.Structs;
 using static CriFs.V2.Hook.CRI.CpkBinderPointers;
 using static CriFs.V2.Hook.CRI.CRI;
@@ -81,7 +80,11 @@ public static unsafe class CpkBinder
         if (Pointers.CriFsBinder_SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(Pointers.CriFsBinder_SetPriority, out _);
         
-        // Patch bug/oversight in older CRI SDK where BindFiles only binds 1 file
+        PatchBindFileIntoBindFiles(scannerFactory);
+    }
+
+    private static void PatchBindFileIntoBindFiles(IScannerFactory scannerFactory)
+    {
         var bindFiles = Pointers.CriFsBinder_BindFiles;
         if (IntPtr.Size == 4 && RuntimeInformation.ProcessArchitecture == Architecture.X86)
         {
@@ -90,17 +93,19 @@ public static unsafe class CpkBinder
             var ofs = scanner.FindPattern("6A 01");
             if (ofs.Found)
             {
-                CriPatchX86BindFilesFileLimit(bindFiles, ofs);
+                _logger.Info("Patching BindFiles' 1 file limit on x86");
+                Span<byte> newBytes = stackalloc byte[] { 0x6A, 0xFF };
+                Memory.Instance.SafeWrite((nuint)(bindFiles + ofs.Offset), newBytes);
                 return;
             }
-            
+
             // Try patch `1` when it's optimized to be passed via register.
 
             // We will check for eax, ecx and edx because these are caller saved; 
             // we will assume an optimizing compiler would not emit a register pass for
             // a callee saved register as that would be less efficient than passing by stack,
             // which is covered by above case.
-            
+
             // `40` = inc eax -> `48` = dec eax
             // `41` = inc ecx -> `49` = dec ecx
             // `42` = inc edx -> `4A` = dec edx
@@ -117,7 +122,7 @@ public static unsafe class CpkBinder
             // Changing from inc to dec, will underflow and result in a -1 value
             void TryPatchIncrement(string sig1, string sig2, string incSig, byte decValue, string message)
             {
-                if (!scanner.TryFindEitherPattern(sig1, sig2, 0, out var localRes)) 
+                if (!scanner.TryFindEitherPattern(sig1, sig2, 0, out var localRes))
                     return;
 
                 if (scanner.TryFindPattern(incSig, localRes.Offset, out var res))
@@ -141,24 +146,19 @@ public static unsafe class CpkBinder
             TryPatchMovReg("ba 01 00 00 00", "Patched BindFile mov edx, 1 -> mov edx,-1");
             TryPatchMovReg("41 b8 01 00 00 00", "Patched BindFile mov r8d, 1 -> mov r8d,-1");
             TryPatchMovReg("41 b9 01 00 00 00", "Patched BindFile mov r9d, 1 -> mov r9d,-1");
+
             void TryPatchMovReg(string movRegSig, string message)
             {
                 int newValue = -1;
                 if (scanner!.TryFindPattern(movRegSig, 0, out var res))
                 {
                     var operandOffset = movRegSig.Length == 14 ? 1 : 2; // check if 32-bit register or not.
-                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset + operandOffset), new Span<byte>(&newValue, 1));
+                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset + operandOffset),
+                        new Span<byte>(&newValue, 1));
                     _logger.Info(message);
                 }
             }
         }
-    }
-
-    private static void CriPatchX86BindFilesFileLimit(long bindFiles, PatternScanResult ofs)
-    {
-        _logger.Info("Patching BindFiles' 1 file limit on x86");
-        Span<byte> newBytes = stackalloc byte[] { 0x6A, 0xFF };
-        Memory.Instance.SafeWrite((nuint)(bindFiles + ofs.Offset), newBytes);
     }
 
     #region Init
@@ -264,7 +264,6 @@ public static unsafe class CpkBinder
     {
         uint bndrid = 0;
         CriFsBinderStatus status = 0;
-        CriError err = 0;
 
         _logger.Debug("Binding Custom Files!! with priority {0}", priority);
         var size = 0;
@@ -289,7 +288,7 @@ public static unsafe class CpkBinder
 
         fileList.TrimFinalNewline();
         var fileListStr = fileList.ToString();
-        err = _getSizeForBindFilesFn!(bndrhn, fileListStr, &size);
+        var err = _getSizeForBindFilesFn!(bndrhn, fileListStr, &size);
         if (err < 0)
         {
             _logger.Error("Binding Files Failed: Failed to get size of Bind Files {0}", err);

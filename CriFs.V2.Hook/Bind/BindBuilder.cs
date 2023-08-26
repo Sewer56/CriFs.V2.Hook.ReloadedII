@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Interfaces;
 using FileEmulationFramework.Lib;
