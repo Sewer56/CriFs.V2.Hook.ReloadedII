@@ -162,6 +162,8 @@ Now we will hunt for the missing functions; the general procedure is as follows:
 
 !!! note "In some rare cases, Lumen signatures might find the function, but our signatures didn't; try searching name in 'functions' window first."
 
+!!! danger "Doublecheck (using the info below) that your existing signatures taken from other games are correct."
+
 ### Getting CRI Version
 
 Open the Strings window (`View` -> `Open Subviews` -> `Strings`), filter for string `CRI File System/` and doubleclick the result.

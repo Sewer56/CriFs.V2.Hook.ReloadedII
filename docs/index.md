@@ -14,13 +14,13 @@ If you need to support an additional game, and it is not listed here; [consider 
 
 ### x64 Games
 
-| Game                          | Build Date           | CRI FS Version | Compiler            | Notes                                                            | 
-|-------------------------------|----------------------|----------------|---------------------|------------------------------------------------------------------|
-| Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking | 
-| Sonic Forces                  | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | ⚠️                                                               | 
-| Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                  | 
-| Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                  |
-| Persona 4 The Golden (64-bit) | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                  |
+| Game                          | Build Date           | CRI FS Version | Compiler            | Notes                                                                                    | 
+|-------------------------------|----------------------|----------------|---------------------|------------------------------------------------------------------------------------------|
+| Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking. Missing `SetPriority`. | 
+| Sonic Forces                  | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | ⚠️                                                                                       | 
+| Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                                          | 
+| Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
+| Persona 4 The Golden (64-bit) | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
 
 ### x86 Games
 
