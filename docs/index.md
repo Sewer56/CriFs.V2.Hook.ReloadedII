@@ -8,7 +8,7 @@ CRI FileSystem V2 Hook is a mod based on [Reloaded II](https://reloaded-project.
 
 !!! note "Games marked with a ⚠️ should run correctly but were not tested with existing mods."
 
-!!! note "Games marked with a ‼️ in notes were not tested by me."
+!!! note "Games marked with a ‼️ I do not own and were untested. They may or may not work."
 
 If you need to support an additional game, and it is not listed here; [consider contributing](adding-game-support.md).
 
@@ -35,14 +35,17 @@ If you need to support an additional game, and it is not listed here; [consider 
 | One Piece: Unlimited World Red | Mar  3 2014 14:59:30 | 2.63.08        | MSC1600,MT | Missing `SetPriority` function. | 
 | Bayonetta                      | Jan 27 2017 19:10:26 | 2.61.09        | MSC1600,MT | Missing `SetPriority` function. | 
 
-### Supported But Unsupported Games
+### Supported But Recognized Games
 
 !!! note "Games which are 'supported' but miss code necessary for this mod to work. (Needed code for this mod was unused and removed)"
 
-| Game              | Build Date           | CRI FS Version | Compiler   | Notes                                                                                | 
-|-------------------|----------------------|----------------|------------|--------------------------------------------------------------------------------------|
-| Sonic 4 Episode 1 | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT | Does not Bind CPKs, uses them through internal API so methods missing.               |
-| Sonic 4 Episode 2 | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT | Same library as Sonic Generations; might be possible to transplant the missing code. | 
+| Game                          | Build Date           | CRI FS Version | Compiler            | Notes                                                                                | 
+|-------------------------------|----------------------|----------------|---------------------|--------------------------------------------------------------------------------------|
+| Sonic 4 Episode 1             | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT          | Does not Bind CPKs, uses them through internal API so methods missing.               |
+| Sonic 4 Episode 2             | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT          | Same library as Sonic Generations; might be possible to transplant the missing code. | 
+| NieR Automata (YoRHa Edition) | Jun 20 2016 18:17:30 | 2.73.00        | MSC17.00.61030.0,MT | Missing 'BindFiles'.                                                                 | 
+
+!!! info "They would be supported if I ever took the time out to make a 'CPK Emulator'."
 
 ### AArch64 (ARM64) Games
 
