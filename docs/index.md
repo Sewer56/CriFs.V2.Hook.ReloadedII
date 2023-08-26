@@ -16,7 +16,8 @@ If you need to support an additional game, and it is not listed here; [consider 
 
 | Game                          | Build Date           | CRI FS Version | Compiler            | Notes                                                                                    | 
 |-------------------------------|----------------------|----------------|---------------------|------------------------------------------------------------------------------------------|
-| Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking. Missing `SetPriority`. | 
+| Yakuza Kiwami                 | Oct 6 2015 19:45:41  | 2.71.02        | MSC17.00.61030.0,MT | ⚠️ Loads files by ID, which CriFsV2Hook does not support hooking. Missing `SetPriority`. |
+| One Piece: Burning Blood      | Oct 8 2015 13:15:23  | 2.70.00        | MSC16.00.40219.1,MT | Missing `SetPriority` function.                                                          |
 | Tekken 7                      | Jul 27 2017 11:01:21 | 2.73.00        | MSC17.00.61030.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
 | Sonic Forces                  | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | ⚠️                                                                                       | 
 | Yakuza Kiwami 2               | Oct 6 2017 14:17:55  | 2.75.05        | MSC17.00.61030.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
