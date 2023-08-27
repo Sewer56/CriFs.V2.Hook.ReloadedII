@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CriFs.V2.Hook.CRI;
 using CriFs.V2.Hook.Utilities;
-using CriFs.V2.Hook.Utilities.Extensions;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Memory;
@@ -20,7 +19,7 @@ namespace CriFs.V2.Hook.Hooks;
 /// <summary>
 ///     Class to bind our custom CPKs via hooking.
 /// </summary>
-public static unsafe class CpkBinder
+public static unsafe partial class CpkBinder
 {
     private static Logger _logger = null!;
 
@@ -82,85 +81,7 @@ public static unsafe class CpkBinder
         
         PatchBindFileIntoBindFiles(scannerFactory);
     }
-
-    private static void PatchBindFileIntoBindFiles(IScannerFactory scannerFactory)
-    {
-        var bindFiles = Pointers.CriFsBinder_BindFiles;
-        if (IntPtr.Size == 4 && RuntimeInformation.ProcessArchitecture == Architecture.X86)
-        {
-            // Try patch `push 1` -> `push -1`
-            var scanner = scannerFactory.CreateScanner((byte*)bindFiles, 34);
-            var ofs = scanner.FindPattern("6A 01");
-            if (ofs.Found)
-            {
-                _logger.Info("Patching BindFiles' 1 file limit on x86");
-                Span<byte> newBytes = stackalloc byte[] { 0x6A, 0xFF };
-                Memory.Instance.SafeWrite((nuint)(bindFiles + ofs.Offset), newBytes);
-                return;
-            }
-
-            // Try patch `1` when it's optimized to be passed via register.
-
-            // We will check for eax, ecx and edx because these are caller saved; 
-            // we will assume an optimizing compiler would not emit a register pass for
-            // a callee saved register as that would be less efficient than passing by stack,
-            // which is covered by above case.
-
-            // `40` = inc eax -> `48` = dec eax
-            // `41` = inc ecx -> `49` = dec ecx
-            // `42` = inc edx -> `4A` = dec edx
-
-            // `31 C0` or `33 C0` = xor eax, eax
-            // `31 C9` or `33 C9` = xor ecx, ecx
-            // `31 D2` or `33 D2` = xor edx, edx
-
-            TryPatchIncrement("31 C0", "33 C0", "40", 0x48, "Patched BindFile inc eax -> dec eax");
-            TryPatchIncrement("31 C9", "33 C9", "41", 0x49, "Patched BindFile inc ecx -> dec ecx");
-            TryPatchIncrement("31 D2", "33 D2", "42", 0x4A, "Patched BindFile inc edx -> dec edx");
-
-            // We need to check for the 'xor' instruction first, then for presence of associated inc instruction
-            // Changing from inc to dec, will underflow and result in a -1 value
-            void TryPatchIncrement(string sig1, string sig2, string incSig, byte decValue, string message)
-            {
-                if (!scanner.TryFindEitherPattern(sig1, sig2, 0, out var localRes))
-                    return;
-
-                if (scanner.TryFindPattern(incSig, localRes.Offset, out var res))
-                {
-                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset), new Span<byte>(&decValue, 1));
-                    _logger.Info(message);
-                }
-            }
-        }
-        else if (IntPtr.Size == 8 && RuntimeInformation.ProcessArchitecture == Architecture.X64)
-        {
-            // Try patch `mov reg, 1` -> `mov reg, -1`
-            var scanner = scannerFactory.CreateScanner((byte*)bindFiles, 40);
-
-            // Target MSFT calling convention integer argument registers
-            // mov ecx, 1 -> mov ecx,-1 || b9 01 00 00 00 -> b9 ff ff ff ff
-            // mov edx, 1 -> mov edx,-1 || ba 01 00 00 00 -> ba ff ff ff ff
-            // mov r8d, 1 -> mov r8d,-1 || 41 b8 01 00 00 00 -> 41 b8 ff ff ff ff
-            // mov r9d, 1 -> mov r9d,-1 || 41 b9 01 00 00 00 -> 41 b9 ff ff ff ff
-            TryPatchMovReg("b9 01 00 00 00", "Patched BindFile mov ecx, 1 -> mov ecx,-1");
-            TryPatchMovReg("ba 01 00 00 00", "Patched BindFile mov edx, 1 -> mov edx,-1");
-            TryPatchMovReg("41 b8 01 00 00 00", "Patched BindFile mov r8d, 1 -> mov r8d,-1");
-            TryPatchMovReg("41 b9 01 00 00 00", "Patched BindFile mov r9d, 1 -> mov r9d,-1");
-
-            void TryPatchMovReg(string movRegSig, string message)
-            {
-                int newValue = -1;
-                if (scanner!.TryFindPattern(movRegSig, 0, out var res))
-                {
-                    var operandOffset = movRegSig.Length == 14 ? 1 : 2; // check if 32-bit register or not.
-                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset + operandOffset),
-                        new Span<byte>(&newValue, 1));
-                    _logger.Info(message);
-                }
-            }
-        }
-    }
-
+    
     #region Init
 
     private static CriError FinalizeLibraryImpl()
@@ -397,142 +318,6 @@ public static unsafe class CpkBinder
     }
 
     #endregion
-
-    #region Redirect Out of Game Folder & Fix Caps
-
-    private static nint ExistsImpl(byte* stringPtr, int* result)
-    {
-        if (stringPtr == null)
-            return _ioExistsHook!.OriginalFunction(stringPtr, result);
-
-        if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
-        {
-            var str = Marshal.PtrToStringUTF8((nint)stringPtr);
-            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
-                return _ioExistsHook!.OriginalFunction(stringPtr, result);
-
-            var tempStr = Marshal.StringToCoTaskMemUTF8(value);
-            if (_printFileRedirects)
-                _logger.Info("Exist_Utf_Redirect: {0}", value);
-
-            var err = _ioExistsHook!.OriginalFunction((byte*)tempStr, result);
-            Marshal.FreeCoTaskMem(tempStr);
-            return err;
-        }
-        else
-        {
-            var str = Marshal.PtrToStringAnsi((nint)stringPtr);
-            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
-                return _ioExistsHook!.OriginalFunction(stringPtr, result);
-
-            var tempStr = Marshal.StringToHGlobalAnsi(value);
-            if (_printFileRedirects)
-                _logger.Info("Exist_Ansi_Redirect: {0}", value);
-
-            var err = _ioExistsHook!.OriginalFunction((byte*)tempStr, result);
-            Marshal.FreeHGlobal(tempStr);
-            return err;
-        }
-    }
-
-    private static nint CriFsOpenImpl(byte* stringPtr, int fileCreationType, int desiredAccess, nint** result)
-    {
-        if (stringPtr == null)
-            return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
-
-        if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
-        {
-            var str = Marshal.PtrToStringUTF8((nint)stringPtr);
-            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
-                return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
-
-            var tempStr = Marshal.StringToCoTaskMemUTF8(value);
-            if (_printFileRedirects)
-                _logger.Info("Open_Utf_Redirect: {0}", value);
-
-            var err = _ioOpenHook!.OriginalFunction((byte*)tempStr, fileCreationType, desiredAccess, result);
-            Marshal.FreeCoTaskMem(tempStr);
-            return err;
-        }
-        else
-        {
-            var str = Marshal.PtrToStringAnsi((nint)stringPtr);
-            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
-                return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
-
-            var tempStr = Marshal.StringToHGlobalAnsi(value);
-            if (_printFileRedirects)
-                _logger.Info("Open_Ansi_Redirect: {0}", value);
-
-            var err = _ioOpenHook!.OriginalFunction((byte*)tempStr, fileCreationType, desiredAccess, result);
-            Marshal.FreeHGlobal(tempStr);
-            return err;
-        }
-    }
-
-    #endregion
-
-    private static nint CriFsBinderFindImpl(nint bndrhn, nint path, void* finfo, int* exist)
-    {
-        // This hook converts case sensitive file paths to our code's casing.
-        // Such that CRI can find them.
-        if (path == 0)
-            return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
-
-        var str = Marshal.PtrToStringAnsi(path);
-        if (_printFileAccess)
-            _logger.Info("Binder_Find: {0}", str);
-        
-        if (!_content.TryGetValue(SanitizeCriPath(str!), out _, out var originalKey))
-            return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
-        
-        var tempStr = Marshal.StringToHGlobalAnsi(originalKey);
-        _logger.Debug("Binder_Find_Original: {0}", str);
-        _logger.Debug("Binder_Find_Redirect: {0}", originalKey);
-        int newExist = 0;
-        var err = _findFileHook!.OriginalFunction(bndrhn, tempStr, finfo, &newExist);
-        _logger.Debug("Binder_Find_Redirect Exist: {0}", newExist);
-        if (exist != null)
-            *exist = newExist;
-        
-        Marshal.FreeHGlobal(tempStr);
-        return err;
-    }
-
-    private static ReadOnlySpan<char> SanitizeCriPath(string str)
-    {
-        str!.ReplaceBackWithForwardSlashInPlace();
-        if (str.StartsWith('/'))
-            return str.AsSpan(1);
-
-        return str.AsSpan();
-    }
-
-    // x86/x64 specific code
-    private static byte[] _previousCallCode = new byte[5];
-    private static byte[] _newCallCode = { 0x90, 0x90, 0x90, 0x90, 0x90 };
-    public static void SetDisableLogging(bool disableLogging)
-    {
-        // Not supported on non-x64
-        // TODO: Separate patch for x86
-        if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
-            return;
-            
-        // Patch disable logging permanently
-        if (Pointers.DisableFileBindWarning == 0)
-            return;
-
-        var disableWarn = (byte*)Pointers.DisableFileBindWarning;
-        if (disableLogging)
-        {
-            Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode.AsSpan());
-            Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode.AsSpan());
-        }
-        else
-        {
-            Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode.AsSpan());
-        }
-    }
 }
 
 internal readonly struct CpkBinding : IDisposable
