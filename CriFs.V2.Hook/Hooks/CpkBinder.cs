@@ -487,6 +487,7 @@ public static unsafe class CpkBinder
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
         
         var tempStr = Marshal.StringToHGlobalAnsi(originalKey);
+        _logger.Debug("Binder_Find_Original: {0}", str);
         _logger.Debug("Binder_Find_Redirect: {0}", originalKey);
         int newExist = 0;
         var err = _findFileHook!.OriginalFunction(bndrhn, tempStr, finfo, &newExist);
