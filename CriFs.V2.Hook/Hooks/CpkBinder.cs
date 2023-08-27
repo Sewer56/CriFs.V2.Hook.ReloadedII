@@ -407,8 +407,7 @@ public static unsafe class CpkBinder
         if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
-            str!.ReplaceBackWithForwardSlashInPlace();
-            if (!_content.TryGetValue(str, out var value, out _))
+            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
                 return _ioExistsHook!.OriginalFunction(stringPtr, result);
 
             var tempStr = Marshal.StringToCoTaskMemUTF8(value);
@@ -422,8 +421,7 @@ public static unsafe class CpkBinder
         else
         {
             var str = Marshal.PtrToStringAnsi((nint)stringPtr);
-            str!.ReplaceBackWithForwardSlashInPlace();
-            if (!_content.TryGetValue(str, out var value, out _))
+            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
                 return _ioExistsHook!.OriginalFunction(stringPtr, result);
 
             var tempStr = Marshal.StringToHGlobalAnsi(value);
@@ -444,8 +442,7 @@ public static unsafe class CpkBinder
         if (Pointers.CriFsIo_IsUtf8 != (int*)0 && *Pointers.CriFsIo_IsUtf8 == 1)
         {
             var str = Marshal.PtrToStringUTF8((nint)stringPtr);
-            str!.ReplaceBackWithForwardSlashInPlace();
-            if (!_content.TryGetValue(str, out var value, out _))
+            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
                 return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
 
             var tempStr = Marshal.StringToCoTaskMemUTF8(value);
@@ -459,8 +456,7 @@ public static unsafe class CpkBinder
         else
         {
             var str = Marshal.PtrToStringAnsi((nint)stringPtr);
-            str!.ReplaceBackWithForwardSlashInPlace();
-            if (!_content.TryGetValue(str, out var value, out _))
+            if (!_content.TryGetValue(SanitizeCriPath(str!), out var value, out _))
                 return _ioOpenHook!.OriginalFunction(stringPtr, fileCreationType, desiredAccess, result);
 
             var tempStr = Marshal.StringToHGlobalAnsi(value);
@@ -484,7 +480,7 @@ public static unsafe class CpkBinder
         if (_printFileAccess)
             _logger.Info("Binder_Find: {0}", str);
         
-        if (!_content.TryGetValue(str, out _, out var originalKey))
+        if (!_content.TryGetValue(SanitizeCriPath(str!), out _, out var originalKey))
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
         
         var tempStr = Marshal.StringToHGlobalAnsi(originalKey);
@@ -492,6 +488,15 @@ public static unsafe class CpkBinder
         var err = _findFileHook!.OriginalFunction(bndrhn, tempStr, finfo, exist);
         Marshal.FreeHGlobal(tempStr);
         return err;
+    }
+
+    private static ReadOnlySpan<char> SanitizeCriPath(string str)
+    {
+        str!.ReplaceBackWithForwardSlashInPlace();
+        if (str.StartsWith('/'))
+            return str.AsSpan(1);
+
+        return str.AsSpan();
     }
 
     // x86/x64 specific code
