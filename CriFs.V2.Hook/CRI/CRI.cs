@@ -94,11 +94,11 @@ public static unsafe class CRI
     /// </summary>
     /// <param name="bndrhn">[In] Binder handle of the bind destination.</param>
     /// <param name="path">[In] Path to the file in question.</param>
-    /// <param name="finfo">File info, unknown format.</param>
-    /// <param name="exist">True if file exists, else false.</param>
+    /// <param name="finfo">[Out] File info, unknown format.</param>
+    /// <param name="exist">[Out] True if file exists, else false.</param>
     [Function64(CallConv64.Microsoft)]
     [Function32(CallConv32.Cdecl)]
-    public delegate nint criFsBinder_Find(nint bndrhn, nint path, void* finfo, int* exist);
+    public delegate nint criFsBinder_Find(nint bndrhn, nint path, CriFsBinderFileInfo* finfo, int* exist);
     
     /// <summary>
     /// This function sets the priority value for the bind ID. 
@@ -230,6 +230,7 @@ public static unsafe class CRI
     ///
     /// From my observation, most games use the default values.
     /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
     public struct CriFsConfig
     {
         /// <summary>
@@ -343,5 +344,44 @@ public static unsafe class CRI
         /// Single threaded model.
         /// </summary>
         SingleThreaded = 2,
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct CriFsBinderFileInfo 
+    {
+        /// <summary>
+        /// File handle.
+        /// </summary>
+        public void* fileHn;
+        
+        /// <summary>
+        /// Path to the file, ANSI, null terminated.
+        /// </summary>
+        public byte* Path;
+        
+        /// <summary>
+        /// Offset position from beginning of file.
+        /// </summary>
+        public long Offset;
+        
+        /// <summary>
+        /// Compressed file size.
+        /// </summary>
+        public long CompressedSize;
+        
+        /// <summary>
+        /// Uncompressed file size.
+        /// </summary>
+        public long DecompressedSize;
+        
+        /// <summary>
+        /// Binder ID (Indicates binder from which file is bound)
+        /// </summary>
+        public void* binderId;
+
+        /// <summary>
+        /// Reserved/padding.
+        /// </summary>
+        public uint Reserved;
     }
 }

@@ -308,6 +308,8 @@ public static unsafe partial class CpkBinder
     public static void UpdateDataToBind(SpanOfCharDict<string> content)
     {
         _content = content;
+        FreeNewToOriginalCasing();
+        NewToOriginalCasing = new SpanOfCharDict<nint>(_content.Count);
 
         // Calculate content length.
         var bindLength = 0;
