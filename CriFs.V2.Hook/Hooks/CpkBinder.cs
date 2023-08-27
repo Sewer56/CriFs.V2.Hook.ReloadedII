@@ -481,8 +481,6 @@ public static unsafe class CpkBinder
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
 
         var str = Marshal.PtrToStringAnsi(path);
-        str!.ReplaceBackWithForwardSlashInPlace();
-        
         if (_printFileAccess)
             _logger.Info("Binder_Find: {0}", str);
         

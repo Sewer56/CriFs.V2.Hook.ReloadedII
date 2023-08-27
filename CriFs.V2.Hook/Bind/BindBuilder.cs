@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Interfaces;
 using FileEmulationFramework.Lib;
@@ -64,8 +65,25 @@ public class BindBuilder
         foreach (var bindCallback in bindCallbacks)
             bindCallback(context);
         
-        // Note: This used to hardlink, but now we do all redirection in code.
-        //       BindDirectory is still kept intact in case of custom merged files and external library/plugin behaviour (etc.)
+        // Add data in `Bind` folder to the output.
+        WindowsDirectorySearcher.GetDirectoryContentsRecursive(OutputFolder, out var bindFolderFiles, out _);
+        foreach (var file in bindFolderFiles)
+        {
+            var relativePath = file.DirectoryPath.Substring(OutputFolder.Length + 1);
+            relativePath = Path.Combine(relativePath, file.FileName); 
+            var bindInfo = new ICriFsRedirectorApi.BindFileInfo()
+            {
+                ModId = "CriFs.V2.Hook",
+                FullPath = Path.Combine(file.DirectoryPath, file.FileName),
+                LastWriteTime = DateTime.Now
+            };
+            
+            if (files.TryGetValue(relativePath, out var existing))
+                existing.Add(bindInfo);
+            else
+                files[relativePath] = new List<ICriFsRedirectorApi.BindFileInfo> { bindInfo };
+        }
+        
         return OutputFolder;
     }
 
