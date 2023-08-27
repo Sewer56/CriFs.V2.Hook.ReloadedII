@@ -98,7 +98,7 @@ public static unsafe class CRI
     /// <param name="exist">True if file exists, else false.</param>
     [Function64(CallConv64.Microsoft)]
     [Function32(CallConv32.Cdecl)]
-    public delegate nint criFsBinder_Find(nint bndrhn, nint path, void* finfo, bool* exist);
+    public delegate nint criFsBinder_Find(nint bndrhn, nint path, void* finfo, int* exist);
     
     /// <summary>
     /// This function sets the priority value for the bind ID. 

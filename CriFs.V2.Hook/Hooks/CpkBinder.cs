@@ -314,6 +314,7 @@ public static unsafe class CpkBinder
             {
                 case CRIFSBINDER_STATUS_COMPLETE:
                     _setPriorityFn?.Invoke(bndrid, priority);
+                    _logger.Debug("Bound files: {0}", fileListStr);
                     _logger.Info("Bind Complete! {0} files, Id: {1}, Time: {2}ms", _content.Count, bndrid,
                         watch.ElapsedMilliseconds);
                     Bindings.Add(new CpkBinding(workMem, bndrid));
@@ -471,8 +472,10 @@ public static unsafe class CpkBinder
 
     #endregion
 
-    private static nint CriFsBinderFindImpl(nint bndrhn, nint path, void* finfo, bool* exist)
+    private static nint CriFsBinderFindImpl(nint bndrhn, nint path, void* finfo, int* exist)
     {
+        // This hook converts case sensitive file paths to our code's casing.
+        // Such that CRI can find them.
         if (path == 0)
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist);
 
@@ -485,7 +488,12 @@ public static unsafe class CpkBinder
         
         var tempStr = Marshal.StringToHGlobalAnsi(originalKey);
         _logger.Debug("Binder_Find_Redirect: {0}", originalKey);
-        var err = _findFileHook!.OriginalFunction(bndrhn, tempStr, finfo, exist);
+        int newExist = 0;
+        var err = _findFileHook!.OriginalFunction(bndrhn, tempStr, finfo, &newExist);
+        _logger.Debug("Binder_Find_Redirect Exist: {0}", newExist);
+        if (exist != null)
+            *exist = newExist;
+        
         Marshal.FreeHGlobal(tempStr);
         return err;
     }
