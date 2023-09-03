@@ -10,8 +10,11 @@ namespace CriFs.V2.Hook.Hooks;
 /// </summary>
 public static unsafe partial class CpkBinder
 {
-    private static readonly byte[] _previousCallCode = new byte[5];
-    private static readonly byte[] _newCallCode = { 0x90, 0x90, 0x90, 0x90, 0x90 };
+    private static readonly byte[] _previousCallCode1 = new byte[5];
+    private static readonly byte[] _newCallCode1 = { 0x90, 0x90, 0x90, 0x90, 0x90 };
+
+    private static readonly byte[] _previousCallCode2 = new byte[5];
+    private static readonly byte[] _newCallCode2 = { 0x90, 0x90, 0x90, 0x90, 0x90 };
 
     public static void SetDisableLogging(bool disableLogging)
     {
@@ -20,6 +23,12 @@ public static unsafe partial class CpkBinder
         if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
             return;
 
+        PatchContentNotInCpk1(disableLogging);
+        PatchContentNotInCpk2(disableLogging);
+    }
+
+    private static void PatchContentNotInCpk1(bool disableLogging)
+    {
         // Patch disable logging permanently
         if (Pointers.DisableFileBindWarning == 0)
             return;
@@ -27,12 +36,30 @@ public static unsafe partial class CpkBinder
         var disableWarn = (byte*)Pointers.DisableFileBindWarning;
         if (disableLogging)
         {
-            Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode.AsSpan());
-            Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode.AsSpan());
+            Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode1.AsSpan());
+            Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode1.AsSpan());
         }
         else
         {
-            Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode.AsSpan());
+            Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode1.AsSpan());
+        }
+    }
+    
+    private static void PatchContentNotInCpk2(bool disableLogging)
+    {
+        // Patch disable logging permanently
+        if (Pointers.DisableGetContentsInfoDetailsWarning == 0)
+            return;
+
+        var disableWarn = (byte*)Pointers.DisableGetContentsInfoDetailsWarning;
+        if (disableLogging)
+        {
+            Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode2.AsSpan());
+            Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode2.AsSpan());
+        }
+        else
+        {
+            Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode2.AsSpan());
         }
     }
 }
