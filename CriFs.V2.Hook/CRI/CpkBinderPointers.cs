@@ -24,7 +24,7 @@ internal static class CpkBinderPointers
             // For more details on individual pointers, see CriPointers struct itself
             // Note: Please sort this list by build date.
             possibilities = new CriPointerScanInfo[]
-            {                
+            {
                 new()
                 {
                     SourcedFrom = "Yakuza Kiwami",
@@ -37,14 +37,16 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "48 89 5C 24 18 48 89 7C 24 20 55 41",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
-                        CriFsBinder_BindFiles =
+                        CriFsBinder_BindFile =
                             "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41", // BindFile
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_BindFiles = "", // Not Present
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority = "",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9",
                         CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 60 04",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
@@ -65,9 +67,9 @@ internal static class CpkBinderPointers
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk =
                             "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC 70",
-                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48",
-                        CriFsBinder_Find =
-                            "48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 41 54 48 83 EC 40 45",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 78 48",
+                        CriFsBinder_BindFiles = "", // Missing
+                        CriFsBinder_Find = "48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 41 54 48 83 EC 40 45",
                         CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority = "",
@@ -75,7 +77,9 @@ internal static class CpkBinderPointers
                         CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 60",
                         CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83",
                         CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38",
-                        DisableFileBindWarning = ""
+                        DisableFileBindWarning = "",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9"
                     }
                 },
                 new()
@@ -90,9 +94,9 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 8B EC 48 83 EC 50",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile = "", // Missing
                         CriFsBinder_BindFiles = "", // Missing
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "", // Missing
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority = "", // Missing
@@ -102,7 +106,9 @@ internal static class CpkBinderPointers
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
                         CriFsIo_IsUtf8 =
                             "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 09 02 00 00 48 89 4C 24 20 44 8D 48 01 4C 8B C7",
-                        DisableFileBindWarning = ""
+                        DisableFileBindWarning = "",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9"
                     }
                 },
                 new()
@@ -117,15 +123,18 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 8B EC 48 83 EC 50",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
                         CriFsBinder_BindFiles =
                             "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 08 48 89 70 18 57 48 81 EC 30",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority =
                             "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18 8D 58 FE 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB 3E",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9 48 81 EC 90",
                         CriFsIo_Exists = "48 89 5C 24 08 57 48 81 EC 50 04",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
@@ -146,15 +155,18 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 8B EC 48 83 EC 50 48",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
                         CriFsBinder_BindFiles =
                             "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 08 48 89 70 18 57 48 81 EC 30",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority =
                             "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9",
                         CriFsIo_Exists = "48 89 5C 24 08 57 48 81 EC 50 04",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
@@ -174,15 +186,18 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 8B EC 48 83 EC 50",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
                         CriFsBinder_BindFiles =
-                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83", // BindFile
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 08 48 89 70 18 57 48 81 EC 30",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority =
                             "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18 8D 58 FE 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB 3E",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9",
                         CriFsIo_Exists = "48 89 5C 24 08 57 48 81 EC 50 04",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50 4D",
@@ -204,15 +219,19 @@ internal static class CpkBinderPointers
                             "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B 18 41 56 48 83 EC 60 48 8D 05 2C 89 46 01 41 8B E8 48 89 05 2A F8 49 02",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
                         CriFsBinder_BindFiles =
                             "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority =
                             "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
+
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 08 48 89 70 10 4C",
+
                         CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 70 08",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
@@ -233,15 +252,19 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "4C 8B DC 49 89 5B 08 49 89 6B 10 49 89 7B",
                         CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
                         CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
                         CriFsBinder_BindFiles =
                             "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
-                        CriFsBinder_Find =
-                            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
                         CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
                         CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
                         CriFsBinder_SetPriority =
                             "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
                         CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B",
+
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 08 48 89 70 10 4C",
+
                         CriFsIo_Exists = "48 89 5C 24 18 57 48 81 EC 70 08",
                         CriFsIo_Open =
                             "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
@@ -273,23 +296,25 @@ internal static class CpkBinderPointers
                             "83 3D ?? ?? ?? ?? ?? 75 12 68 ?? ?? ?? ?? 6A 00 E8 ?? ?? ?? ?? 59 59 83 C8 FF C3 E8 ?? ?? ?? ?? E8 ?? ?? ?? ?? E8",
                         CriFsBinder_BindCpk =
                             "", // bindCpkSub exists but not BindCpk. Because an under the hood method is used.
+                        CriFsBinder_BindFile = "",
                         CriFsBinder_BindFiles = "",
-                        CriFsBinder_Find =
-                            "55 8B EC 56 8B 75 14 85 F6 74 03 83 26 00 83 7D 10 00 74 09 FF 75 10 E8 ?? ?? ?? ?? 59 E8 ?? ?? ?? ?? 85 C0 74 05 83 C8 FF EB 16",
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74 03 83 26 00 83 7D 10 00 74 09 FF 75 10 E8 ?? ?? ?? ?? 59 E8 ?? ?? ?? ?? 85 C0 74 05 83 C8 FF EB 16",
                         CriFsBinder_GetSizeForBindFiles = "", // missing
                         CriFsBinder_GetStatus = "", // can't find (not present?)
                         CriFsBinder_SetPriority = "", // not present
                         CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 4C 83",
                         CriFsIo_Exists = "83 7C 24 04 00 56",
                         CriFsIo_Open = "55 8B EC 51 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 },
                 new()
                 {
                     // Same as Sonic Generations
-                    SourcedFrom = "Sonic 4 Episode 2 (Not Supported, Missing APIs, Possible to copy/reimplement code from Generations)",
+                    SourcedFrom =
+                        "Sonic 4 Episode 2 (Not Supported, Missing APIs, Possible to copy/reimplement code from Generations)",
                     CriVersion = "CRI File System/PCx86 Ver.2.24.04 Build:Apr  1 2011 21:08:31",
                     CriCompiler = "MSC1500,MT",
                     Patterns = new CriPointerPatterns
@@ -298,16 +323,18 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56",
                         CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
                         CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFile = "", // needs copy from Generations
                         CriFsBinder_BindFiles = "", // needs copy from Generations
                         CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
                         CriFsBinder_GetSizeForBindFiles = "", // needs copy from Generations
                         CriFsBinder_GetStatus = "53 8B 5C 24 08 E8 ?? ?? ?? ?? 85 C0 75",
                         CriFsBinder_SetPriority = "",
                         CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 4C 83",
                         CriFsIo_Exists = "83 7C 24 04 00 56 74",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 },
                 new()
@@ -321,16 +348,18 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56 33",
                         CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
                         CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
-                        CriFsBinder_BindFiles = "55 8B EC FF 75 18 8B 55",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 18 8B 55",
+                        CriFsBinder_BindFiles = "",
                         CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
                         CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 10 02",
                         CriFsBinder_GetStatus = "53 8B 5C 24 08 E8 ?? ?? ?? ?? 85 C0 75",
                         CriFsBinder_SetPriority = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 33",
                         CriFsBinder_Unbind = "53 8B 5C 24 08 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 13",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 4C 83",
                         CriFsIo_Exists = "83 7C 24 04 00 56 74",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 },
                 new()
@@ -346,16 +375,18 @@ internal static class CpkBinderPointers
                             "55 8B EC 83 EC 34 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 08 56 57 8B",
                         CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
                         CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
-                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFiles = "",
                         CriFsBinder_Find = "55 8B EC 56 8B 75 14 85 F6 74",
                         CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
                         CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
                         CriFsBinder_SetPriority = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 33",
                         CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 50 8D",
                         CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 },
                 new()
@@ -370,17 +401,19 @@ internal static class CpkBinderPointers
                         CriFs_InitializeLibrary = "55 8B EC 83 EC 38 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 0C",
                         CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
                         CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
-                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFiles = "",
                         CriFsBinder_Find = "55 8B EC 53 8B 5D 14 56 57",
                         CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
                         CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
                         CriFsBinder_SetPriority = "",
                         CriFsBinder_Unbind =
                             "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 50 8D",
                         CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 },
                 new()
@@ -395,7 +428,8 @@ internal static class CpkBinderPointers
                         CriFs_FinalizeLibrary =
                             "56 33 F6 39 35 ?? ?? ?? ?? 75 12 68 ?? ?? ?? ?? 56 E8 ?? ?? ?? ?? 59 59 83 C8 FF 5E C3 39",
                         CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
-                        CriFsBinder_BindFiles = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 1C 8B 55",
+                        CriFsBinder_BindFiles = "",
                         CriFsBinder_Find = "55 8B EC 53 8B 5D 14 56",
                         CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53",
                         CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
@@ -403,9 +437,10 @@ internal static class CpkBinderPointers
                         CriFsBinder_Unbind =
                             "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13 68 ?? ?? ?? ?? 6A 01 E8 ?? ?? ?? ?? 59 59 6A FE 58 EB 36",
                         CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 50 8D",
                         CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
-                        CriFsIo_IsUtf8 = "",
-                        DisableFileBindWarning = "", // not supported
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = ""
                     }
                 }
             };
@@ -413,79 +448,91 @@ internal static class CpkBinderPointers
 
         foreach (var pos in possibilities)
         {
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_CalculateWorkSizeForLibrary))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFs_CalculateWorkSizeForLibrary))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFs_CalculateWorkSizeForLibrary,
                     offset => pos.Results.CriFs_CalculateWorkSizeForLibrary = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_InitializeLibrary))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFs_InitializeLibrary))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFs_InitializeLibrary,
                     offset => pos.Results.CriFs_InitializeLibrary = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFs_FinalizeLibrary))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFs_FinalizeLibrary))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFs_FinalizeLibrary,
                     offset => pos.Results.CriFs_FinalizeLibrary = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindCpk))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindCpk))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindCpk,
                     offset => pos.Results.CriFsBinder_BindCpk = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindFiles))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindFile))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindFile,
+                    offset => pos.Results.CriFsBinder_BindFile = baseAddr + offset);
+            }
+
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_BindFiles))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_BindFiles,
                     offset => pos.Results.CriFsBinder_BindFiles = baseAddr + offset);
             }
-
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_Find))
+            
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_Find))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Find,
                     offset => pos.Results.CriFsBinder_Find = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetSizeForBindFiles))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsLoader_RegisterFile))
+            {
+                helper.FindPatternOffsetSilent(pos.Patterns.CriFsLoader_RegisterFile,
+                    offset => pos.Results.CriFsLoader_RegisterFile = baseAddr + offset);
+            }
+
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetSizeForBindFiles))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetSizeForBindFiles,
                     offset => pos.Results.CriFsBinder_GetSizeForBindFiles = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetStatus))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_GetStatus))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_GetStatus,
                     offset => pos.Results.CriFsBinder_GetStatus = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_SetPriority))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_SetPriority))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_SetPriority,
                     offset => pos.Results.CriFsBinder_SetPriority = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsBinder_Unbind))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsBinder_Unbind))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsBinder_Unbind,
                     offset => pos.Results.CriFsBinder_Unbind = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsIo_Exists))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsIo_Exists))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Exists,
                     offset => pos.Results.CriFsIo_Exists = baseAddr + offset);
             }
 
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsIo_Open))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsIo_Open))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.CriFsIo_Open,
                     offset => pos.Results.CriFsIo_Open = baseAddr + offset);
             }
-            
-            if (!string.IsNullOrEmpty(pos.Patterns.DisableFileBindWarning))
+
+            if (!String.IsNullOrEmpty(pos.Patterns.DisableFileBindWarning))
             {
                 helper.FindPatternOffsetSilent(pos.Patterns.DisableFileBindWarning,
                     offset => pos.Results.DisableFileBindWarning = baseAddr + offset);
@@ -493,7 +540,7 @@ internal static class CpkBinderPointers
 
             // Rarely used
             // Not supported in older library versions
-            if (!string.IsNullOrEmpty(pos.Patterns.CriFsIo_IsUtf8))
+            if (!String.IsNullOrEmpty(pos.Patterns.CriFsIo_IsUtf8))
             {
                 helper.FindPatternOffsetSilent(
                     pos.Patterns.CriFsIo_IsUtf8,
@@ -508,7 +555,6 @@ internal static class CpkBinderPointers
                         }
                     });
             }
-
         }
 
         // Sig Scanner returns results in order they were requested [by API contract].
@@ -517,7 +563,7 @@ internal static class CpkBinderPointers
         {
             var best = possibilities.OrderByDescending(info => info.Results.GetNumFoundPatterns()).First();
             Pointers = best.Results;
-            
+
             logger.Info("----- CRIFsV2Hook Analysis -----");
             logger.Info("Closest CRI Version: {0}", best.CriVersion);
             logger.Info("Compiler: {0}", best.CriCompiler);
@@ -536,12 +582,15 @@ internal static class CpkBinderPointers
             PrintResult(best.Results.CriFs_InitializeLibrary, nameof(criFs_InitializeLibrary));
 
             PrintResult(best.Results.CriFsBinder_BindCpk, nameof(criFsBinder_BindCpk));
+            PrintResult(best.Results.CriFsBinder_BindFile, "criFsBinder_BindFile");
             PrintResult(best.Results.CriFsBinder_BindFiles, nameof(criFsBinder_BindFiles));
             PrintResult(best.Results.CriFsBinder_Find, nameof(criFsBinder_Find));
             PrintResult(best.Results.CriFsBinder_GetSizeForBindFiles, nameof(criFsBinder_GetWorkSizeForBindFiles));
             PrintResult(best.Results.CriFsBinder_SetPriority, nameof(criFsBinder_SetPriority));
             PrintResult(best.Results.CriFsBinder_GetStatus, nameof(criFsBinder_GetStatus));
             PrintResult(best.Results.CriFsBinder_Unbind, nameof(criFsBinder_Unbind));
+
+            PrintResult(best.Results.CriFsLoader_RegisterFile, nameof(criFsLoader_RegisterFile));
 
             PrintResult(best.Results.CriFsIo_Open, nameof(criFsIo_Open));
             PrintResult(best.Results.CriFsIo_Exists, nameof(criFsIo_Exists));
@@ -592,6 +641,7 @@ internal static class CpkBinderPointers
         internal required string CriFs_InitializeLibrary;
 
         internal required string CriFsBinder_BindCpk;
+        internal required string CriFsBinder_BindFile;
         internal required string CriFsBinder_BindFiles;
         internal required string CriFsBinder_Find;
         internal required string CriFsBinder_GetSizeForBindFiles;
@@ -599,16 +649,71 @@ internal static class CpkBinderPointers
         internal required string CriFsBinder_GetStatus;
         internal required string CriFsBinder_Unbind;
 
+        internal required string CriFsLoader_RegisterFile;
+
         internal required string CriFsIo_Open;
         internal required string CriFsIo_Exists;
         internal required string CriFsIo_IsUtf8;
-        
+
         // Patch for 'The contents file not found in the binderhn' warning on newer games.
         internal required string DisableFileBindWarning;
     }
 
     public struct CriPointers
     {
+        // Used for Init
+        internal long CriFs_CalculateWorkSizeForLibrary;
+        internal long CriFs_FinalizeLibrary;
+        internal long CriFs_InitializeLibrary;
+
+        // Used for binding
+        internal long CriFsBinder_BindCpk;
+        internal long CriFsBinder_BindFile;
+        internal long CriFsBinder_BindFiles;
+        internal long CriFsBinder_Find;
+
+        internal long CriFsBinder_GetSizeForBindFiles;
+        internal long CriFsBinder_SetPriority;
+        internal long CriFsBinder_GetStatus;
+        internal long CriFsBinder_Unbind;
+
+        // Used for redirecting files out of game folder and fixing case sensitivity.
+        internal long CriFsLoader_RegisterFile;
+
+        internal long CriFsIo_Open;
+        internal long CriFsIo_Exists;
+        internal unsafe int* CriFsIo_IsUtf8;
+        internal long DisableFileBindWarning;
+
+        public int GetNumFoundPatterns()
+        {
+            var found = 0;
+            found += Convert.ToInt32(CriFs_CalculateWorkSizeForLibrary != 0);
+            found += Convert.ToInt32(CriFs_FinalizeLibrary != 0);
+            found += Convert.ToInt32(CriFs_InitializeLibrary != 0);
+
+            found += Convert.ToInt32(CriFsBinder_BindCpk != 0);
+            found += Convert.ToInt32(CriFsBinder_BindFile != 0);
+            found += Convert.ToInt32(CriFsBinder_BindFiles != 0);
+            found += Convert.ToInt32(CriFsBinder_Find != 0);
+            found += Convert.ToInt32(CriFsBinder_GetSizeForBindFiles != 0);
+            found += Convert.ToInt32(CriFsBinder_SetPriority != 0);
+            found += Convert.ToInt32(CriFsBinder_GetStatus != 0);
+            found += Convert.ToInt32(CriFsBinder_Unbind != 0);
+
+            found += Convert.ToInt32(CriFsLoader_RegisterFile != 0);
+
+            found += Convert.ToInt32(CriFsIo_Open != 0);
+            found += Convert.ToInt32(CriFsIo_Exists != 0);
+
+            // Optional
+            // found += Convert.ToInt32(CriFsIo_IsUtf8 != (void*)0);
+
+            return found;
+        }
+    }
+}
+
 /*
     Below are Function Order in original `.obj` file(s)
     for each relevant group of pointers.
@@ -689,11 +794,6 @@ internal static class CpkBinderPointers
     criFs_SetUserMallocFunction
     criFs_UpdateHandleStatus
 */
-
-        // Used for Init
-        internal long CriFs_CalculateWorkSizeForLibrary;
-        internal long CriFs_FinalizeLibrary;
-        internal long CriFs_InitializeLibrary;
 
 /*
     criFsBinder .obj file [2019]
@@ -785,17 +885,6 @@ internal static class CpkBinderPointers
 
 */
 
-        // Used for binding
-        internal long CriFsBinder_BindCpk;
-        internal long CriFsBinder_BindFiles;
-
-        internal long CriFsBinder_Find; // To correct case (match casing in original CPK) when looking for something
-
-        internal long CriFsBinder_GetSizeForBindFiles;
-        internal long CriFsBinder_SetPriority;
-        internal long CriFsBinder_GetStatus;
-        internal long CriFsBinder_Unbind;
-
 /*
     Platform I/O functions:
 
@@ -823,34 +912,3 @@ internal static class CpkBinderPointers
     criFsIoXXX_Resize
     criFsIoXXX_GetNativeFileHandle
 */
-        // Used for redirecting files out of game folder and fixing case sensitivity.
-        internal long CriFsIo_Open;
-        internal long CriFsIo_Exists;
-        internal unsafe int* CriFsIo_IsUtf8;
-        internal long DisableFileBindWarning;
-
-        public int GetNumFoundPatterns()
-        {
-            int found = 0;
-            found += Convert.ToInt32(CriFs_CalculateWorkSizeForLibrary != 0);
-            found += Convert.ToInt32(CriFs_FinalizeLibrary != 0);
-            found += Convert.ToInt32(CriFs_InitializeLibrary != 0);
-
-            found += Convert.ToInt32(CriFsBinder_BindCpk != 0);
-            found += Convert.ToInt32(CriFsBinder_BindFiles != 0);
-            found += Convert.ToInt32(CriFsBinder_Find != 0);
-            found += Convert.ToInt32(CriFsBinder_GetSizeForBindFiles != 0);
-            found += Convert.ToInt32(CriFsBinder_SetPriority != 0);
-            found += Convert.ToInt32(CriFsBinder_GetStatus != 0);
-            found += Convert.ToInt32(CriFsBinder_Unbind != 0);
-
-            found += Convert.ToInt32(CriFsIo_Open != 0);
-            found += Convert.ToInt32(CriFsIo_Exists != 0);
-            
-            // Optional
-            // found += Convert.ToInt32(CriFsIo_IsUtf8 != (void*)0);
-            
-            return found;
-        }
-    }
-}

@@ -87,6 +87,21 @@ public static unsafe class CRI
     public delegate CriError criFsBinder_BindFiles(IntPtr bndrhn, IntPtr srcbndrhn,
         [MarshalAs(UnmanagedType.LPStr)] string path, IntPtr work, int worksize, uint* bndrid);
     
+    /// <summary>
+    /// Bind the given list of files
+    /// </summary>
+    /// <param name="bndrhn">Binder handle of the bind destination.</param>
+    /// <param name="srcbndrhn">Binder handle to access the CPK file to bind.</param>
+    /// <param name="path">List of files to bind, with `\n` as separator.</param>
+    /// <param name="work">Work area for bind (mainly for CPK analysis).</param>
+    /// <param name="worksize">Size of the work area (bytes).</param>
+    /// <param name="bndrid">[out] Bind ID.</param>
+    /// <returns>CriError Error code.</returns>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(CallConv32.Cdecl)]
+    public delegate CriError criFsBinder_BindFiles_WithoutMarshalling(IntPtr bndrhn, IntPtr srcbndrhn,
+        byte* path, IntPtr work, int worksize, uint* bndrid);
+    
     // In SonicGenerations bndrhn seems unused.
     
     /// <summary>
@@ -94,11 +109,11 @@ public static unsafe class CRI
     /// </summary>
     /// <param name="bndrhn">[In] Binder handle of the bind destination.</param>
     /// <param name="path">[In] Path to the file in question.</param>
-    /// <param name="finfo">File info, unknown format.</param>
-    /// <param name="exist">True if file exists, else false.</param>
+    /// <param name="finfo">[Out] File info, unknown format.</param>
+    /// <param name="exist">[Out] True if file exists, else false.</param>
     [Function64(CallConv64.Microsoft)]
     [Function32(CallConv32.Cdecl)]
-    public delegate nint criFsBinder_Find(nint bndrhn, nint path, void* finfo, int* exist);
+    public delegate nint criFsBinder_Find(nint bndrhn, nint path, CriFsBinderFileInfo* finfo, int* exist);
     
     /// <summary>
     /// This function sets the priority value for the bind ID. 
@@ -135,6 +150,25 @@ public static unsafe class CRI
         [MarshalAs(UnmanagedType.LPStr)] string path, int* workSize);
     
     // !! Internal Functions !! NON PUBLIC API
+    
+    /// <summary>
+    /// Registers a file before loading it.
+    /// </summary>
+    /// <param name="loader">The handle to the CriFs Loader.</param>
+    /// <param name="binder">The handle to the CriFs Binder.</param>
+    /// <param name="path">
+    ///     Pointer to a string with the file path.
+    ///     This path is relative and is usually ANSI.
+    /// </param>
+    /// <param name="fileId">The ID of the file within the archive (CPK). -1 if not using ID.</param>
+    /// <param name="zero">Unknown, usually zero.</param>
+    [Function64(CallConv64.Microsoft)]
+    [Function32(Function32.Register.esi, Function32.Register.eax, Function32.StackCleanup.Caller)] // Always optimized as this due to simplicity of caller & register allocation pattern under MSVC
+    public delegate IntPtr criFsLoader_RegisterFile(IntPtr loader,
+        IntPtr binder,
+        IntPtr path,
+        int fileId,
+        IntPtr zero);
     
     /// <summary>
     /// Verifies whether a given file exists on the filesystem.
@@ -230,6 +264,7 @@ public static unsafe class CRI
     ///
     /// From my observation, most games use the default values.
     /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
     public struct CriFsConfig
     {
         /// <summary>
@@ -343,5 +378,44 @@ public static unsafe class CRI
         /// Single threaded model.
         /// </summary>
         SingleThreaded = 2,
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CriFsBinderFileInfo 
+    {
+        /// <summary>
+        /// File handle.
+        /// </summary>
+        public void* fileHn;
+        
+        /// <summary>
+        /// Path to the file, ANSI, null terminated.
+        /// </summary>
+        public byte* Path;
+        
+        /// <summary>
+        /// Offset position from beginning of file.
+        /// </summary>
+        public long Offset;
+        
+        /// <summary>
+        /// Compressed file size.
+        /// </summary>
+        public long CompressedSize;
+        
+        /// <summary>
+        /// Uncompressed file size.
+        /// </summary>
+        public long DecompressedSize;
+        
+        /// <summary>
+        /// Binder ID (Indicates binder from which file is bound)
+        /// </summary>
+        public void* binderId;
+
+        /// <summary>
+        /// Reserved/padding.
+        /// </summary>
+        public uint Reserved;
     }
 }
