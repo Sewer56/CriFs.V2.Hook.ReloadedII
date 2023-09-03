@@ -6,7 +6,6 @@ using CriFs.V2.Hook.Utilities;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Hooks.Definitions;
 using Reloaded.Memory;
-using Reloaded.Memory.Interfaces;
 using Reloaded.Memory.Sigscan.Definitions;
 using Reloaded.Memory.Structs;
 using static CriFs.V2.Hook.CRI.CpkBinderPointers;
@@ -24,22 +23,26 @@ public static unsafe partial class CpkBinder
     private static Logger _logger = null!;
 
     private static IHook<criFsBinder_Find>? _findFileHook;
+    private static IHook<criFsLoader_RegisterFile>? _registerFileHook;
     private static IHook<criFs_InitializeLibrary>? _initializeLibraryHook;
     private static IHook<criFs_FinalizeLibrary>? _finalizeLibraryHook;
     private static IHook<criFsBinder_BindCpk>? _bindCpkHook;
     private static IHook<criFsIo_Exists>? _ioExistsHook;
     private static IHook<criFsIo_Open>? _ioOpenHook;
+    private static IHook<criFsBinder_BindFiles_WithoutMarshalling>? _bindFileHook;
+    private static IHook<criFsBinder_BindFiles_WithoutMarshalling>? _bindFilesHook;
 
     private static criFs_CalculateWorkSizeForLibrary? _getWorkSizeForLibraryFn;
-    private static criFsBinder_BindFiles? _bindFilesFn;
     private static criFsBinder_GetWorkSizeForBindFiles? _getSizeForBindFilesFn;
     private static criFsBinder_GetStatus? _getStatusFn;
+    private static criFsBinder_BindFiles? _bindFileFn;
+    private static criFsBinder_BindFiles? _bindFilesFn;
     private static criFsBinder_SetPriority? _setPriorityFn;
     private static criFsBinder_Unbind? _unbindFn;
     private static SpanOfCharDict<string> _content = new(0);
     private static int _contentLength;
 
-    private static readonly HashSet<IntPtr> BinderHandles = new(16); // 16 is default for max handle count.
+    private static readonly HashSet<nint> BinderHandles = new(16); // 16 is default for max handle count.
     private static readonly List<CpkBinding> Bindings = new();
     private static int _additionalFiles;
     private static MemoryAllocation _libraryMemory;
@@ -48,7 +51,7 @@ public static unsafe partial class CpkBinder
     private static bool _printFileRedirects;
 
     /// <remarks>
-    /// This should be called after <see cref="CpkBinderPointers"/> is initialized.
+    ///     This should be called after <see cref="CpkBinderPointers" /> is initialized.
     /// </remarks>
     public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory)
     {
@@ -58,13 +61,25 @@ public static unsafe partial class CpkBinder
 
         _findFileHook =
             hooks.CreateHook<criFsBinder_Find>(CriFsBinderFindImpl, Pointers.CriFsBinder_Find).Activate();
+        _registerFileHook =
+            hooks.CreateHook<criFsLoader_RegisterFile>(CriFsLoaderRegisterFileImpl, Pointers.CriFsLoader_RegisterFile)
+                .Activate();
         _initializeLibraryHook =
-            hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, Pointers.CriFs_InitializeLibrary).Activate();
+            hooks.CreateHook<criFs_InitializeLibrary>(InitializeLibraryImpl, Pointers.CriFs_InitializeLibrary)
+                .Activate();
         _bindCpkHook = hooks.CreateHook<criFsBinder_BindCpk>(BindCpkImpl, Pointers.CriFsBinder_BindCpk).Activate();
         _ioExistsHook = hooks.CreateHook<criFsIo_Exists>(ExistsImpl, Pointers.CriFsIo_Exists).Activate();
         _ioOpenHook = hooks.CreateHook<criFsIo_Open>(CriFsOpenImpl, Pointers.CriFsIo_Open).Activate();
 
-        _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(Pointers.CriFsBinder_BindFiles, out _);
+        if (Pointers.CriFsBinder_BindFile != 0)
+            _bindFileHook =
+                hooks.CreateHook<criFsBinder_BindFiles_WithoutMarshalling>(BindFileImpl, Pointers.CriFsBinder_BindFile).Activate();
+        
+        if (Pointers.CriFsBinder_BindFiles != 0)
+            _bindFilesHook =
+                hooks.CreateHook<criFsBinder_BindFiles_WithoutMarshalling>(BindFilesImpl,
+                    Pointers.CriFsBinder_BindFiles).Activate();
+
         _getSizeForBindFilesFn =
             hooks.CreateWrapper<criFsBinder_GetWorkSizeForBindFiles>(Pointers.CriFsBinder_GetSizeForBindFiles, out _);
         _getStatusFn = hooks.CreateWrapper<criFsBinder_GetStatus>(Pointers.CriFsBinder_GetStatus, out _);
@@ -72,16 +87,23 @@ public static unsafe partial class CpkBinder
         _getWorkSizeForLibraryFn =
             hooks.CreateWrapper<criFs_CalculateWorkSizeForLibrary>(Pointers.CriFs_CalculateWorkSizeForLibrary, out _);
 
+        if (Pointers.CriFsBinder_BindFile != 0)
+            _bindFileFn = hooks.CreateWrapper<criFsBinder_BindFiles>(Pointers.CriFsBinder_BindFile, out _);
+
+        if (Pointers.CriFsBinder_BindFiles != 0)
+            _bindFilesFn = hooks.CreateWrapper<criFsBinder_BindFiles>(Pointers.CriFsBinder_BindFiles, out _);
+
         if (Pointers.CriFs_FinalizeLibrary != 0)
-            _finalizeLibraryHook = hooks.CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, Pointers.CriFs_FinalizeLibrary)
+            _finalizeLibraryHook = hooks
+                .CreateHook<criFs_FinalizeLibrary>(FinalizeLibraryImpl, Pointers.CriFs_FinalizeLibrary)
                 .Activate();
 
         if (Pointers.CriFsBinder_SetPriority != 0)
             _setPriorityFn = hooks.CreateWrapper<criFsBinder_SetPriority>(Pointers.CriFsBinder_SetPriority, out _);
-        
+
         PatchBindFileIntoBindFiles(scannerFactory);
     }
-    
+
     #region Init
 
     private static CriError FinalizeLibraryImpl()
@@ -131,19 +153,24 @@ public static unsafe partial class CpkBinder
 
     private static bool AssertWillFunction()
     {
-        if (Pointers.CriFsBinder_BindCpk == 0 || 
-            Pointers.CriFsBinder_BindFiles == 0 || 
+        var missingBindFile = Pointers is { CriFsBinder_BindFiles: 0, CriFsBinder_BindFile: 0 };
+        if (missingBindFile ||
+            Pointers.CriFsBinder_BindCpk == 0 ||
             Pointers.CriFsBinder_GetSizeForBindFiles == 0 ||
-            Pointers.CriFsBinder_GetStatus == 0 || 
-            Pointers.CriFsBinder_Unbind == 0 || 
+            Pointers.CriFsBinder_GetStatus == 0 ||
+            Pointers.CriFsBinder_Unbind == 0 ||
             Pointers.CriFs_InitializeLibrary == 0 ||
-            Pointers.CriFs_CalculateWorkSizeForLibrary == 0 || 
-            Pointers.CriFsIo_Open == 0 || 
-            Pointers.CriFsBinder_Find == 0)
+            Pointers.CriFs_CalculateWorkSizeForLibrary == 0 ||
+            Pointers.CriFsIo_Open == 0)
         {
-            _logger.Fatal("One of the required functions is missing (see log). CRI FS version in this game is incompatible.");
+            _logger.Fatal(
+                "One of the required functions is missing (see log). CRI FS version in this game is incompatible.");
             return false;
         }
+
+        if (Pointers.CriFsLoader_RegisterFile == 0)
+            _logger.Warning(
+                "RegisterFile is missing. Injected files are case sensitive and some logging may be missing!");
 
         if (Pointers.CriFsIo_Exists == 0)
             _logger.Warning("IO Exists is missing. This should generally have no runtime impact.");
@@ -166,8 +193,8 @@ public static unsafe partial class CpkBinder
 
     #region Binding
 
-    private static CriError BindCpkImpl(IntPtr bndrhn, IntPtr srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path,
-        IntPtr work, int worksize, uint* bndrid)
+    private static CriError BindCpkImpl(nint bndrhn, nint srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path,
+        nint work, int worksize, uint* bndrid)
     {
         if (BinderHandles.Add(bndrhn))
             BindAll(bndrhn);
@@ -175,7 +202,7 @@ public static unsafe partial class CpkBinder
         return _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
     }
 
-    private static void BindAll(IntPtr bndrhn)
+    private static void BindAll(nint bndrhn)
     {
         _logger.Info("Setting Up Binds for Handle {0}", bndrhn);
         BindFolder(bndrhn, Int32.MaxValue);
@@ -218,7 +245,11 @@ public static unsafe partial class CpkBinder
 
         var workMem = _allocator.Allocate(size);
         var watch = Stopwatch.StartNew();
-        err = _bindFilesFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem.Address, size, &bndrid);
+
+        err = _bindFilesFn != null
+            ? _bindFilesFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem.Address, size, &bndrid)
+            : _bindFileFn!(bndrhn, IntPtr.Zero, fileListStr, (nint)workMem.Address, size,
+                &bndrid); // patched to allow multiple
 
         if (err < 0)
         {
@@ -290,12 +321,18 @@ public static unsafe partial class CpkBinder
     /// <summary>
     ///     Enables/disables printing of file access.
     /// </summary>
-    public static void SetPrintFileAccess(bool printFileAccess) => _printFileAccess = printFileAccess;
-    
+    public static void SetPrintFileAccess(bool printFileAccess)
+    {
+        _printFileAccess = printFileAccess;
+    }
+
     /// <summary>
     ///     Enables/disables printing of file redirects.
     /// </summary>
-    public static void SetPrintFileRedirect(bool printFileRedirects) => _printFileRedirects = printFileRedirects;
+    public static void SetPrintFileRedirect(bool printFileRedirects)
+    {
+        _printFileRedirects = printFileRedirects;
+    }
 
     /// <summary>
     ///     Updates the content that will be bound at runtime.

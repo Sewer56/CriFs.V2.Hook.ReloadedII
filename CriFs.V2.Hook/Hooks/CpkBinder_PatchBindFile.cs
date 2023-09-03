@@ -14,17 +14,20 @@ public static unsafe partial class CpkBinder
 {
     private static void PatchBindFileIntoBindFiles(IScannerFactory scannerFactory)
     {
-        var bindFiles = Pointers.CriFsBinder_BindFiles;
+        var bindFile = Pointers.CriFsBinder_BindFile;
+        if (bindFile == 0)
+            return;
+        
         if (IntPtr.Size == 4 && RuntimeInformation.ProcessArchitecture == Architecture.X86)
         {
             // Try patch `push 1` -> `push -1`
-            var scanner = scannerFactory.CreateScanner((byte*)bindFiles, 34);
+            var scanner = scannerFactory.CreateScanner((byte*)bindFile, 34);
             var ofs = scanner.FindPattern("6A 01");
             if (ofs.Found)
             {
                 _logger.Info("Patching BindFiles' 1 file limit on x86");
                 Span<byte> newBytes = stackalloc byte[] { 0x6A, 0xFF };
-                Memory.Instance.SafeWrite((nuint)(bindFiles + ofs.Offset), newBytes);
+                Memory.Instance.SafeWrite((nuint)(bindFile + ofs.Offset), newBytes);
                 return;
             }
 
@@ -56,7 +59,7 @@ public static unsafe partial class CpkBinder
 
                 if (scanner.TryFindPattern(incSig, localRes.Offset, out var res))
                 {
-                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset), new Span<byte>(&decValue, 1));
+                    Memory.Instance.SafeWrite((nuint)((byte*)bindFile + res.Offset), new Span<byte>(&decValue, 1));
                     _logger.Info(message);
                 }
             }
@@ -64,7 +67,7 @@ public static unsafe partial class CpkBinder
         else if (IntPtr.Size == 8 && RuntimeInformation.ProcessArchitecture == Architecture.X64)
         {
             // Try patch `mov reg, 1` -> `mov reg, -1`
-            var scanner = scannerFactory.CreateScanner((byte*)bindFiles, 40);
+            var scanner = scannerFactory.CreateScanner((byte*)bindFile, 40);
 
             // Target MSFT calling convention integer argument registers
             // mov ecx, 1 -> mov ecx,-1 || b9 01 00 00 00 -> b9 ff ff ff ff
@@ -82,7 +85,7 @@ public static unsafe partial class CpkBinder
                 if (scanner!.TryFindPattern(movRegSig, 0, out var res))
                 {
                     var operandOffset = movRegSig.Length == 14 ? 1 : 2; // check if 32-bit register or not.
-                    Memory.Instance.SafeWrite((nuint)((byte*)bindFiles + res.Offset + operandOffset),
+                    Memory.Instance.SafeWrite((nuint)((byte*)bindFile + res.Offset + operandOffset),
                         new Span<byte>(&newValue, 1));
                     _logger.Info(message);
                 }

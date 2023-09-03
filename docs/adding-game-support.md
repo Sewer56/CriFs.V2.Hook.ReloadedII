@@ -222,88 +222,87 @@ Search for method which uses error string `E2008072816`.
 Search for method which uses error string `E2008071620`. This method is `criFsBinder_BindCpkSub`.  
 The method which calls this method is `criFsBinder_BindCpk`.  
 
-### CriFsBinder_BindFiles
+### CriFsBinder_BindFile & CriFsBinder_BindFiles
 
 Search for method which uses error string `E2008071630`. This is `criFsBinder_bindFilesSub`.  
-This method is called by `criFsBinder_BindFile` and `criFsBinder_BindFiles`.  
 
 The method which passes a constant `-1` to `criFsBinder_bindFilesSub` is `criFsBinder_BindFiles`,
 the other method that passes constant `1` is `criFsBinder_BindFile`.
 
-!!! warning "`criFsBinder_BindFiles` may not exist in some games. If that's the case happens, provide the signature for `criFsBinder_BindFile` instead. CriFsV2Hook will try to patch that function to allow binding of multiple files."
+!!! warning "Sometimes either `BindFile` or `BindFiles` may not exist. When only `BindFile` is present, CriFsV2Hook will try to patch that function to allow binding of multiple files."
 
 !!! tip "That patching happens in `CpkBinder.cs`"
 
 ### CriFsBinder_Find
 
-Search for method which uses error string `W2008121610`. This is `crifsbinder_checkBoss`.  
-Then check out the 4-8 methods which call said method.  
+Search for method which uses error string `W2008121610`. This is `crifsbinder_checkBoss`.   
+Then check out the 4-8 methods which call said method.
 
-One of them will be find, which looks like this:  
-```c++
-// Usually looks like this 
-__int64 __fastcall criFsBinder_Find(int a1, __int64 a2, void **a3, _DWORD *a4)
-{
-  __int64 result; // rax
-
-  if ( a4 )
-    *a4 = 0;
-  if ( a3 )
-    memset(a3, 0, 0x30ui64);
-  if ( (unsigned int)crifsbinder_checkBoss() )
-    return 0xFFFFFFFFi64;
-  result = sub_1400411F4(a1, 0, 0i64, (__int64)a4);
-  if ( a3 )
-  {
-    if ( *a3 == &unk_1419C6A68 )
-      *a3 = 0i64;
-  }
-  return result;
-}
-```
+One of them will be find, which looks like this:
+```c++ 
+// Usually looks like this  
+__int64 __fastcall criFsBinder_Find(int a1, __int64 a2, void **a3, _DWORD *a4) 
+{ 
+  __int64 result; // rax 
+ 
+  if ( a4 ) 
+    *a4 = 0; 
+  if ( a3 ) 
+    memset(a3, 0, 0x30ui64); 
+  if ( (unsigned int)crifsbinder_checkBoss() ) 
+    return 0xFFFFFFFFi64; 
+  result = sub_1400411F4(a1, 0, 0i64, (__int64)a4); 
+  if ( a3 ) 
+  { 
+    if ( *a3 == &unk_1419C6A68 ) 
+      *a3 = 0i64; 
+  } 
+  return result; 
+} 
+``` 
 
 In older versions of CRI, it might look more like this:
 
-```c++
-int __cdecl criFsBinder_Find(int a1, __int16 a2, void *a3, _DWORD *a4)
-{
-  if ( a4 )
-    *a4 = 0;
-  if ( a3 )
-    sub_4490D0(a3);
-  if ( sub_448F3B() )
-    return -1;
-  else
-    return sub_44A771(a2, (int)a3, 0, 0);
-}
-```
+```c++ 
+int __cdecl criFsBinder_Find(int a1, __int16 a2, void *a3, _DWORD *a4) 
+{ 
+  if ( a4 ) 
+    *a4 = 0; 
+  if ( a3 ) 
+    sub_4490D0(a3); 
+  if ( sub_448F3B() ) 
+    return -1; 
+  else 
+    return sub_44A771(a2, (int)a3, 0, 0); 
+} 
+``` 
 
 !!! warning "DO NOT confuse this with FindById"
 
-```c++
-__int64 __fastcall criFsBinder_FindById(int a1, int a2, void *a3, _DWORD *a4)
-{
-  int v5; // ebx
+```c++ 
+__int64 __fastcall criFsBinder_FindById(int a1, int a2, void *a3, _DWORD *a4) 
+{ 
+  int v5; // ebx 
+ 
+  v5 = (int)a3; 
+  if ( a4 ) 
+    *a4 = 0; 
+  if ( a2 < 0 ) 
+  { 
+    criErr_NotifyGeneric(0i64, "E2014012701", 4294967294i64); 
+    return 0xFFFFFFFFi64; 
+  } 
+  if ( a3 ) 
+    memset(a3, 0, 0x30ui64); 
+  if ( (unsigned int)crifsbinder_checkBoss() ) 
+    return 0xFFFFFFFFi64; 
+  return sub_140040E44(a1, a2, v5, 0, 0i64, (__int64)a4, 0i64); 
+} 
+``` 
 
-  v5 = (int)a3;
-  if ( a4 )
-    *a4 = 0;
-  if ( a2 < 0 )
-  {
-    criErr_NotifyGeneric(0i64, "E2014012701", 4294967294i64);
-    return 0xFFFFFFFFi64;
-  }
-  if ( a3 )
-    memset(a3, 0, 0x30ui64);
-  if ( (unsigned int)crifsbinder_checkBoss() )
-    return 0xFFFFFFFFi64;
-  return sub_140040E44(a1, a2, v5, 0, 0i64, (__int64)a4, 0i64);
-}
-```
-
-If you see `E2014012701`, you found `FindById`. 
+If you see `E2014012701`, you found `FindById`.  
 Out of all the methods that call `crifsbinder_checkBoss`, `criFsBinder_Find` should be the only one that does not call
-`criErr_NotifyGeneric`.  
+`criErr_NotifyGeneric`.
 
 ### CriFsBinder_GetWorkSizeForBindFiles
 
@@ -384,6 +383,12 @@ Search for method which uses error string `E2008072390`, this is `criFsBinder_Se
 ### CriFsBinder_Unbind
 
 Search for method which uses error string `E2008122691`, this is `criFsBinder_Unbind`.
+
+### CriFsLoader_RegisterFile
+
+!!! note "This is the internal method, not the public API method that varies in case."
+
+Search for method which uses error string `W2008082701`. This is `crifsloader_register_file`.
 
 ### CriFsIo_Open (Windows)
 
