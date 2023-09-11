@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using CriFs.V2.Hook.Bind;
 using CriFs.V2.Hook.Bind.Interfaces;
+using CriFs.V2.Hook.Hooks;
 using CriFs.V2.Hook.Interfaces;
 using CriFs.V2.Hook.Interfaces.Structs;
 using CriFs.V2.Hook.Utilities;
@@ -49,7 +50,10 @@ public class Api : ICriFsRedirectorApi
 
     /// <inheritdoc />
     public ICriFsLib GetCriFsLib() => CriFsLib.Instance;
-    
+
+    /// <inheritdoc />
+    public void SetMaxFilesMultiplier(int multiplier) => CpkBinder.SetMaxFilesMultiplier(multiplier);
+
     /// <inheritdoc/>
     public string[] GetCpkFilesInGameDir()
     {

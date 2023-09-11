@@ -54,6 +54,15 @@ public interface ICriFsRedirectorApi
     public ICriFsLib GetCriFsLib();
 
     /// <summary>
+    /// Sets a multiplier for the maximum number of files that can be bound.
+    /// This should generally by 2x the number of binders the game uses.
+    /// 
+    /// This must be set before CriFsHook initialises otherwise it will do nothing (i.e. before mod loader is initialised)
+    /// </summary>
+    /// <param name="multiplier">The multiplier for the maximum number of files that can be bound</param>
+    public void SetMaxFilesMultiplier(int multiplier);
+
+    /// <summary>
     /// The context used for binding operations.
     /// </summary>
     public struct UnbindContext
