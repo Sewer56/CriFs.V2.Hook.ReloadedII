@@ -141,7 +141,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
     {
         _modLoader.OnModLoaderInitialized -= OnLoaderInitialized;
         AssertAwbIncompatibility();
-        CpkBinder.Init(_logger, _hooks!, _scannerFactory, _cpkBuilder!.MaxFilesMultiplier);
+        CpkBinder.Init(_logger, _hooks!, _scannerFactory);
         CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);

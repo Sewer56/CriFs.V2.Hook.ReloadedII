@@ -41,7 +41,7 @@ public static unsafe partial class CpkBinder
     private static criFsBinder_Unbind? _unbindFn;
     private static SpanOfCharDict<string> _content = new(0);
     private static int _contentLength;
-    private static int _maxFilesMultiplier;
+    private static int _maxFilesMultiplier = 2;
 
     private static readonly HashSet<nint> BinderHandles = new(16); // 16 is default for max handle count.
     private static readonly List<CpkBinding> Bindings = new();
@@ -54,9 +54,8 @@ public static unsafe partial class CpkBinder
     /// <remarks>
     ///     This should be called after <see cref="CpkBinderPointers" /> is initialized.
     /// </remarks>
-    public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory, int maxFilesMultiplier)
+    public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory)
     {
-        _maxFilesMultiplier = maxFilesMultiplier;
         _logger = logger;
         if (!AssertWillFunction())
             return;
@@ -357,6 +356,12 @@ public static unsafe partial class CpkBinder
 
         _contentLength = bindLength;
     }
+
+    public static void SetMaxFilesMultiplier(int multiplier)
+    {
+        _maxFilesMultiplier = multiplier;
+    }
+
 
     #endregion
 }
