@@ -201,8 +201,7 @@ public static unsafe partial class CpkBinder
         if (BinderHandles.Add(bndrhn))
             BindAll(bndrhn);
 
-        var error = _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
-        return error;
+        return _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
     }
 
     private static void BindAll(nint bndrhn)
