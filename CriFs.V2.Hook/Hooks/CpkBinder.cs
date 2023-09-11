@@ -41,6 +41,7 @@ public static unsafe partial class CpkBinder
     private static criFsBinder_Unbind? _unbindFn;
     private static SpanOfCharDict<string> _content = new(0);
     private static int _contentLength;
+    private static int _maxFilesMultiplier;
 
     private static readonly HashSet<nint> BinderHandles = new(16); // 16 is default for max handle count.
     private static readonly List<CpkBinding> Bindings = new();
@@ -53,8 +54,9 @@ public static unsafe partial class CpkBinder
     /// <remarks>
     ///     This should be called after <see cref="CpkBinderPointers" /> is initialized.
     /// </remarks>
-    public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory)
+    public static void Init(Logger logger, IReloadedHooks hooks, IScannerFactory scannerFactory, int maxFilesMultiplier)
     {
+        _maxFilesMultiplier = maxFilesMultiplier;
         _logger = logger;
         if (!AssertWillFunction())
             return;
@@ -144,7 +146,7 @@ public static unsafe partial class CpkBinder
         // Reloaded can load mods at runtime, however we cannot predict what the user might load, and there is no
         // error handling mechanism in CRI for exceeding max files, which is a bit problematic.
         // In our case, we will insert a MessageBox to handle this edge case.
-        _additionalFiles = _content.Count * 2;
+        _additionalFiles = _content.Count * _maxFilesMultiplier;
 
         // An additional loader is used when we call BindFiles.
         config->MaxLoaders += 1;
@@ -199,7 +201,8 @@ public static unsafe partial class CpkBinder
         if (BinderHandles.Add(bndrhn))
             BindAll(bndrhn);
 
-        return _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
+        var error = _bindCpkHook!.OriginalFunction(bndrhn, srcbndrhn, path, work, worksize, bndrid);
+        return error;
     }
 
     private static void BindAll(nint bndrhn)

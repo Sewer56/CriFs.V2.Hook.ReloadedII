@@ -29,6 +29,7 @@ public class ReloadedBindBuilderCreator
     private readonly List<Action<ICriFsRedirectorApi.BindContext>> _bindCallbacks = new();
     private readonly List<string> _modIdsToBuild = new();
     private bool _hotReload;
+    public int MaxFilesMultiplier = 2;
 
     public ReloadedBindBuilderCreator(IModLoader loader, Logger logger, IBindDirectoryAcquirer bindDirAcquirer,
         CpkContentCache cpkContentCache, Action onRebuildStarted, Action onRebuildComplete, Action<Dictionary<string, List<ICriFsRedirectorApi.BindFileInfo>>, string> onBuildComplete)
@@ -215,4 +216,9 @@ public class ReloadedBindBuilderCreator
     public void AddUnbindCallback(Action<ICriFsRedirectorApi.UnbindContext> callback) => _unbindCallbacks.Add(callback);
 
     public void AddBindCallback(Action<ICriFsRedirectorApi.BindContext> callback) => _bindCallbacks.Add(callback);
+
+    internal void SetMaxFilesMultiplier(int multiplier)
+    {
+        MaxFilesMultiplier = multiplier;
+    }
 }

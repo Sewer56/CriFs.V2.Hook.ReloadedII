@@ -49,7 +49,10 @@ public class Api : ICriFsRedirectorApi
 
     /// <inheritdoc />
     public ICriFsLib GetCriFsLib() => CriFsLib.Instance;
-    
+
+    /// <inheritdoc />
+    public void SetMaxFilesMultiplier(int multiplier) => _reloadedBuilder.SetMaxFilesMultiplier(multiplier);
+
     /// <inheritdoc/>
     public string[] GetCpkFilesInGameDir()
     {
