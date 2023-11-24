@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CriFsV2Lib" Version="2.1.0" />
+    <PackageReference Include="CriFsV2Lib" Version="2.1.2" />
     <PackageReference Include="FileEmulationFramework.Lib" Version="1.0.0" />
     <PackageReference Include="Reloaded.Memory" Version="9.1.0" />
     <PackageReference Include="Reloaded.Mod.Interfaces" Version="2.3.0" ExcludeAssets="runtime" />
