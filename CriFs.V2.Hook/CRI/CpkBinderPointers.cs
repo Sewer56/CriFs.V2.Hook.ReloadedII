@@ -220,6 +220,32 @@ internal static class CpkBinderPointers
                 },
                 new()
                 {
+                    SourcedFrom = "Valkyria Chronicles 4",
+                    CriVersion = "CRI File System/PCx64 Ver.2.75.05 Build:Oct  6 2017 14:17:55",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary =  "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 D9 48 81 EC 90 00 00 00 48 8B F2",
+                        CriFs_InitializeLibrary = "48 89 5C 24 08 48 89 74 24 10 55 57 41 56 48 89 E5 48 83 EC 50 48 8D 05 84 D3 1E",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 83",
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 08 48 89 70 18 57 48 81 EC 30",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 89 D3 89 CF 85 C9 ?? ?? 48 85 D2 ?? ?? ?? ?? ?? ?? ?? 48",
+                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18 8D 58 FE 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB 3E",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 A9 48 81 EC 90",
+                        CriFsIo_Exists = "48 89 5C 24 08 57 48 81 EC 50 04",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 09 02 00 00 48 89 4C 24 20 44 8D 48 01 4C 8B C7",
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
                     SourcedFrom = "Persona 5 Royal",
                     CriVersion = "CRI File System/PCx64 Ver.2.81.6 Build:Dec 28 2021 11:03:45",
                     CriCompiler = "MSC19.00.24210.0,MT",
