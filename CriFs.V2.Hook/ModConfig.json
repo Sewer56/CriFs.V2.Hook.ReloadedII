@@ -71,7 +71,8 @@
     "tekkengame-win64-shipping.exe",
     "sonic_vis.exe",
     "sonic.exe",
-    "yakuzakiwami2.exe"
+    "yakuzakiwami2.exe",
+    "tos.exe"
   ],
   "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }

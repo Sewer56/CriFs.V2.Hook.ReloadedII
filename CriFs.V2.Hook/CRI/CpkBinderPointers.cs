@@ -440,6 +440,34 @@ internal static class CpkBinderPointers
                 },
                 new()
                 {
+                    SourcedFrom = "Tales of Symphonia",
+                    CriVersion = "CRI File System/PCx86 Ver.2.60.00 Build:Apr 11 2013 12:11:23",
+                    CriCompiler = "MSC1600,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary =
+                            "55 8B EC 83 EC 68 A1 ?? ?? ?? ?? 33 C5 89 45 FC 8B 45 0C",
+                        CriFs_InitializeLibrary =
+                            "55 8B EC 83 EC 38 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B",
+                        CriFs_FinalizeLibrary = "56 33 F6 39 35 ?? ?? ?? ?? 75 12",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 1C",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 1C 8B",
+                        CriFsBinder_BindFiles = "",
+                        CriFsBinder_Find = "55 8B EC 53 56 8B 75 14",
+                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 14 02 00 00 A1 ?? ?? ?? ?? 33 C5 89 45 FC 53 8B 5D 10",
+                        CriFsBinder_GetStatus = "55 8B EC 56 8B 75 08 57 85 F6 74 35",
+                        CriFsBinder_SetPriority = "", // missing
+                        CriFsBinder_Unbind = "55 8B EC 56 FF 75 08 E8 ?? ?? ?? ?? 8B F0 59 85 F6 75 13",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 50 8D",
+                        CriFsIo_Exists = "55 8B EC 83 7D 08 00 56 74 28",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D 08 33",
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
                     SourcedFrom = "One Piece: Unlimited World Red",
                     CriVersion = "CRI File System/PCx86 Ver.2.63.08 Build:Mar  3 2014 14:59:30",
                     CriCompiler = "MSC1600,MT",
