@@ -1,0 +1,1184 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sewer56.dev/CriFs.V2.Hook.ReloadedII/adding-game-support/">
+      
+      
+        <link rel="prev" href="../usage-awb/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Adding Game Support - CRI FileSystem V2 Hook</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#adding-game-support" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="CRI FileSystem V2 Hook" class="md-header__button md-logo" aria-label="CRI FileSystem V2 Hook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CRI FileSystem V2 Hook
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Adding Game Support
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Sewer56/CriFs.V2.Hook.ReloadedII
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="CRI FileSystem V2 Hook" class="md-nav__button md-logo" aria-label="CRI FileSystem V2 Hook" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    CRI FileSystem V2 Hook
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Sewer56/CriFs.V2.Hook.ReloadedII
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage-awb/" class="md-nav__link">
+        Replacing Music (AWB)
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Adding Game Support
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Adding Game Support
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about" class="md-nav__link">
+    About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-will-be-doing" class="md-nav__link">
+    What you will be doing.
+  </a>
+  
+    <nav class="md-nav" aria-label="What you will be doing.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-the-c-project" class="md-nav__link">
+    Update the C# Project
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-mod" class="md-nav__link">
+    Test The Mod
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copy-the-closest-games-config" class="md-nav__link">
+    Copy the Closest Game's Config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-decompiler" class="md-nav__link">
+    Setup Decompiler
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Decompiler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#denuvo-drm" class="md-nav__link">
+    Denuvo DRM
+  </a>
+  
+    <nav class="md-nav" aria-label="Denuvo DRM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#force-load-all-segments" class="md-nav__link">
+    Force Load All Segments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip-disassembling-obfuscated-game-code" class="md-nav__link">
+    Skip Disassembling Obfuscated Game Code
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steam-embedded-drm" class="md-nav__link">
+    Steam Embedded DRM
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-functions" class="md-nav__link">
+    Finding Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Finding Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getting-cri-version" class="md-nav__link">
+    Getting CRI Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_initializelibrary" class="md-nav__link">
+    CriFs_InitializeLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_calculateworksizeforlibrary" class="md-nav__link">
+    CriFs_CalculateWorkSizeForLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_finalizelibrary" class="md-nav__link">
+    CriFs_FinalizeLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_bindcpk" class="md-nav__link">
+    CriFsBinder_BindCpk
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_bindfile-crifsbinder_bindfiles" class="md-nav__link">
+    CriFsBinder_BindFile &amp; CriFsBinder_BindFiles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_find" class="md-nav__link">
+    CriFsBinder_Find
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_getworksizeforbindfiles" class="md-nav__link">
+    CriFsBinder_GetWorkSizeForBindFiles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_getstatus" class="md-nav__link">
+    CriFsBinder_GetStatus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_setpriority" class="md-nav__link">
+    CriFsBinder_SetPriority
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_unbind" class="md-nav__link">
+    CriFsBinder_Unbind
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsloader_registerfile" class="md-nav__link">
+    CriFsLoader_RegisterFile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_open-windows" class="md-nav__link">
+    CriFsIo_Open (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_exists-windows" class="md-nav__link">
+    CriFsIo_Exists (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_isutf8-windows" class="md-nav__link">
+    CriFsIo_IsUtf8 (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disablefilebindwarning" class="md-nav__link">
+    DisableFileBindWarning
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-youre-done" class="md-nav__link">
+    When You're Done
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about" class="md-nav__link">
+    About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-you-will-be-doing" class="md-nav__link">
+    What you will be doing.
+  </a>
+  
+    <nav class="md-nav" aria-label="What you will be doing.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-the-c-project" class="md-nav__link">
+    Update the C# Project
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-mod" class="md-nav__link">
+    Test The Mod
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#copy-the-closest-games-config" class="md-nav__link">
+    Copy the Closest Game's Config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-decompiler" class="md-nav__link">
+    Setup Decompiler
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Decompiler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#denuvo-drm" class="md-nav__link">
+    Denuvo DRM
+  </a>
+  
+    <nav class="md-nav" aria-label="Denuvo DRM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#force-load-all-segments" class="md-nav__link">
+    Force Load All Segments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skip-disassembling-obfuscated-game-code" class="md-nav__link">
+    Skip Disassembling Obfuscated Game Code
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steam-embedded-drm" class="md-nav__link">
+    Steam Embedded DRM
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-functions" class="md-nav__link">
+    Finding Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Finding Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getting-cri-version" class="md-nav__link">
+    Getting CRI Version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_initializelibrary" class="md-nav__link">
+    CriFs_InitializeLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_calculateworksizeforlibrary" class="md-nav__link">
+    CriFs_CalculateWorkSizeForLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifs_finalizelibrary" class="md-nav__link">
+    CriFs_FinalizeLibrary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_bindcpk" class="md-nav__link">
+    CriFsBinder_BindCpk
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_bindfile-crifsbinder_bindfiles" class="md-nav__link">
+    CriFsBinder_BindFile &amp; CriFsBinder_BindFiles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_find" class="md-nav__link">
+    CriFsBinder_Find
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_getworksizeforbindfiles" class="md-nav__link">
+    CriFsBinder_GetWorkSizeForBindFiles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_getstatus" class="md-nav__link">
+    CriFsBinder_GetStatus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_setpriority" class="md-nav__link">
+    CriFsBinder_SetPriority
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsbinder_unbind" class="md-nav__link">
+    CriFsBinder_Unbind
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsloader_registerfile" class="md-nav__link">
+    CriFsLoader_RegisterFile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_open-windows" class="md-nav__link">
+    CriFsIo_Open (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_exists-windows" class="md-nav__link">
+    CriFsIo_Exists (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crifsio_isutf8-windows" class="md-nav__link">
+    CriFsIo_IsUtf8 (Windows)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disablefilebindwarning" class="md-nav__link">
+    DisableFileBindWarning
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-youre-done" class="md-nav__link">
+    When You're Done
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="adding-game-support">Adding Game Support</h1>
+<div class="admonition info">
+<p class="admonition-title">Provided for educational purposes. Legality of decompilation may vary worldwide.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Shows you how to add support for additional games that are not already supported.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Small amount of Programming experience required.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">For people unfamiliar with reverse engineering, this guide tries to be as beginner friendly as possible.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Once you're familiar with the process, adding support for a new game takes ~30 minutes.</p>
+</div>
+<h2 id="about">About</h2>
+<p>The implementation of CriFsV2Hook is specifically crafted to make use of as much 'public' APIs as possible;
+and avoid internals.  </p>
+<p>The existing logic should work with any game out of the box. However, it is possible that due to the library &amp; compiler
+combination used in a game, the mod might not be able to find the relevant functions to hook.  </p>
+<div class="admonition note">
+<p class="admonition-title">CriFsV2Hook relies on <a href="https://reloaded-project.github.io/Reloaded-II/CheatSheet/SignatureScanning/">Signature Scanning</a> to find the relevant CRI functions.</p>
+</div>
+<h2 id="what-you-will-be-doing">What you will be doing.</h2>
+<div class="admonition info">
+<p class="admonition-title">We will be inserting function signatures to <code>CpkBinderPointers.cs</code></p>
+</div>
+<p><img alt="CpkBinderPointers" src="../images/CpkBinderPointers.png" /></p>
+<p>For this guide, I will demonstrate step by step process by adding support for a game and walking through what I did.</p>
+<h3 id="update-the-c-project">Update the C# Project</h3>
+<p>To get started, add your game to Reloaded-II, and edit this mod's <code>ModConfig.json</code> file to auto enable support for this game:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;SupportedAppId&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;p4g.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;p5r.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;p3p.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;p3p_sln_dt_m.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;sonic forces.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;opu3.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;slw.exe&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;sonicgenerations.exe&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>Add your game's Reloaded <code>AppId</code> to this list. This is usually the name of the <code>.exe</code> file in lowercase; otherwise
+check <code>Apps</code> folder in Reloaded folder.</p>
+<p>Once you are done, build the C# project.
+In my case, I will add <code>yakuzakiwami.exe</code>.</p>
+<p><img alt="kiwami in reloaded" src="../images/ReloadedYakuzaKiwami.png" /></p>
+<p>Once built, the mod should show in your mods list for the given game.</p>
+<h3 id="test-the-mod">Test The Mod</h3>
+<div class="admonition info">
+<p class="admonition-title">Test the mod to see how much works out of the box.</p>
+</div>
+<p>When you boot the game up with Reloaded, <code>CriFsV2Hook</code> will print out a log, showing the closest matching game.</p>
+<p><img alt="reloaded log" src="../images/ReloadedAnalysisLog.png" /></p>
+<p>If you are lucky, the mod might work out the box; if you're not; proceed and implement it with me.</p>
+<h3 id="copy-the-closest-games-config">Copy the Closest Game's Config</h3>
+<p>Copy the config from the closest matching game, in this game I copied from <em>Sonic Forces</em>.</p>
+<p><img alt="reloaded log" src="../images/CopiedFromSonicForces.png" /></p>
+<p>Blank out any signatures that were not found, as well as the compiler and CRI version.<br />
+Verify whether the signatures are correct (using information later in this guide).  </p>
+<h2 id="setup-decompiler">Setup Decompiler</h2>
+<div class="admonition tip">
+<p class="admonition-title">IDA Pro is recommended, because of the <a href="https://abda.nl/lumen/">Lumen</a> public Lumina server.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Lumen is a database of <a href="https://reloaded-project.github.io/Reloaded-II/CheatSheet/SignatureScanning/">function signatures</a>, all 3000+ CRI function signatures I made, including those used by the mod are uploaded there.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">When using Lumen you should usually find a couple of hundred CRI functions automatically labeled for you out of the box for free.</p>
+</div>
+<ul>
+<li>First please set up <a href="https://abda.nl/lumen/">Lumen</a>.  </li>
+<li>And install <a href="https://github.com/kweatherman/sigmakerex">SigMakerEx</a> plugin.  </li>
+<li>Then, open your Disassembly in IDA.  </li>
+</ul>
+<p>Press <code>Lumina -&gt; Pull All Metadata</code>.  </p>
+<div class="admonition note">
+<p class="admonition-title">Games with a lot of code [especially Denuvo Titles] can take a while to pull from Lumen when you hit <code>Pull All Metadata</code>. It can even take 5 minutes, please be patient; the process is not 'stuck'.</p>
+</div>
+<p>If you don't have an existing disassembly, simply disassemble a new file with IDA and wait for analysis to finish.</p>
+<h3 id="denuvo-drm">Denuvo DRM</h3>
+<div class="admonition note">
+<p class="admonition-title">Denuvo titles can have some nastiness which is very modding unfriendly.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Consider refusing to buy any game which uses this kind of DRM and encourage your friends to do the same, too. (Also applies to: Microsoft Store DRM, Arxan, VMProtect, etc.)</p>
+</div>
+<p>Unfortunately, as an anti-temper tech, Denuvo is by design engineered to make modding a painful experience. </p>
+<p>The Denuvo experience includes:<br />
+- 30+ hours of waiting for analysis to complete. (Without Denuvo: 2-10 minutes)<br />
+- Renaming EXE segments to try break decompilers [in more recent versions].  </p>
+<p>In any case; here are some tips for dealing with Denuvo binaries.</p>
+<h4 id="force-load-all-segments">Force Load All Segments</h4>
+<p>Modify the following setting (in <code>ida/cfg/pe.cfg</code>).
+<div class="highlight"><pre><span></span><code>// Always load all sections of a PE file?
+// If no, sections like .reloc and .rsrc are skipped
+PE_LOAD_ALL_SECTIONS = YES
+</code></pre></div></p>
+<p>Without this setting, there's a good chance a chunk of your disassembly may appear 'wrecked' full of invalid references
+to variables.</p>
+<h4 id="skip-disassembling-obfuscated-game-code">Skip Disassembling Obfuscated Game Code</h4>
+<div class="admonition info">
+<p class="admonition-title">Around 70-90% of every Denuvo EXE is comprised of extreme obfuscation using virtual machines with randomised instruction sets.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">There's usually around 40-100 'hook-in' points which redirect game code to these virtual machines; obfuscating and holding the original game code hostage.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">That said, it is statistically very unlikely any CRI code will be held hostage, so it's wasteful to disassemble this.</p>
+</div>
+<p>Observe the 'segments' view in your disassembler:</p>
+<p><img alt="Encrypted Segment" src="../images/IdaEncryptedSegment.png" /></p>
+<p>The obfuscated, encrypted virtual machine stuff is usually the largest segment in the EXE, and towards the back of it.  </p>
+<p>If you go to <code>View -&gt; Open Subviews -&gt; Segments</code>, you can delete this segment and analysis should complete in a more reasonable amount
+of time that's not 30+ hours.  When deleting select both checkboxes (<code>Confirm Deletion</code> AND <code>Disable Addresses</code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Denuvo is actually friendlier than DRMs of the past here; which would obfuscate code all over the place. Denuvo leaves most of the original code intact. 👍</p>
+</div>
+<h3 id="steam-embedded-drm">Steam Embedded DRM</h3>
+<div class="admonition note">
+<p class="admonition-title">If you run a game via Reloaded; it will log to console if Steam DRM is present.</p>
+</div>
+<p>If a game has Steam Embedded DRM (which encrypts game code); you will usually find your disassembler will report a 
+low number of functions (&lt; 200).  </p>
+<p>In those cases, verify Steam DRM is present via booting in Reloaded, or via the <code>View -&gt; Open Subviews -&gt; Segments</code> window.<br />
+If you see a section in there which is named <code>.bind</code>, Steam DRM is present.  </p>
+<p>Remove this DRM with <a href="https://github.com/atom0s/Steamless">Steamless</a>, and throw the new EXE into your decompiler.</p>
+<h2 id="finding-functions">Finding Functions</h2>
+<div class="admonition info">
+<p class="admonition-title">Provides guidance on how to quickly find functions.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">CRI has a lot of very helpful error logging; we will be taking advantage of this.</p>
+</div>
+<p>Now we will hunt for the missing functions; the general procedure is as follows:<br />
+- Find the Function.<br />
+- Create a function signature (<code>Edit -&gt; Plugins -&gt; SigMakerEx -&gt; OK (Create Signature for Function)</code>)<br />
+- Copy signature from <code>Output</code> window to source code.  </p>
+<div class="admonition note">
+<p class="admonition-title">In some rare cases, Lumen signatures might find the function, but our signatures didn't; try searching name in 'functions' window first.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Doublecheck (using the info below) that your existing signatures taken from other games are correct.</p>
+</div>
+<h3 id="getting-cri-version">Getting CRI Version</h3>
+<p>Open the Strings window (<code>View</code> -&gt; <code>Open Subviews</code> -&gt; <code>Strings</code>), filter for string <code>CRI File System/</code> and doubleclick the result.</p>
+<p><img alt="" src="../images/VersionString.png" /></p>
+<p>Copy the CRI version and compiler info into the source code:</p>
+<p><img alt="" src="../images/VersionStringInSource.png" /></p>
+<h3 id="crifs_initializelibrary">CriFs_InitializeLibrary</h3>
+<div class="admonition info">
+<p class="admonition-title">This acts as a general tutorial of what to do later; after this, you're left on your own.</p>
+</div>
+<p>Select the variable that contains the version string, right click it and hit <code>Jump to xref to Operand</code> (hotkey: <code>x</code>).  </p>
+<p><img alt="" src="../images/XRefInitializeLibrary.png" /></p>
+<p>Press <code>F5</code> ('Generate Pseudocode'), and drag out the tab with the C code; docking it to the right, your window should now look like this:  </p>
+<p><img alt="" src="../images/Pseudocode.png" /></p>
+<p>Now sync the pseudocode window with main view by right clicking:</p>
+<p><img alt="" src="../images/SynchronizeView.png" /></p>
+<p>This function you see is <code>criFs_InitializeLibrary</code>, to rename it, click on function name, and press <code>N</code>, then rename it to <code>criFs_InitializeLibrary</code>.  </p>
+<p>Then, to get the signature, move the cursor to the start of the function and open SigMakerEx <code>(Edit -&gt; Plugins -&gt; SigMakerEx)</code>.</p>
+<p>Create a signature for a function, and copy it from the Output Window in IDA.</p>
+<p><img alt="" src="../images/GotSignature.png" /></p>
+<p>And into the source code:</p>
+<div class="highlight"><pre><span></span><code><span class="n">CriFs_InitializeLibrary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;48 89 5C 24 18 48 89 7C 24 20 55 41&quot;</span><span class="p">,</span>
+</code></pre></div>
+<p>You're on your own from now 😉.</p>
+<h3 id="crifs_calculateworksizeforlibrary">CriFs_CalculateWorkSizeForLibrary</h3>
+<div class="admonition info">
+<p class="admonition-title">This function is called to get amount of memory to allocate before it is passed to <code>criFs_InitializeLibrary</code>.</p>
+</div>
+<p>To find this function, search for error string <code>E2009070701</code> and find the method that uses it.<br />
+That method is <code>criFs_CalculateWorkSizeForLibrary</code>.  </p>
+<h3 id="crifs_finalizelibrary">CriFs_FinalizeLibrary</h3>
+<p>Search for method which uses error string <code>E2008072816</code>.</p>
+<h3 id="crifsbinder_bindcpk">CriFsBinder_BindCpk</h3>
+<p>Search for method which uses error string <code>E2008071620</code>. This method is <code>criFsBinder_BindCpkSub</code>.<br />
+The method which calls this method is <code>criFsBinder_BindCpk</code>.  </p>
+<h3 id="crifsbinder_bindfile-crifsbinder_bindfiles">CriFsBinder_BindFile &amp; CriFsBinder_BindFiles</h3>
+<p>Search for method which uses error string <code>E2008071630</code>. This is <code>criFsBinder_bindFilesSub</code>.  </p>
+<p>The method which passes a constant <code>-1</code> to <code>criFsBinder_bindFilesSub</code> is <code>criFsBinder_BindFiles</code>,
+the other method that passes constant <code>1</code> is <code>criFsBinder_BindFile</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Sometimes either <code>BindFile</code> or <code>BindFiles</code> may not exist. When only <code>BindFile</code> is present, CriFsV2Hook will try to patch that function to allow binding of multiple files.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">That patching happens in <code>CpkBinder.cs</code></p>
+</div>
+<h3 id="crifsbinder_find">CriFsBinder_Find</h3>
+<p>Search for method which uses error string <code>W2008121610</code>. This is <code>crifsbinder_checkBoss</code>. <br />
+Then check out the 4-8 methods which call said method.</p>
+<p>One of them will be find, which looks like this:
+<div class="highlight"><pre><span></span><code><span class="c1">// Usually looks like this  </span>
+<span class="kr">__int64</span><span class="w"> </span><span class="kr">__fastcall</span><span class="w"> </span><span class="n">criFsBinder_Find</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="kr">__int64</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">**</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="n">a4</span><span class="p">)</span><span class="w"> </span>
+<span class="p">{</span><span class="w"> </span>
+<span class="w">  </span><span class="kr">__int64</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"> </span><span class="c1">// rax </span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="o">*</span><span class="n">a4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="n">memset</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x30u</span><span class="n">i64</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="n">crifsbinder_checkBoss</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span><span class="n">i64</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sub_1400411F4</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">i64</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">a4</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">a3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">&amp;</span><span class="n">unk_1419C6A68</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">      </span><span class="o">*</span><span class="n">a3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">i64</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"> </span>
+<span class="p">}</span><span class="w"> </span>
+</code></pre></div></p>
+<p>In older versions of CRI, it might look more like this:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="kr">__cdecl</span><span class="w"> </span><span class="n">criFsBinder_Find</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="kr">__int16</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="n">a4</span><span class="p">)</span><span class="w"> </span>
+<span class="p">{</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="o">*</span><span class="n">a4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="n">sub_4490D0</span><span class="p">(</span><span class="n">a3</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">sub_448F3B</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sub_44A771</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"> </span>
+<span class="p">}</span><span class="w"> </span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">DO NOT confuse this with FindById</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="kr">__int64</span><span class="w"> </span><span class="kr">__fastcall</span><span class="w"> </span><span class="n">criFsBinder_FindById</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="n">a4</span><span class="p">)</span><span class="w"> </span>
+<span class="p">{</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">v5</span><span class="p">;</span><span class="w"> </span><span class="c1">// ebx </span>
+
+<span class="w">  </span><span class="n">v5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">a3</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="o">*</span><span class="n">a4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a2</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="n">criErr_NotifyGeneric</span><span class="p">(</span><span class="mi">0</span><span class="n">i64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;E2014012701&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">4294967294</span><span class="n">i64</span><span class="p">);</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span><span class="n">i64</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="n">memset</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x30u</span><span class="n">i64</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="n">crifsbinder_checkBoss</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span><span class="n">i64</span><span class="p">;</span><span class="w"> </span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">sub_140040E44</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">v5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">i64</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">a4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">i64</span><span class="p">);</span><span class="w"> </span>
+<span class="p">}</span><span class="w"> </span>
+</code></pre></div>
+<p>If you see <code>E2014012701</code>, you found <code>FindById</code>.<br />
+Out of all the methods that call <code>crifsbinder_checkBoss</code>, <code>criFsBinder_Find</code> should be the only one that does not call
+<code>criErr_NotifyGeneric</code>.</p>
+<h3 id="crifsbinder_getworksizeforbindfiles">CriFsBinder_GetWorkSizeForBindFiles</h3>
+<p>Search for method which uses error string <code>E2008082901</code>, this is <code>criFsBinder_GetWorkSizeForBindFiles</code>.</p>
+<h3 id="crifsbinder_getstatus">CriFsBinder_GetStatus</h3>
+<p>Search for method which uses error string <code>E2012082901</code>, this is <code>criFsBinder_GetStatus</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">This error was added in 2012.</p>
+</div>
+<p>For games older than 2012, finding this function can be a bit harder; since this is called often from various contexts
+and has no strings attached.</p>
+<p>The code you want looks something like this:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="kr">__cdecl</span><span class="w"> </span><span class="n">criFsBinder_GetStatus</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="n">a2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">v3</span><span class="p">;</span><span class="w"> </span><span class="c1">// eax</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">sub_7D17D0</span><span class="p">()</span><span class="w"> </span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sub_7D32B2</span><span class="p">(</span><span class="n">a1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a2</span><span class="w"> </span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">v3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sub_7D17D0</span><span class="p">();</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">v3</span><span class="w"> </span><span class="p">)</span>
+<span class="w">        </span><span class="o">*</span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">v3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="o">*</span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">-2</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">a2</span><span class="w"> </span><span class="p">)</span>
+<span class="w">      </span><span class="o">*</span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">a1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-2</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The interesting/'dead giveaway part' is the following:</p>
+<div class="highlight"><pre><span></span><code><span class="n">v3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sub_7D17D0</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">v3</span><span class="w"> </span><span class="p">)</span>
+<span class="w">  </span><span class="o">*</span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">v3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">32</span><span class="p">);</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="o">*</span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+<p>A semi-reliable way to find this function is the following:<br />
+- Find function with string <code>E2008071610</code>.  This is <code>criFsBinder_Destroy</code>.<br />
+- Sort the <code>functions</code> window by address.<br />
+- Check functions 1 by 1, by address, ascending.  </p>
+<p>You should find it within the next ~40 functions. Usually within 10.</p>
+<p>The reason we choose <code>criFsBinder_Destroy</code> as a reference specifically is because the CRI source must have been reorganised, but
+in every known CRI version, <code>criFsBinder_Destroy</code> and <code>criFsBinder_GetStatus</code> are in the same <code>.obj</code> file, and thus are in proximity
+of each other.</p>
+<h3 id="crifsbinder_setpriority">CriFsBinder_SetPriority</h3>
+<div class="admonition warning">
+<p class="admonition-title">This method is not present in some games, due to dead code elimination.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">If it does not exist, leave the signature empty. Chances are CriFsV2Hook will still work.</p>
+</div>
+<p>Search for method which uses error string <code>E2008072390</code>, this is <code>criFsBinder_SetPriority</code>.</p>
+<h3 id="crifsbinder_unbind">CriFsBinder_Unbind</h3>
+<p>Search for method which uses error string <code>E2008122691</code>, this is <code>criFsBinder_Unbind</code>.</p>
+<h3 id="crifsloader_registerfile">CriFsLoader_RegisterFile</h3>
+<div class="admonition note">
+<p class="admonition-title">This is the internal method, not the public API method that varies in case.</p>
+</div>
+<p>Search for method which uses error string <code>W2008082701</code>. This is <code>crifsloader_register_file</code>.</p>
+<h3 id="crifsio_open-windows">CriFsIo_Open (Windows)</h3>
+<p>Search for method which uses error string <code>W2007060101</code>, this is <code>criFsIoWin_Open</code>.</p>
+<h3 id="crifsio_exists-windows">CriFsIo_Exists (Windows)</h3>
+<p>Search for method which uses error string 
+- <code>E2008081901</code> (pre 2015 titles)
+OR
+- <code>E2015091137</code> (post 2015 titles)</p>
+<p>This is <code>criFsIoWin_Exists</code>.</p>
+<h3 id="crifsio_isutf8-windows">CriFsIo_IsUtf8 (Windows)</h3>
+<p>This is a signature which points to an <code>if</code> statement (<code>cmp</code> instruction) inside <code>CriFsIo_Exists</code>. Specifically this code.</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isUtf8</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">v4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">lpMultiByteStr</span><span class="p">);</span>
+<span class="w">  </span><span class="n">MultiByteToWideChar</span><span class="p">(</span><span class="mh">0xFDE9u</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lpMultiByteStr</span><span class="p">,</span><span class="w"> </span><span class="n">v4</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">WideCharStr</span><span class="p">,</span><span class="w"> </span><span class="mi">521</span><span class="p">);</span>
+<span class="w">  </span><span class="n">FileAttributesW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetFileAttributesW</span><span class="p">(</span><span class="n">WideCharStr</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">FileAttributesW</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetFileAttributesA</span><span class="p">(</span><span class="n">lpMultiByteStr</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>We extract the int32 boolean from here.</p>
+<p>You are done. Go test :p.</p>
+<h3 id="disablefilebindwarning">DisableFileBindWarning</h3>
+<div class="admonition note">
+<p class="admonition-title">Only implemented for x64 games, if you run into an x86 game with this, contribute to the project.</p>
+</div>
+<p>Some games might report <code>The contents file not found in the binderhn</code> to console in later CRI SDKs.<br />
+This signature points to the conditional <code>jmp</code> instruction to disable this printout.  </p>
+<h2 id="when-youre-done">When You're Done</h2>
+<p>For debugging purposes, feel free to use the toggles inside CriFsV2Hook's mod configuration.</p>
+<p>Be a good citizen and upload your renamed CRI functions to Lumen, (<code>Lumina</code> -&gt; <code>Push All Metadata</code>).  </p>
+<div class="admonition warning">
+<p class="admonition-title">Lumen signatures cannot be renamed once uploaded, please only upload after you get all of your function names correct.</p>
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>
