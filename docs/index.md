@@ -34,6 +34,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 |--------------------------------|----------------------|----------------|------------|---------------------------------|
 | Sonic Generations              | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT |                                 | 
 | Sonic Lost World               | Feb 19 2013 12:43:50 | 2.59.21        | MSC1600,MT | ⚠️                              | 
+| Tales of Symphonia             | Apr 11 2013 12:11:23 | 2.60.00        | MSC1600,MT | Missing `SetPriority` function. | 
 | One Piece: Unlimited World Red | Mar  3 2014 14:59:30 | 2.63.08        | MSC1600,MT | Missing `SetPriority` function. | 
 | Bayonetta                      | Jan 27 2017 19:10:26 | 2.61.09        | MSC1600,MT | Missing `SetPriority` function. | 
 
