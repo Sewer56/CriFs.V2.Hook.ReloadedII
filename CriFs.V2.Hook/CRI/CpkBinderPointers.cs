@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using CriFs.V2.Hook.Utilities;
 using FileEmulationFramework.Lib.Utilities;
 using Reloaded.Memory.Extensions;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using static CriFs.V2.Hook.CRI.CRI;
 
 // ReSharper disable InconsistentNaming
@@ -644,117 +646,149 @@ internal static class CpkBinderPointers
 
         // Sig Scanner returns results in order they were requested [by API contract].
         // We use this FindPattern to execute code once all other results have been gathered.
-        helper.FindPatternOffsetSilent("00", _ =>
-        {
-            // Identify all instances of CriPointerScanInfo with the largest number of successful matches.
-            var most_patterns = possibilities.Max(impl => impl.Results.GetNumFoundPatterns());
-            var candidate_implementations = new List<CriPointerScanInfo> { };
-            foreach (var impl in possibilities)
-                if (impl.Results.GetNumFoundPatterns() == most_patterns)
-                    candidate_implementations.Add(impl);
-
-            var best = candidate_implementations.First();
-
-            // Try to resolve ambiguity in which implementation should be selected, if multiple are matched.
-            if (candidate_implementations.Count() > 1)
+        helper.FindPatternOffsetSilent(
+            // CRI File System/PC
+            "43 52 49 20 46 69 6C 65 20 53 79 73 74 65 6D 2F 50 43",
+            versionOfs =>
             {
-                logger.Info("Identified {0} potential implementations:", candidate_implementations.Count());
-                foreach (var impl in candidate_implementations)
-                    logger.Info("> {0}", impl.SourcedFrom);
+                // PC String
+                var version = Marshal.PtrToStringAnsi(baseAddr + (nint)versionOfs)!.TrimEnd('\n');
                 
-                // Pick an implementation based on which one has the longest signatures (i.e. most specific matches).
-                // Buffer allocation for temps.
-                int[] longest_sig_counts = new int[candidate_implementations.Count()];
-                int[] lengths            = new int[candidate_implementations.Count()];
-
-                // Local function to avoid boilerplate - records which implementations hold the longest
-                // signature for a given input attribute. If multiple implementations tie for the longest
-                // signature, they both score a point.
-                void accumulateLengthCounts(Func<CriPointerPatterns, string> getAttribute)
-                {
-                    for (int i = 0; i < lengths.Count(); ++i)
-                        lengths[i] = getAttribute(candidate_implementations[i].Patterns).Length;
-                    int longest = lengths.Max();
-                    for (int i = 0; i < lengths.Count(); ++i)
-                        longest_sig_counts[i] += (lengths[i] == longest).ToByte();
-                }
+                // Identify all instances of CriPointerScanInfo with the largest number of successful matches.
+                var candidateImplementations = new List<CriPointerScanInfo> { };
                 
-                // Execute length checks for each signature of interest.
-                accumulateLengthCounts(x => { return x.CriFs_CalculateWorkSizeForLibrary; });
-                accumulateLengthCounts(x => { return x.CriFs_FinalizeLibrary;             });
-                accumulateLengthCounts(x => { return x.CriFs_InitializeLibrary;           });
-                accumulateLengthCounts(x => { return x.CriFsBinder_BindCpk;               });
-                accumulateLengthCounts(x => { return x.CriFsBinder_BindFile;              });
-                accumulateLengthCounts(x => { return x.CriFsBinder_BindFiles;             });
-                accumulateLengthCounts(x => { return x.CriFsBinder_Find;                  });
-                accumulateLengthCounts(x => { return x.CriFsBinder_GetSizeForBindFiles;   });
-                accumulateLengthCounts(x => { return x.CriFsBinder_SetPriority;           });
-                accumulateLengthCounts(x => { return x.CriFsBinder_GetStatus;             });
-                accumulateLengthCounts(x => { return x.CriFsBinder_Unbind;                });
-                accumulateLengthCounts(x => { return x.CriFsLoader_RegisterFile;          });
-                accumulateLengthCounts(x => { return x.CriFsIo_Open;                      });
-                accumulateLengthCounts(x => { return x.CriFsIo_Exists;                    });
-                accumulateLengthCounts(x => { return x.CriFsIo_IsUtf8;                    });
+                // Try find a candidate by suiting version string.
+                foreach (var impl in possibilities)
+                    if (impl.CriVersion.Equals(version, StringComparison.OrdinalIgnoreCase))
+                        candidateImplementations.Add(impl);
 
-                // Identify which implementation(s) have the majority of longest signatures.
-                var most_counts          = longest_sig_counts.Max();
-                var best_implementations = new List<CriPointerScanInfo> { };
-                for (int i=0; i < longest_sig_counts.Count(); ++i)
+                CriPointerScanInfo? best;
+                if (candidateImplementations.Count == 1)
                 {
-                    if (longest_sig_counts[i] == most_counts)
-                        best_implementations.Add(candidate_implementations[i]);
-                    
-                    logger.Info("{0} has {1} of the longest matching signatures...", candidate_implementations[i].SourcedFrom, longest_sig_counts[i]);
+                    best = candidateImplementations.First();
+                    logger.Info("Matched best signature set '{0}' by version string: '{1}'", best.SourcedFrom, version);
                 }
-
-                // If multiple implementations are still identified, just pick the first one and throw a warning.
-                if (best_implementations.Count() > 1)
+                else if (candidateImplementations.Count > 1)
                 {
-                    logger.Warning("{0} potential implementations are equally specific:", best_implementations.Count());
-                    foreach (var impl in best_implementations)
-                        logger.Warning("> {0}", impl.SourcedFrom);
-                    logger.Warning("The first of these has been arbitrarily chosen as the best match.");
+                    // If we have multiple matches for a given version string, try to resolve ambiguity by
+                    // detecting best signature set.
+                    best = SelectBestSignature(logger, candidateImplementations);
                 }
-                
-                // Reassign the best match.
-                logger.Info("Selecting {0} as the matching implementation", best_implementations.First().SourcedFrom);
-                best = best_implementations.First();
-            }
-            Pointers = best.Results;
-
-            logger.Info("----- CRIFsV2Hook Analysis -----");
-            logger.Info("Closest CRI Version: {0}", best.CriVersion);
-            logger.Info("Compiler: {0}", best.CriCompiler);
-            logger.Info("Sourced From: {0}", best.SourcedFrom);
-
-            void PrintResult(long value, string functionName)
-            {
-                if (value != 0)
-                    logger.Info("Signature Found: {0} at {1}", functionName, value.ToString("X"));
                 else
-                    logger.Warning("Signature Missing: {0}", functionName);
-            }
+                {
+                    var mostPatterns = possibilities.Max(impl => impl.Results.GetNumFoundPatterns());
+                    foreach (var impl in possibilities)
+                        if (impl.Results.GetNumFoundPatterns() == mostPatterns)
+                            candidateImplementations.Add(impl);
 
-            PrintResult(best.Results.CriFs_CalculateWorkSizeForLibrary, nameof(criFs_CalculateWorkSizeForLibrary));
-            PrintResult(best.Results.CriFs_FinalizeLibrary, nameof(criFs_FinalizeLibrary));
-            PrintResult(best.Results.CriFs_InitializeLibrary, nameof(criFs_InitializeLibrary));
+                    best = candidateImplementations.First();
 
-            PrintResult(best.Results.CriFsBinder_BindCpk, nameof(criFsBinder_BindCpk));
-            PrintResult(best.Results.CriFsBinder_BindFile, "criFsBinder_BindFile");
-            PrintResult(best.Results.CriFsBinder_BindFiles, nameof(criFsBinder_BindFiles));
-            PrintResult(best.Results.CriFsBinder_Find, nameof(criFsBinder_Find));
-            PrintResult(best.Results.CriFsBinder_GetSizeForBindFiles, nameof(criFsBinder_GetWorkSizeForBindFiles));
-            PrintResult(best.Results.CriFsBinder_SetPriority, nameof(criFsBinder_SetPriority));
-            PrintResult(best.Results.CriFsBinder_GetStatus, nameof(criFsBinder_GetStatus));
-            PrintResult(best.Results.CriFsBinder_Unbind, nameof(criFsBinder_Unbind));
+                    // Try to resolve ambiguity in which implementation should be selected, if multiple are matched.
+                    if (candidateImplementations.Count > 1)
+                        best = SelectBestSignature(logger, candidateImplementations);
+                }
+                
+                Pointers = best.Results;
+                logger.Info("----- CRIFsV2Hook Analysis -----");
+                logger.Info("Closest CRI Version: {0}", best.CriVersion);
+                logger.Info("Compiler: {0}", best.CriCompiler);
+                logger.Info("Sourced From: {0}", best.SourcedFrom);
 
-            PrintResult(best.Results.CriFsLoader_RegisterFile, nameof(criFsLoader_RegisterFile));
+                void PrintResult(long value, string functionName)
+                {
+                    if (value != 0)
+                        logger.Info("Signature Found: {0} at {1}", functionName, value.ToString("X"));
+                    else
+                        logger.Warning("Signature Missing: {0}", functionName);
+                }
 
-            PrintResult(best.Results.CriFsIo_Open, nameof(criFsIo_Open));
-            PrintResult(best.Results.CriFsIo_Exists, nameof(criFsIo_Exists));
-            PrintResult((long)best.Results.CriFsIo_IsUtf8, "Is UTF8 Flag.");
-            logger.Info("----- CRIFsV2Hook Analysis -----");
-        });
+                PrintResult(best.Results.CriFs_CalculateWorkSizeForLibrary, nameof(criFs_CalculateWorkSizeForLibrary));
+                PrintResult(best.Results.CriFs_FinalizeLibrary, nameof(criFs_FinalizeLibrary));
+                PrintResult(best.Results.CriFs_InitializeLibrary, nameof(criFs_InitializeLibrary));
+
+                PrintResult(best.Results.CriFsBinder_BindCpk, nameof(criFsBinder_BindCpk));
+                PrintResult(best.Results.CriFsBinder_BindFile, "criFsBinder_BindFile");
+                PrintResult(best.Results.CriFsBinder_BindFiles, nameof(criFsBinder_BindFiles));
+                PrintResult(best.Results.CriFsBinder_Find, nameof(criFsBinder_Find));
+                PrintResult(best.Results.CriFsBinder_GetSizeForBindFiles, nameof(criFsBinder_GetWorkSizeForBindFiles));
+                PrintResult(best.Results.CriFsBinder_SetPriority, nameof(criFsBinder_SetPriority));
+                PrintResult(best.Results.CriFsBinder_GetStatus, nameof(criFsBinder_GetStatus));
+                PrintResult(best.Results.CriFsBinder_Unbind, nameof(criFsBinder_Unbind));
+
+                PrintResult(best.Results.CriFsLoader_RegisterFile, nameof(criFsLoader_RegisterFile));
+
+                PrintResult(best.Results.CriFsIo_Open, nameof(criFsIo_Open));
+                PrintResult(best.Results.CriFsIo_Exists, nameof(criFsIo_Exists));
+                PrintResult((long)best.Results.CriFsIo_IsUtf8, "Is UTF8 Flag.");
+                logger.Info("----- CRIFsV2Hook Analysis -----"); 
+            });
+    }
+
+    private static CriPointerScanInfo SelectBestSignature(Logger logger, List<CriPointerScanInfo> candidateImplementations)
+    {
+        CriPointerScanInfo best;
+        logger.Info("Identified {0} potential implementations:", candidateImplementations.Count());
+        foreach (var impl in candidateImplementations)
+            logger.Info("> {0}", impl.SourcedFrom);
+                
+        // Pick an implementation based on which one has the longest signatures (i.e. most specific matches).
+        // Buffer allocation for temps.
+        var longest_sig_counts = GC.AllocateUninitializedArray<int>(candidateImplementations.Count);
+        var lengths            = GC.AllocateUninitializedArray<int>(candidateImplementations.Count);
+
+        // Local function to avoid boilerplate - records which implementations hold the longest
+        // signature for a given input attribute. If multiple implementations tie for the longest
+        // signature, they both score a point.
+        void accumulateLengthCounts(Func<CriPointerPatterns, string> getAttribute)
+        {
+            for (int i = 0; i < lengths.Count(); ++i)
+                lengths[i] = getAttribute(candidateImplementations[i].Patterns).Length;
+            int longest = lengths.Max();
+            for (int i = 0; i < lengths.Count(); ++i)
+                longest_sig_counts[i] += (lengths[i] == longest).ToByte();
+        }
+                
+        // Execute length checks for each signature of interest.
+        accumulateLengthCounts(x => x.CriFs_CalculateWorkSizeForLibrary);
+        accumulateLengthCounts(x => x.CriFs_FinalizeLibrary);
+        accumulateLengthCounts(x => x.CriFs_InitializeLibrary);
+        accumulateLengthCounts(x => x.CriFsBinder_BindCpk);
+        accumulateLengthCounts(x => x.CriFsBinder_BindFile);
+        accumulateLengthCounts(x => x.CriFsBinder_BindFiles);
+        accumulateLengthCounts(x => x.CriFsBinder_Find);
+        accumulateLengthCounts(x => x.CriFsBinder_GetSizeForBindFiles);
+        accumulateLengthCounts(x => x.CriFsBinder_SetPriority);
+        accumulateLengthCounts(x => x.CriFsBinder_GetStatus);
+        accumulateLengthCounts(x => x.CriFsBinder_Unbind);
+        accumulateLengthCounts(x => x.CriFsLoader_RegisterFile);
+        accumulateLengthCounts(x => x.CriFsIo_Open);
+        accumulateLengthCounts(x => x.CriFsIo_Exists);
+        accumulateLengthCounts(x => x.CriFsIo_IsUtf8);
+
+        // Identify which implementation(s) have the majority of longest signatures.
+        var most_counts          = longest_sig_counts.Max();
+        var best_implementations = new List<CriPointerScanInfo> { };
+        for (int i=0; i < longest_sig_counts.Count(); ++i)
+        {
+            if (longest_sig_counts[i] == most_counts)
+                best_implementations.Add(candidateImplementations[i]);
+                    
+            logger.Info("{0} has {1} of the longest matching signatures...", candidateImplementations[i].SourcedFrom, longest_sig_counts[i]);
+        }
+
+        // If multiple implementations are still identified, just pick the first one and throw a warning.
+        if (best_implementations.Count() > 1)
+        {
+            logger.Warning("{0} potential implementations are equally specific:", best_implementations.Count());
+            foreach (var impl in best_implementations)
+                logger.Warning("> {0}", impl.SourcedFrom);
+            logger.Warning("The first of these has been arbitrarily chosen as the best match.");
+        }
+                
+        // Reassign the best match.
+        logger.Info("Selecting {0} as the matching implementation", best_implementations.First().SourcedFrom);
+        best = best_implementations.First();
+        return best;
     }
 
     /// <summary>
