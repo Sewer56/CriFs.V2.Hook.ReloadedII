@@ -733,8 +733,8 @@ internal static class CpkBinderPointers
                 
         // Pick an implementation based on which one has the longest signatures (i.e. most specific matches).
         // Buffer allocation for temps.
-        var longest_sig_counts = GC.AllocateUninitializedArray<int>(candidateImplementations.Count);
-        var lengths            = GC.AllocateUninitializedArray<int>(candidateImplementations.Count);
+        var longest_sig_counts = new int[candidateImplementations.Count];
+        var lengths            = new int[candidateImplementations.Count];
 
         // Local function to avoid boilerplate - records which implementations hold the longest
         // signature for a given input attribute. If multiple implementations tie for the longest
