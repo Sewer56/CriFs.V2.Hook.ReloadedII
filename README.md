@@ -2,9 +2,11 @@
 
 CRI FileSystem V2 Hook is a mod based on [Reloaded II](https://reloaded-project.github.io/Reloaded-II/) that allows you to add/replace files in games that use CRI Middleware and the CPK container.
 
+[Wiki](https://sewer56.dev/CriFs.V2.Hook.ReloadedII).
+
 # Support
 
-This universal mod targets games using various versions of CRI MiddleWare's V2 File System.
+This universal mod targets games using various versions of CRI MiddleWare's V2 File System; allowing you to replace files in many games which use '.CPK' containers.
 
 For a full list of supported games, see the [wiki support table](https://sewer56.dev/CriFs.V2.Hook.ReloadedII/#support).
 
