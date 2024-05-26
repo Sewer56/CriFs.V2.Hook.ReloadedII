@@ -321,7 +321,7 @@ public static unsafe partial class CpkBinder
 
 
     /// <summary>
-    ///     Enables/disables printing of file access.
+    ///     Enables/disables printing of files being registered.
     /// </summary>
     public static void SetPrintFileRegister(bool printFileRegister)
     {
@@ -337,7 +337,7 @@ public static unsafe partial class CpkBinder
     }
 
     /// <summary>
-    ///     Enables/disables printing of file redirects.
+    ///     Enables/disables printing of Binder Accesses.
     /// </summary>
     public static void SetPrintBinderAccess(bool PrintBinderAccess)
     {
