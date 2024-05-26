@@ -189,7 +189,7 @@ public static unsafe partial class CpkBinder
             return _registerFileHook!.OriginalFunction(loader, binder, path, fileId, zero);
 
         var str = Marshal.PtrToStringAnsi(path);
-        if (_printFileAccess)
+        if (_printFileRegister)
             _logger.Info("Register_File: {0}", str);
 
         if (!_content.TryGetValue(SanitizeCriPath(str!), out _, out var originalKey))
@@ -215,7 +215,7 @@ public static unsafe partial class CpkBinder
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist); 
  
         var str = Marshal.PtrToStringAnsi(path); 
-        if (_printFileAccess) 
+        if (_printBinderAccess) 
             _logger.Info("Binder_Find: {0}", str); 
  
         if (!_content.TryGetValue(SanitizeCriPath(str!), out _, out var originalKey)) 

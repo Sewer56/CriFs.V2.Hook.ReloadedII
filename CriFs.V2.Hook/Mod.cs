@@ -143,8 +143,9 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         AssertAwbIncompatibility();
         CpkBinder.Init(_logger, _hooks!, _scannerFactory);
         CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
-        CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
+        CpkBinder.SetPrintFileRegister(_configuration.PrintFileRegister);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
+        CpkBinder.SetPrintBinderAccess(_configuration.PrintBinderAccess);
         _cpkBuilder?.Build(); 
     }
 
@@ -179,7 +180,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         _logger.LogLevel = _configuration.LogLevel;
         _logger.Info($"[{_modConfig.ModId}] Config Updated: Applying");
         CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
-        CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
+        CpkBinder.SetPrintFileRegister(_configuration.PrintFileRegister);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
         _cpkBuilder?.SetHotReload(_configuration.HotReload);
     }
