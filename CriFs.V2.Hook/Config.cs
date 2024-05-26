@@ -14,7 +14,7 @@ public class Config : Configurable<Config>
     [DisplayName("Print File Registration")]
     [Description("Prints when a file is registered onto the internal CRI File Loader\nThis can be useful to find out when a file is being accessed for the first time.")]
     [DefaultValue(false)]
-    public bool PrintFileAccess { get; set; } = false;
+    public bool PrintFileRegister { get; set; } = false;
     
     [DisplayName("Print File Redirects")]
     [Description("Prints redirected files to console using the Info log level.")]
@@ -24,7 +24,7 @@ public class Config : Configurable<Config>
     [DisplayName("Print Binder Access")]
     [Description("Prints all instances of the Binder's Find function using the Info log level.\nThis can be used to detect file access initiated from internal CRI logic.")]
     [DefaultValue(false)]
-    public bool PrintFileBinder { get; set; } = false;
+    public bool PrintBinderAccess { get; set; } = false;
     
     [DisplayName("Hot Reload")]
     [Description("Allows for loaded files to be updated/replaced at runtime.")]

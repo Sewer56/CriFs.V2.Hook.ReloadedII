@@ -48,8 +48,8 @@ public static unsafe partial class CpkBinder
     private static int _additionalFiles;
     private static MemoryAllocation _libraryMemory;
     private static MemoryAllocatorWithLinkedListBackup _allocator;
-    private static bool _printFileAccess;
-    private static bool _printBinderFind;
+    private static bool _printFileRegister;
+    private static bool _printBinderAccess;
     private static bool _printFileRedirects;
 
     /// <remarks>
@@ -323,9 +323,9 @@ public static unsafe partial class CpkBinder
     /// <summary>
     ///     Enables/disables printing of file access.
     /// </summary>
-    public static void SetPrintFileAccess(bool printFileAccess)
+    public static void SetPrintFileRegister(bool printFileRegister)
     {
-        _printFileAccess = printFileAccess;
+        _printFileRegister = printFileRegister;
     }
 
     /// <summary>
@@ -339,9 +339,9 @@ public static unsafe partial class CpkBinder
     /// <summary>
     ///     Enables/disables printing of file redirects.
     /// </summary>
-    public static void SetPrintBinderFind(bool printBinderFind)
+    public static void SetPrintBinderAccess(bool PrintBinderAccess)
     {
-        _printBinderFind = printBinderFind;
+        _printBinderAccess = PrintBinderAccess;
     }
 
     /// <summary>
