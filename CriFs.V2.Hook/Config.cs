@@ -11,8 +11,8 @@ public class Config : Configurable<Config>
     [DefaultValue(true)]
     public bool DisableCriBindLogging { get; set; } = true;
     
-    [DisplayName("Print File Access")]
-    [Description("Prints loaded file to console using the Info log level.")]
+    [DisplayName("Print File Registration")]
+    [Description("Prints when a file is registered onto the internal CRI File Loader\nThis can be useful to find out when a file is being accessed for the first time.")]
     [DefaultValue(false)]
     public bool PrintFileAccess { get; set; } = false;
     
@@ -22,7 +22,7 @@ public class Config : Configurable<Config>
     public bool PrintFileRedirects { get; set; } = false;
     
     [DisplayName("Print Binder Access")]
-    [Description("Prints all instances of Binder Find using the Info log level.")]
+    [Description("Prints all instances of the Binder's Find function using the Info log level.\nThis can be used to detect file access initiated from internal CRI logic.")]
     [DefaultValue(false)]
     public bool PrintFileBinder { get; set; } = false;
     
