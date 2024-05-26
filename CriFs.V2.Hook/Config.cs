@@ -21,6 +21,11 @@ public class Config : Configurable<Config>
     [DefaultValue(false)]
     public bool PrintFileRedirects { get; set; } = false;
     
+    [DisplayName("Print Binder Find")]
+    [Description("Prints all instances of Binder Find using the Info log level.")]
+    [DefaultValue(false)]
+    public bool PrintFileBinder { get; set; } = false;
+    
     [DisplayName("Hot Reload")]
     [Description("Allows for loaded files to be updated/replaced at runtime.")]
     [DefaultValue(false)]

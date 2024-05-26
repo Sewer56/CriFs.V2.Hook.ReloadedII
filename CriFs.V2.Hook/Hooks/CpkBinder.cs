@@ -49,6 +49,7 @@ public static unsafe partial class CpkBinder
     private static MemoryAllocation _libraryMemory;
     private static MemoryAllocatorWithLinkedListBackup _allocator;
     private static bool _printFileAccess;
+    private static bool _printBinderFind;
     private static bool _printFileRedirects;
 
     /// <remarks>
@@ -333,6 +334,14 @@ public static unsafe partial class CpkBinder
     public static void SetPrintFileRedirect(bool printFileRedirects)
     {
         _printFileRedirects = printFileRedirects;
+    }
+
+    /// <summary>
+    ///     Enables/disables printing of file redirects.
+    /// </summary>
+    public static void SetPrintBinderFind(bool printBinderFind)
+    {
+        _printBinderFind = printBinderFind;
     }
 
     /// <summary>

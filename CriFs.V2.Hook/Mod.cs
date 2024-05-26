@@ -145,6 +145,7 @@ public class Mod : ModBase, IExports // <= Do not Remove.
         CpkBinder.SetDisableLogging(_configuration.DisableCriBindLogging);
         CpkBinder.SetPrintFileAccess(_configuration.PrintFileAccess);
         CpkBinder.SetPrintFileRedirect(_configuration.PrintFileRedirects);
+        CpkBinder.SetPrintBinderFind(_configuration.PrintFileBinder);
         _cpkBuilder?.Build(); 
     }
 

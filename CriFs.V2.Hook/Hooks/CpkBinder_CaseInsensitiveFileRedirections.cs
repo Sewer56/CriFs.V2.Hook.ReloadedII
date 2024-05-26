@@ -215,7 +215,7 @@ public static unsafe partial class CpkBinder
             return _findFileHook!.OriginalFunction(bndrhn, path, finfo, exist); 
  
         var str = Marshal.PtrToStringAnsi(path); 
-        if (_printFileAccess) 
+        if (_printBinderFind) 
             _logger.Info("Binder_Find: {0}", str); 
  
         if (!_content.TryGetValue(SanitizeCriPath(str!), out _, out var originalKey)) 
