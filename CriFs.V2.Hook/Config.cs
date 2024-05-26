@@ -21,7 +21,7 @@ public class Config : Configurable<Config>
     [DefaultValue(false)]
     public bool PrintFileRedirects { get; set; } = false;
     
-    [DisplayName("Print Binder Find")]
+    [DisplayName("Print Binder Access")]
     [Description("Prints all instances of Binder Find using the Info log level.")]
     [DefaultValue(false)]
     public bool PrintFileBinder { get; set; } = false;
