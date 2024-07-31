@@ -31,32 +31,6 @@ internal static class CpkBinderPointers
             {
                 new()
                 {
-                    SourcedFrom = "Olympic Games Tokyo 2020",
-                    CriVersion = "CRI File System/PCx64 Ver.2.78.11 Build:Dec 13 2019 13:22:56",
-                    CriCompiler = "MSC19.00.24215.1,MT",
-                    Patterns = new CriPointerPatterns
-                    {
-                        CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
-                        CriFs_InitializeLibrary = "48 89 5C 24 18 55 57 41 56 48 83 EC 60 48 8B 05 C8 37 F3 01 48 33 C4 48",
-                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
-                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
-                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
-                        CriFsBinder_BindFiles = "", // Not Present
-                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
-                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
-                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
-                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
-                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
-                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 08 48 89 70 10 4C",
-                        CriFsIo_Exists = "41 B8 FE FF FF FF 48 8D 15 F1 D3 1F 01 33 C9 ?? ?? ?? ?? ?? 83 C8 FF 48 8B 8C 24 50 04 00",
-                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
-                        CriFsIo_IsUtf8 = "83 3D 2E 9E 31 02 00 74 38 E8 B3 B3 0C 00 48 8D 4C 24 30",
-                        DisableFileBindWarning = "E8 ?? ?? ?? ?? 83 C8 FF EB 45 48 8B 0D",
-                        DisableGetContentsInfoDetailsWarning = "E8 ?? ?? ?? ?? 83 C8 FF 4C 8D 5C 24 60 49 8B 5B 10 49 8B 6B 18 49 8B 73 20 49 8B E3" // not supported
-                    }
-                },
-                new()
-                {
                     SourcedFrom = "Yakuza Kiwami",
                     CriVersion = "CRI File System/PCx64 Ver.2.71.02 Build:Oct  6 2015 19:45:41",
                     CriCompiler = "MSC17.00.61030.0,MT",
@@ -272,6 +246,33 @@ internal static class CpkBinderPointers
                         CriFsIo_IsUtf8 = "83 3D ?? ?? ?? ?? ?? 74 38 E8 ?? ?? ?? ?? 48 8D 4C 24 30 C7 44 24 28 09 02 00 00 48 89 4C 24 20 44 8D 48 01 4C 8B C7",
                         DisableFileBindWarning = "",
                         DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                
+                new()
+                {
+                    SourcedFrom = "Olympic Games Tokyo 2020",
+                    CriVersion = "CRI File System/PCx64 Ver.2.78.11 Build:Dec 13 2019 13:22:56",
+                    CriCompiler = "MSC19.00.24215.1,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8D 6C 24 C9 48 81 EC A0",
+                        CriFs_InitializeLibrary = "48 89 5C 24 18 55 57 41 56 48 83 EC 60 48 8B 05 C8 37 F3 01 48 33 C4 48",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? ?? 75 16",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 78 C7 44 24 30 01 00 00 00 48 89 44 24 28 8B",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 78 48 89 44 24 30 8B 44 24 70 89 44 24 28 4C 89 4C 24 20 41 B9",
+                        CriFsBinder_BindFiles = "", // Not Present
+                        CriFsBinder_Find = "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 40 49 8B F9 49 8B D8 48",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 08 48 89 74 24 20 57 48 81 EC 50",
+                        CriFsBinder_GetStatus = "48 89 5C 24 08 57 48 83 EC 20 48 8B DA 8B F9 85",
+                        CriFsBinder_SetPriority = "48 89 5C 24 08 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 18",
+                        CriFsBinder_Unbind = "48 89 5C 24 08 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 08 48 89 70 10 4C",
+                        CriFsIo_Exists = "41 B8 FE FF FF FF 48 8D 15 F1 D3 1F 01 33 C9 ?? ?? ?? ?? ?? 83 C8 FF 48 8B 8C 24 50 04 00",
+                        CriFsIo_Open = "48 8B C4 48 89 58 10 48 89 68 18 48 89 70 20 57 41 54 41 55 41 56 41 57 48 83 EC 50",
+                        CriFsIo_IsUtf8 = "83 3D 2E 9E 31 02 00 74 38 E8 B3 B3 0C 00 48 8D 4C 24 30",
+                        DisableFileBindWarning = "E8 ?? ?? ?? ?? 83 C8 FF EB 45 48 8B 0D",
+                        DisableGetContentsInfoDetailsWarning = "E8 ?? ?? ?? ?? 83 C8 FF 4C 8D 5C 24 60 49 8B 5B 10 49 8B 6B 18 49 8B 73 20 49 8B E3" // not supported
                     }
                 },
                 new()
