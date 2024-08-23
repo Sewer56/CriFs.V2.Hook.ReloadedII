@@ -13,6 +13,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
