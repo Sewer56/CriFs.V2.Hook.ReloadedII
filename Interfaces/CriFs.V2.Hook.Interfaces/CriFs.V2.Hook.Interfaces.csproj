@@ -5,10 +5,23 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Title>Reloaded-II Interfaces for CriFs.V2.Hook</Title>
+        <Description>Allows you to interact with CriFs.V2.Hook from Reloaded-II mods.</Description>
+        <PackageProjectUrl>https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="CriFsV2Lib.Definitions" Version="1.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="\"/>
+        <None Include="../../LICENSE.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    
 </Project>
