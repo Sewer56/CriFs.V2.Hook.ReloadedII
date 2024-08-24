@@ -26,6 +26,8 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                                          | 
 | Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
 | Persona 4 The Golden (64-bit) | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
+| Judgment                      | Aug  5 2022 19:37:39 | 2.78.11        | MSC19.00.24210.0,MT | Only has `BindFile`.                                                                     |
+| Lost Judgment                 | Apr 15 2021 19:02:38 | 2.80.17        | MSC19.00.24210.0,MT | Only has `BindFile`.                                                                     |
 
 ### x86 Games
 
