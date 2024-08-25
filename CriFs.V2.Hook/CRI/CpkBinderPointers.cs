@@ -31,6 +31,38 @@ internal static class CpkBinderPointers
             {
                 new()
                 {
+                    SourcedFrom = "Yakuza 0",
+                    CriVersion = "CRI File System/PCx64 Ver.2.66.07 Build:Jan  9 2015 13:02:51",
+                    CriCompiler = "MSC16.00.40219.1,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary =
+                            "48 89 5C 24 ?? 48 89 74 24 ?? 55 57 41 54 41 55 41 56 48 8D 6C 24 ?? 48 81 EC A0 00 00 00",
+                        CriFs_InitializeLibrary = "48 89 5C 24 ?? 48 89 74 24 ?? 55 41 54",
+                        CriFs_FinalizeLibrary =
+                            "48 83 EC 28 83 3D ?? ?? ?? ?? 00 75 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 E8 ?? ?? ?? ?? 83 C8 FF E9 ?? ?? ?? ??",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 ?? C7 44 24 ?? 01 00 00 00 48 89 44 24 ?? 8B 44 24 ??",
+                        CriFsBinder_BindFile =
+                            "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 B9 01 00 00 00",
+                        CriFsBinder_BindFiles = "", // Not Present
+                        CriFsBinder_Find =
+                            "48 8B C4 48 89 58 ?? 48 89 68 ?? 48 89 70 ?? 48 89 78 ?? 41 54 48 83 EC 40 45 33 E4",
+                        CriFsBinder_GetSizeForBindFiles = "48 89 5C 24 ?? 48 89 74 24 ?? 57 48 81 EC 50 02 00 00",
+                        CriFsBinder_GetStatus = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 8B F9 85 C9",
+                        CriFsBinder_SetPriority = "", // Not Present
+                        CriFsBinder_Unbind = "48 89 5C 24 ?? 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ??",
+                        CriFsLoader_RegisterFile =
+                            "48 8B C4 48 89 58 ?? 48 89 70 ?? 48 89 78 ?? 55 41 54 41 55 41 56 41 57 48 8D 68 ?? 48 81 EC 90 00 00 00 83 B9 ?? ?? ?? ?? 01",
+                        CriFsIo_Exists = "40 53 48 83 EC 20 48 8B DA 48 85 C9 74 ??",
+                        CriFsIo_Open =
+                            "48 8B C4 48 89 58 ?? 48 89 68 ?? 48 89 70 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 50 4D 8B F9",
+                        CriFsIo_IsUtf8 = "", // Not Present
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
                     SourcedFrom = "Yakuza Kiwami",
                     CriVersion = "CRI File System/PCx64 Ver.2.71.02 Build:Oct  6 2015 19:45:41",
                     CriCompiler = "MSC17.00.61030.0,MT",
@@ -248,7 +280,93 @@ internal static class CpkBinderPointers
                         DisableGetContentsInfoDetailsWarning = "" // not supported
                     }
                 },
-                
+                new()
+                {
+                    SourcedFrom = "Yakuza 3 Remastered",
+                    CriVersion = "CRI File System/PCx64 Ver.2.77.01 Build:Apr  5 2018 19:09:32",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ?? 48 81 EC 90 00 00 00 48 8B F2",
+                        CriFs_InitializeLibrary = "48 89 5C 24 ?? 48 89 74 24 ?? 55 57 41 56 48 8B EC 48 83 EC 50",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? 00 75 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 E8 ?? ?? ?? ?? 83 C8 FF E9 ?? ?? ?? ??",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 ?? C7 44 24 ?? 01 00 00 00 48 89 44 24 ?? 8B 44 24 ??",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 B9 01 00 00 00",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 83 C9 FF",
+                        CriFsBinder_Find = "48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 40 49 8B F9 49 8B D8 48 8B F2",
+                        CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 ?? 48 89 70 ?? 57 48 81 EC 30 02 00 00",
+                        CriFsBinder_GetStatus = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 8B F9 85 C9",
+                        CriFsBinder_SetPriority =
+                            "48 89 5C 24 ?? 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ?? 8D 58 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB ?? 48 83 38 00",
+                        CriFsBinder_Unbind = "48 89 5C 24 ?? 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ?? 48 8D 15 ?? ?? ?? ??",
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 ?? 48 89 70 ?? 4C 89 60 ??",
+                        CriFsIo_Exists = "48 89 5C 24 ?? 57 48 81 EC 50 04 00 00",
+                        CriFsIo_Open =
+                            "48 8B C4 48 89 58 ?? 48 89 68 ?? 48 89 70 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 50 4D 8B E9",
+                        CriFsIo_IsUtf8 =
+                            "83 3D ?? ?? ?? ?? 00 74 ?? E8 ?? ?? ?? ?? 48 8D 4C 24 ?? C7 44 24 ?? 09 02 00 00 48 89 4C 24 ?? 44 8D 48 ?? 4C 8B C7",
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
+                    SourcedFrom = "Yakuza 4 Remastered",
+                    CriVersion = "CRI File System/PCx64 Ver.2.77.01 Build:Aug  7 2018 15:30:45",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ?? 48 81 EC 90 00 00 00",
+                        CriFs_InitializeLibrary = "48 89 5C 24 ?? 48 89 74 24 ?? 55 57 41 56 48 8B EC 48 83 EC 50",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? 00 75 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 E8 ?? ?? ?? ?? 83 C8 FF E9 ?? ?? ?? ??",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 ?? C7 44 24 ?? 01 00 00 00 48 89 44 24 ?? 8B 44 24 ??",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 B9 01 00 00 00",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 83 C9 FF",
+                        CriFsBinder_Find = "48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 40 49 8B F9 49 8B D8 48 8B F2",
+                        CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 ?? 48 89 70 ?? 57 48 81 EC 30 02 00 00",
+                        CriFsBinder_GetStatus = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 8B F9 85 C9",
+                        CriFsBinder_SetPriority =
+                            "48 89 5C 24 ?? 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ?? 8D 58 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB ?? 48 83 38 00",
+                        CriFsBinder_Unbind = "48 89 5C 24 ?? 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ?? 48 8D 15 ?? ?? ?? ??",
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 ?? 48 89 70 ?? 4C 89 60 ??",
+                        CriFsIo_Exists = "48 89 5C 24 ?? 57 48 81 EC 50 04 00 00",
+                        CriFsIo_Open =
+                            "48 8B C4 48 89 58 ?? 48 89 68 ?? 48 89 70 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 50 4D 8B E9",
+                        CriFsIo_IsUtf8 =
+                            "83 3D ?? ?? ?? ?? 00 74 ?? E8 ?? ?? ?? ?? 48 8D 4C 24 ?? C7 44 24 ?? 09 02 00 00 48 89 4C 24 ?? 44 8D 48 ?? 4C 8B C7",
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
+                    SourcedFrom = "Yakuza 5 Remastered / Yakuza 6: The Song of Life",
+                    CriVersion = "CRI File System/PCx64 Ver.2.77.03 Build:Jan 25 2019 16:46:40",
+                    CriCompiler = "MSC17.00.61030.0,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ?? 48 81 EC 90 00 00 00",
+                        CriFs_InitializeLibrary = "48 89 5C 24 ?? 48 89 74 24 ?? 55 57 41 56 48 8B EC 48 83 EC 50",
+                        CriFs_FinalizeLibrary = "48 83 EC 28 83 3D ?? ?? ?? ?? 00 75 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 E8 ?? ?? ?? ?? 83 C8 FF E9 ?? ?? ?? ??",
+                        CriFsBinder_BindCpk = "48 83 EC 48 48 8B 44 24 ?? C7 44 24 ?? 01 00 00 00",
+                        CriFsBinder_BindFile = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 B9 01 00 00 00",
+                        CriFsBinder_BindFiles = "48 83 EC 48 48 8B 44 24 ?? 48 89 44 24 ?? 8B 44 24 ?? 89 44 24 ?? 4C 89 4C 24 ?? 41 83 C9 FF",
+                        CriFsBinder_Find = "48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 40 49 8B F9 49 8B D8 48 8B F2",
+                        CriFsBinder_GetSizeForBindFiles = "48 8B C4 48 89 58 ?? 48 89 70 ?? 57 48 81 EC 30 02 00 00",
+                        CriFsBinder_GetStatus = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 8B F9 85 C9",
+                        CriFsBinder_SetPriority =
+                            "48 89 5C 24 ?? 57 48 83 EC 20 8B FA E8 ?? ?? ?? ?? 48 8B D8 48 85 C0 75 ?? 8D 58 ?? 48 8D 15 ?? ?? ?? ?? 33 C9 44 8B C3 E8 ?? ?? ?? ?? 8B C3 EB ?? 48 83 38 00",
+                        CriFsBinder_Unbind = "48 89 5C 24 ?? 57 48 83 EC 20 8B F9 E8 ?? ?? ?? ?? 48 8B D8",
+                        CriFsLoader_RegisterFile = "48 8B C4 48 89 58 ?? 48 89 70 ?? 4C 89 60 ??",
+                        CriFsIo_Exists = "48 89 5C 24 ?? 57 48 81 EC 50 04 00 00 48 8B DA 48 8B F9 48 85 C9",
+                        CriFsIo_Open =
+                            "48 8B C4 48 89 58 ?? 48 89 68 ?? 48 89 70 ?? 57 41 54 41 55 41 56 41 57 48 83 EC 50 4D 8B E9",
+                        CriFsIo_IsUtf8 =
+                            "83 3D ?? ?? ?? ?? 00 74 ?? E8 ?? ?? ?? ?? 48 8D 4C 24 ?? C7 44 24 ?? 09 02 00 00 48 89 4C 24 ?? 44 8D 48 ?? 4C 8B C7",
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = ""
+                    }
+                },
                 new()
                 {
                     SourcedFrom = "Olympic Games Tokyo 2020",
