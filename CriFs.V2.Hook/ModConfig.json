@@ -76,7 +76,12 @@
     "valkyria4_x64.exe",
     "musashi.exe",
     "judgment.exe",
-    "lostjudgment.exe"
+    "lostjudgment.exe",
+    "yakuza0.exe",
+    "yakuza3.exe",
+    "yakuza4.exe",
+    "yakuza5.exe",
+    "yakuza6.exe"
   ],
   "ProjectUrl": "https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII"
 }
