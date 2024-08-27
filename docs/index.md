@@ -28,6 +28,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Yakuza 5 Remastered           | Jan 25 2019 16:46:40 | 2.77.03        | MSC17.00.61030.0,MT |                                                                                          |
 | Yakuza 6: The Song of Life    | Jan 25 2019 16:46:40 | 2.77.03        | MSC17.00.61030.0,MT |                                                                                          |
 | Olympic Games Tokyo 2020      | Dec 13 2019 13:22:56 | 2.78.11        | MSC19.00.24215.1,MT | Only has `BindFile`.                                                                     |
+| Yakuza : Like a Dragon        | Jun  8 2020 21:19:38 | 2.78.12.04     | MSC19.00.24210.0,MT | Game does not use CPK files. But it'll work if the game ever loads one.                  |
 | Lost Judgment                 | Apr 15 2021 19:02:38 | 2.80.17        | MSC19.00.24210.0,MT | Only has `BindFile`.                                                                     |
 | Persona 5 Royal               | Dec 28 2021 11:03:45 | 2.81.6         | MSC19.00.24210.0,MT |                                                                                          | 
 | Persona 3 Portable            | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
