@@ -603,7 +603,7 @@ internal static class CpkBinderPointers
                 },
                 new()
                 {
-                    SourcedFrom = "Metaphor: ReFantazio (Release) (Fucked by Denuvo Anti-Modding Tech)",
+                    SourcedFrom = "Metaphor: ReFantazio (Release) (Code Fucked [Modified] by Denuvo Anti-Tamper)",
                     CriVersion = "CRI File System/PCx64 Ver.2.85.1 Build:Oct  2 2023 10:26:25",
                     CriCompiler = "MSC19.16.27048.0,MT",
                     Patterns = new CriPointerPatterns
@@ -992,7 +992,7 @@ internal static class CpkBinderPointers
                     if (impl.Results.GetNumFoundPatterns() == mostPatterns)
                         implementationWithMostPatterns.Add(impl);
 
-                // If we have multiple matches for all sigs, pick by signature length;
+                // If we have multiple signature sets with equal number of matching sigs, pick by signature length;
                 // i.e. which signature is more 'specific'
                 best = implementationWithMostPatterns.Count > 1 
                     ? SelectBestBySignatureLength(logger, implementationWithMostPatterns) 

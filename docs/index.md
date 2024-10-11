@@ -35,7 +35,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Persona 4 The Golden (64-bit)           | May 12 2022 19:34:26 | 2.82.15        | MSC19.16.27045.0,MT |                                                                                          |
 | Judgment                                | Aug  5 2022 19:37:39 | 2.78.11        | MSC19.00.24210.0,MT | Only has `BindFile`.                                                                     |
 | Metaphor: ReFantazio (Clean)            | Oct  2 2023 10:26:25 | 2.85.1         | MSC19.16.27048.0,MT |                                                                                          |
-| Metaphor: ReFantazio (Fucked by Denuvo) | Oct  2 2023 10:26:25 | 2.85.1         | MSC19.16.27048.0,MT | With anti-modding modifications from Denuvo.                                             |
+| Metaphor: ReFantazio (Fucked by Denuvo) | Oct  2 2023 10:26:25 | 2.85.1         | MSC19.16.27048.0,MT | Tampered by Denuvo obfuscation inserting junk into static variables.                     |
 
 ### x86 Games
 
