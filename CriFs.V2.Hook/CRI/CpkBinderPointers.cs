@@ -645,6 +645,34 @@ internal static class CpkBinderPointers
             {
                 new()
                 {
+                    SourcedFrom = "Binary Domain",
+                    CriVersion = "CRI File System/PCx86 Ver.2.23.00 Build:Jan 31 2011 18:26:26",
+                    CriCompiler = "MSC1500,MT",
+                    Patterns = new CriPointerPatterns
+                    {
+                        CriFs_CalculateWorkSizeForLibrary =
+                            "55 8B EC 83 EC 4C 53",
+                        CriFs_InitializeLibrary = "55 8B EC 83 EC 2C 56 33 F6",
+                        CriFs_FinalizeLibrary =
+                            "56 33 F6 39 35 ?? ?? ?? ?? 75 ?? 68 ?? ?? ?? ?? 56 E8 ?? ?? ?? ?? 59 59",
+                        CriFsBinder_BindCpk = "55 8B EC 6A 01 FF 75 ?? FF 75 ?? FF 75 ?? FF 75 ?? FF 75 ?? FF 75 ??",
+                        CriFsBinder_BindFile = "55 8B EC FF 75 ?? 8B 55 ??",
+                        CriFsBinder_BindFiles = "", // Not Present
+                        CriFsBinder_Find = "55 8B EC 56 8B 75 ?? 85 F6 74 ?? 83 26 00",
+                        CriFsBinder_GetSizeForBindFiles = "55 8B EC 81 EC 10 02 00 00",
+                        CriFsBinder_GetStatus = "53 8B 5C 24 ?? E8 ?? ?? ?? ?? 85 C0 75 ??",
+                        CriFsBinder_SetPriority = "", // Not Present
+                        CriFsBinder_Unbind = "53 8B 5C 24 ?? 56 E8 ?? ?? ?? ?? 8B F0 85 F6 75 ?? 68 ?? ?? ?? ??",
+                        CriFsLoader_RegisterFile = "55 8B EC 83 EC 4C 83 BE ?? ?? ?? ?? 01",
+                        CriFsIo_Exists = "83 7C 24 ?? 00 56 74 ?? 8B 74 24 ??",
+                        CriFsIo_Open = "55 8B EC 83 EC 0C 53 56 57 8B 7D ??",
+                        CriFsIo_IsUtf8 = "", // not supported
+                        DisableFileBindWarning = "",
+                        DisableGetContentsInfoDetailsWarning = "" // not supported
+                    }
+                },
+                new()
+                {
                     SourcedFrom = "Sonic 4 Episode 1 (Not Supported, Missing APIs)",
                     CriVersion = "CRI File System/PCx86 Ver.2.24.04 Build:Apr  1 2011 21:08:31",
                     CriCompiler = "MSC1400,MT",

@@ -43,6 +43,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 
 | Game                           | Build Date           | CRI FS Version | Compiler   | Notes                           | 
 |--------------------------------|----------------------|----------------|------------|---------------------------------|
+| Binary Domain                  | Jan 31 2011 18:26:26 | 2.23.00        | MSC1500,MT | Missing `SetPriority` function. | 
 | Sonic Generations              | Apr  1 2011 21:08:31 | 2.24.04        | MSC1500,MT |                                 | 
 | Sonic Lost World               | Feb 19 2013 12:43:50 | 2.59.21        | MSC1600,MT | ⚠️                              | 
 | Tales of Symphonia             | Apr 11 2013 12:11:23 | 2.60.00        | MSC1600,MT | Missing `SetPriority` function. | 
