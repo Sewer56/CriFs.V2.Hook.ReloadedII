@@ -970,39 +970,35 @@ internal static class CpkBinderPointers
                 var version = Marshal.PtrToStringAnsi(baseAddr + (nint)versionOfs)!.TrimEnd('\n');
                 
                 // Identify all instances of CriPointerScanInfo with the largest number of successful matches.
-                var candidateImplementations = new List<CriPointerScanInfo> { };
+                var implementationsWithMatchingCriVersion = new List<CriPointerScanInfo>();
                 
                 // Try find a candidate by suiting version string.
                 foreach (var impl in possibilities)
                     if (impl.CriVersion.Equals(version, StringComparison.OrdinalIgnoreCase))
-                        candidateImplementations.Add(impl);
+                        implementationsWithMatchingCriVersion.Add(impl);
 
                 CriPointerScanInfo? best;
-                if (candidateImplementations.Count == 1)
+                if (implementationsWithMatchingCriVersion.Count == 1)
                 {
-                    best = candidateImplementations.First();
+                    // Fast track: Only 1 known set of signatures for given version string.
+                    best = implementationsWithMatchingCriVersion.First();
                     logger.Info("Matched best signature set '{0}' by version string: '{1}'", best.SourcedFrom, version);
-                }
-                else if (candidateImplementations.Count > 1)
-                {
-                    // If we have multiple matches for a given version string, try to resolve ambiguity by
-                    // detecting best signature set.
-                    best = SelectBestSignature(logger, candidateImplementations);
-                }
-                else
-                {
-                    var mostPatterns = possibilities.Max(impl => impl.Results.GetNumFoundPatterns());
-                    foreach (var impl in possibilities)
-                        if (impl.Results.GetNumFoundPatterns() == mostPatterns)
-                            candidateImplementations.Add(impl);
-
-                    best = candidateImplementations.First();
-
-                    // Try to resolve ambiguity in which implementation should be selected, if multiple are matched.
-                    if (candidateImplementations.Count > 1)
-                        best = SelectBestSignature(logger, candidateImplementations);
+                    goto results;
                 }
                 
+                var implementationWithMostPatterns = new List<CriPointerScanInfo>();
+                var mostPatterns = possibilities.Max(impl => impl.Results.GetNumFoundPatterns());
+                foreach (var impl in possibilities)
+                    if (impl.Results.GetNumFoundPatterns() == mostPatterns)
+                        implementationWithMostPatterns.Add(impl);
+
+                // If we have multiple matches for all sigs, pick by signature length;
+                // i.e. which signature is more 'specific'
+                best = implementationWithMostPatterns.Count > 1 
+                    ? SelectBestBySignatureLength(logger, implementationWithMostPatterns) 
+                    : implementationWithMostPatterns[0];
+
+                results:
                 Pointers = best.Results;
                 logger.Info("----- CRIFsV2Hook Analysis -----");
                 logger.Info("Closest CRI Version: {0}", best.CriVersion);
@@ -1039,10 +1035,9 @@ internal static class CpkBinderPointers
             });
     }
 
-    private static CriPointerScanInfo SelectBestSignature(Logger logger, List<CriPointerScanInfo> candidateImplementations)
+    private static CriPointerScanInfo SelectBestBySignatureLength(Logger logger, List<CriPointerScanInfo> candidateImplementations)
     {
-        CriPointerScanInfo best;
-        logger.Info("Identified {0} potential implementations:", candidateImplementations.Count());
+        logger.Info("Selecting 'best' implementation by signature length.\nIdentified {0} potential implementations:", candidateImplementations.Count());
         foreach (var impl in candidateImplementations)
             logger.Info("> {0}", impl.SourcedFrom);
                 
@@ -1102,8 +1097,7 @@ internal static class CpkBinderPointers
                 
         // Reassign the best match.
         logger.Info("Selecting {0} as the matching implementation", best_implementations.First().SourcedFrom);
-        best = best_implementations.First();
-        return best;
+        return best_implementations.First();;
     }
 
     /// <summary>
