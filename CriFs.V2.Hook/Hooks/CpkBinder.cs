@@ -198,6 +198,12 @@ public static unsafe partial class CpkBinder
     private static CriError BindCpkImpl(nint bndrhn, nint srcbndrhn, [MarshalAs(UnmanagedType.LPStr)] string path,
         nint work, int worksize, uint* bndrid)
     {
+        // Note(sewer)
+        // When a game binds a CPK, we will first bind files to this binder with a 
+        // higher priority. This means our manually bound files will override any
+        // files bound from the CPK.
+        
+        // Note that 'BindFile' binds the files inside the 
         if (BinderHandles.Add(bndrhn))
             BindAll(bndrhn);
 
