@@ -39,7 +39,7 @@ public static unsafe partial class CpkBinder
     private static criFsBinder_BindFiles? _bindFilesFn;
     private static criFsBinder_SetPriority? _setPriorityFn;
     private static criFsBinder_Unbind? _unbindFn;
-    private static SpanOfCharDict<string> _content = new(0);
+    private static SpanOfCharDict<string> _relativeToFullPathDict = new(0);
     private static int _contentLength;
     private static int _maxFilesMultiplier = 2;
 
@@ -146,7 +146,7 @@ public static unsafe partial class CpkBinder
         // Reloaded can load mods at runtime, however we cannot predict what the user might load, and there is no
         // error handling mechanism in CRI for exceeding max files, which is a bit problematic.
         // In our case, we will insert a MessageBox to handle this edge case.
-        _additionalFiles = _content.Count * _maxFilesMultiplier;
+        _additionalFiles = _relativeToFullPathDict.Count * _maxFilesMultiplier;
 
         // An additional loader is used when we call BindFiles.
         config->MaxLoaders += 1;
@@ -218,7 +218,7 @@ public static unsafe partial class CpkBinder
         _logger.Debug("Binding Custom Files!! with priority {0}", priority);
         var size = 0;
 
-        if (_content.Count > _additionalFiles)
+        if (_relativeToFullPathDict.Count > _additionalFiles)
         {
             Native.MessageBox(0,
                 "Unable to load custom files because file limit will be exceeded (game would freeze).\n" +
@@ -230,7 +230,7 @@ public static unsafe partial class CpkBinder
         }
 
         var fileList = new StringBuilder(_contentLength);
-        foreach (var file in _content.GetValues())
+        foreach (var file in _relativeToFullPathDict.GetValues())
         {
             fileList.Append(file.Key);
             fileList.Append("\n");
@@ -269,7 +269,7 @@ public static unsafe partial class CpkBinder
                 case CRIFSBINDER_STATUS_COMPLETE:
                     _setPriorityFn?.Invoke(bndrid, priority);
                     _logger.Debug("Bound files: {0}", fileListStr);
-                    _logger.Info("Bind Complete! {0} files, Id: {1}, Time: {2}ms", _content.Count, bndrid,
+                    _logger.Info("Bind Complete! {0} files, Id: {1}, Time: {2}ms", _relativeToFullPathDict.Count, bndrid,
                         watch.ElapsedMilliseconds);
                     Bindings.Add(new CpkBinding(workMem, bndrid));
                     return;
@@ -347,20 +347,20 @@ public static unsafe partial class CpkBinder
     /// <summary>
     ///     Updates the content that will be bound at runtime.
     /// </summary>
-    /// <param name="content">
+    /// <param name="relativeToFullPathDict">
     ///     The content to be bound.
     ///     This is a dictionary of relative paths (using forward slashes) to their full file paths.
     ///     The key must ignore case.
     /// </param>
-    public static void UpdateDataToBind(SpanOfCharDict<string> content)
+    public static void UpdateDataToBind(SpanOfCharDict<string> relativeToFullPathDict)
     {
-        _content = content;
+        _relativeToFullPathDict = relativeToFullPathDict;
         FreeNewToOriginalCasing();
-        NewToOriginalCasing = new SpanOfCharDict<nint>(_content.Count);
+        NewToOriginalCasing = new SpanOfCharDict<nint>(_relativeToFullPathDict.Count);
 
         // Calculate content length.
         var bindLength = 0;
-        foreach (var item in content.GetValues())
+        foreach (var item in relativeToFullPathDict.GetValues())
             bindLength += item.Value.Length + 1;
 
         _contentLength = bindLength;
