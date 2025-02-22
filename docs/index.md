@@ -36,6 +36,7 @@ If you need to support an additional game, and it is not listed here; [consider 
 | Judgment                                | Aug  5 2022 19:37:39 | 2.78.11        | MSC19.00.24210.0,MT | Only has `BindFile`.                                                                     |
 | Metaphor: ReFantazio (Clean)            | Oct  2 2023 10:26:25 | 2.85.1         | MSC19.16.27048.0,MT |                                                                                          |
 | Metaphor: ReFantazio (Fucked by Denuvo) | Oct  2 2023 10:26:25 | 2.85.1         | MSC19.16.27048.0,MT | Tampered by Denuvo obfuscation inserting junk into static variables.                     |
+| Like a Dragon: Pirate Yakuza in Hawaii  | Dec  2 2024 14:51:28 | 2.86.9         | MSC19.29.30148.0,MT |                                                                                          |
 
 ### x86 Games
 
