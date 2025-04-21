@@ -61,7 +61,7 @@ public static unsafe partial class CpkBinder
             Memory.Instance.SafeRead((nuint)disableWarn, _previousCallCode2.AsSpan());
             Memory.Instance.SafeWrite((nuint)disableWarn, _newCallCode2.AsSpan());
         }
-        else if(_previousCallCode2Set)
+        else if (_previousCallCode2Set)
         {
             Memory.Instance.SafeWrite((nuint)disableWarn, _previousCallCode2.AsSpan());
         }
