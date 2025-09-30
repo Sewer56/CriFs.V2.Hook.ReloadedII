@@ -14,6 +14,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
