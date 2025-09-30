@@ -64,6 +64,11 @@ public class ReloadedBindBuilderCreator
     public void AddProbingPath(string relativePath) => _probingPaths.Add(relativePath);
 
     /// <summary>
+    /// Returns all currently registered probing paths.
+    /// </summary>
+    public IReadOnlyList<string> GetProbingPaths() => _probingPaths;
+
+    /// <summary>
     /// Tries to remove a mod from the internal list of mods to build.
     /// </summary>
     /// <param name="modConfig">The mod config to remove.</param>
