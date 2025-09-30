@@ -16,7 +16,7 @@ public interface ICriFsRedirectorApi
     /// <summary>
     /// Returns all currently registered probing paths.
     /// </summary>
-    public List<string> GetProbingPaths();
+    public IReadOnlyList<string> GetProbingPaths();
 
     /// <summary>
     /// Adds a method that is fired when the binder performs an unbind (e.g. Hot Reload).

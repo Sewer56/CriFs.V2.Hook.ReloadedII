@@ -66,7 +66,7 @@ public class ReloadedBindBuilderCreator
     /// <summary>
     /// Returns all currently registered probing paths.
     /// </summary>
-    public List<string> GetProbingPaths() => _probingPaths;
+    public IReadOnlyList<string> GetProbingPaths() => _probingPaths;
 
     /// <summary>
     /// Tries to remove a mod from the internal list of mods to build.

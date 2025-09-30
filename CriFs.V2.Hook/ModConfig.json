@@ -2,7 +2,7 @@
   "ModId": "crifs.v2.hook",
   "ModName": "CRI FileSystem V2 Hook",
   "ModAuthor": "Sewer56",
-  "ModVersion": "2.5.6",
+  "ModVersion": "2.6.0",
   "ModDescription": "A mod that allows you to add/replace existing files without repacking CRI Middleware CPKs.",
   "ModDll": "CriFs.V2.Hook.dll",
   "ModIcon": "Preview.png",
