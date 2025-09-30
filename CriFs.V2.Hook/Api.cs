@@ -34,6 +34,9 @@ public class Api : ICriFsRedirectorApi
     public void AddProbingPath(string relativePath) => _reloadedBuilder.AddProbingPath(relativePath);
 
     /// <inheritdoc/>
+    public List<string> GetProbingPaths() => _reloadedBuilder.GetProbingPaths();
+
+    /// <inheritdoc/>
     public void AddUnbindCallback(Action<ICriFsRedirectorApi.UnbindContext> callback) => _reloadedBuilder.AddUnbindCallback(callback);
 
     /// <inheritdoc/>
