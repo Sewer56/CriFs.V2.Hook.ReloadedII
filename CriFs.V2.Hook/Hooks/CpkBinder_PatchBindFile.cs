@@ -86,7 +86,7 @@ public static unsafe partial class CpkBinder
                 {
                     var operandOffset = movRegSig.Length == 14 ? 1 : 2; // check if 32-bit register or not.
                     Memory.Instance.SafeWrite((nuint)((byte*)bindFile + res.Offset + operandOffset),
-                        new Span<byte>(&newValue, 1));
+                        new Span<byte>(&newValue, 4));
                     _logger.Info(message);
                 }
             }
